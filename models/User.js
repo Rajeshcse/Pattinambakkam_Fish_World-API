@@ -54,6 +54,17 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  refreshTokens: [{
+    token: {
+      type: String,
+      required: true
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      expires: 2592000 // 30 days in seconds
+    }
+  }],
   createdAt: {
     type: Date,
     default: Date.now

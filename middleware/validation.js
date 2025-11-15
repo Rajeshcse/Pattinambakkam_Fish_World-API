@@ -89,3 +89,90 @@ export const validateProfileUpdate = [
     .isURL()
     .withMessage('Avatar must be a valid URL')
 ];
+
+export const validateVerifyEmail = [
+  body('otp')
+    .notEmpty()
+    .withMessage('OTP is required')
+    .bail()
+    .isLength({ min: 6, max: 6 })
+    .withMessage('OTP must be 6 digits')
+    .bail()
+    .isNumeric()
+    .withMessage('OTP must contain only numbers')
+];
+
+export const validateForgotPassword = [
+  body('email')
+    .notEmpty()
+    .withMessage('Email is required')
+    .bail()
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Please provide a valid email')
+];
+
+export const validateResetPassword = [
+  body('email')
+    .notEmpty()
+    .withMessage('Email is required')
+    .bail()
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Please provide a valid email'),
+
+  body('otp')
+    .notEmpty()
+    .withMessage('OTP is required')
+    .bail()
+    .isLength({ min: 6, max: 6 })
+    .withMessage('OTP must be 6 digits')
+    .bail()
+    .isNumeric()
+    .withMessage('OTP must contain only numbers'),
+
+  body('newPassword')
+    .notEmpty()
+    .withMessage('New password is required')
+    .bail()
+    .isLength({ min: 6 })
+    .withMessage('Password must be at least 6 characters long')
+    .bail()
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage('Password must contain at least one lowercase letter, one uppercase letter, and one number')
+];
+
+export const validateChangePassword = [
+  body('currentPassword')
+    .notEmpty()
+    .withMessage('Current password is required'),
+
+  body('newPassword')
+    .notEmpty()
+    .withMessage('New password is required')
+    .bail()
+    .isLength({ min: 6 })
+    .withMessage('New password must be at least 6 characters long')
+    .bail()
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage('New password must contain at least one lowercase letter, one uppercase letter, and one number'),
+
+  body('newPassword').custom((value, { req }) => {
+    if (value === req.body.currentPassword) {
+      throw new Error('New password must be different from current password');
+    }
+    return true;
+  })
+];
+
+export const validateRefreshToken = [
+  body('refreshToken')
+    .notEmpty()
+    .withMessage('Refresh token is required')
+];
+
+export const validateLogout = [
+  body('refreshToken')
+    .notEmpty()
+    .withMessage('Refresh token is required')
+];

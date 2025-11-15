@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/database.js';
 import authRoutes from './routes/auth.js';
-import setupSwagger from './config/swagger.js';
+import setupSwagger from './config/swagger/setup.js';
 
 // Load environment variables
 dotenv.config();
