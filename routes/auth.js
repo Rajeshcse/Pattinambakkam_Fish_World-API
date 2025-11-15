@@ -1,28 +1,57 @@
 import express from 'express';
-import { register, login, getProfile, updateProfile } from '../controllers/authController.js';
+
+import {
+  register,
+  login,
+  getProfile,
+  updateProfile,
+  refreshAccessToken,
+  logout,
+  logoutAll
+} from '../controllers/authController.js';
+
+import {
+  sendEmailVerificationOTP,
+  verifyEmail,
+  resendEmailVerificationOTP
+} from '../controllers/verificationController.js';
+
+import {
+  forgotPassword,
+  resetPassword,
+  changePassword
+} from '../controllers/passwordController.js';
+
 import { authenticateToken } from '../middleware/auth.js';
-import { validateRegister, validateLogin, validateProfileUpdate } from '../middleware/validation.js';
+
+import {
+  validateRegister,
+  validateLogin,
+  validateProfileUpdate,
+  validateVerifyEmail,
+  validateForgotPassword,
+  validateResetPassword,
+  validateChangePassword,
+  validateRefreshToken,
+  validateLogout
+} from '../middleware/validation.js';
+
 
 const router = express.Router();
 
-// @route   POST /api/auth/register
-// @desc    Register a new user
-// @access  Public
 router.post('/register', validateRegister, register);
-
-// @route   POST /api/auth/login
-// @desc    Login user
-// @access  Public
 router.post('/login', validateLogin, login);
+router.post('/refresh-token', validateRefreshToken, refreshAccessToken);
+router.post('/logout', authenticateToken, validateLogout, logout);
+router.post('/logout-all', authenticateToken, logoutAll);
+router.post('/send-verification-email', authenticateToken, sendEmailVerificationOTP);
+router.post('/verify-email', authenticateToken, validateVerifyEmail, verifyEmail);
+router.post('/resend-verification-email', authenticateToken, resendEmailVerificationOTP);
+router.post('/forgot-password', validateForgotPassword, forgotPassword);
+router.post('/reset-password', validateResetPassword, resetPassword);
+router.post('/change-password', authenticateToken, validateChangePassword, changePassword);
 
-// @route   GET /api/auth/profile
-// @desc    Get user profile
-// @access  Private
 router.get('/profile', authenticateToken, getProfile);
-
-// @route   PUT /api/auth/profile
-// @desc    Update user profile
-// @access  Private
 router.put('/profile', authenticateToken, validateProfileUpdate, updateProfile);
 
 export default router;
