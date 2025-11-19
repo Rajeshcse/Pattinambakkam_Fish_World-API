@@ -15,6 +15,39 @@ export const schemas = {
     }
   },
 
+  UserSummary: {
+    type: 'object',
+    properties: {
+      id: { type: 'string', example: '507f1f77bcf86cd799439011' },
+      name: { type: 'string', example: 'John Doe' },
+      email: { type: 'string', format: 'email', example: 'john@example.com' },
+      role: { type: 'string', enum: ['user', 'admin'], example: 'user' },
+      isVerified: { type: 'boolean', example: true },
+      createdAt: { type: 'string', format: 'date-time', example: '2024-01-01T00:00:00.000Z' }
+    }
+  },
+
+  Pagination: {
+    type: 'object',
+    properties: {
+      currentPage: { type: 'number', example: 1 },
+      totalPages: { type: 'number', example: 10 },
+      totalUsers: { type: 'number', example: 95 },
+      hasNextPage: { type: 'boolean', example: true },
+      hasPrevPage: { type: 'boolean', example: false }
+    }
+  },
+
+  UserStats: {
+    type: 'object',
+    properties: {
+      totalUsers: { type: 'number', example: 150 },
+      verifiedUsers: { type: 'number', example: 120 },
+      adminUsers: { type: 'number', example: 3 },
+      recentUsers: { type: 'number', example: 25 }
+    }
+  },
+
   Error: {
     type: 'object',
     properties: {

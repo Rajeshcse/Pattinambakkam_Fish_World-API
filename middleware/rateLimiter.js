@@ -85,3 +85,41 @@ export const profileUpdateLimiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
 });
+
+// Admin rate limiters
+
+// General admin operations rate limiter
+export const adminLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 admin requests per windowMs
+  message: {
+    success: false,
+    message: 'Too many admin requests, please try again after 15 minutes'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Strict rate limiter for admin bulk operations
+export const adminBulkLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // Limit each IP to 5 bulk operations per windowMs
+  message: {
+    success: false,
+    message: 'Too many bulk operations, please try again after 15 minutes'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Rate limiter for user deletion operations
+export const adminDeleteLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 20, // Limit each IP to 20 delete operations per hour
+  message: {
+    success: false,
+    message: 'Too many delete operations, please try again after an hour'
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+});

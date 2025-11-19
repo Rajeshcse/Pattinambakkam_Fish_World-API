@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import connectDB from './config/database.js';
 import authRoutes from './routes/auth.js';
+import adminRoutes from './routes/admin.js';
 import setupSwagger from './config/swagger/setup.js';
 
 // Load environment variables
@@ -28,18 +29,21 @@ app.get('/', (req, res) => {
     success: true,
     message: 'Welcome to Kidzo API - Authentication System',
     version: '1.0.0',
-    documentation: 'http://localhost:3000/api-docs',
+    documentation: 'http://localhost:3001/api-docs',
     endpoints: {
       register: 'POST /api/auth/register',
       login: 'POST /api/auth/login',
       profile: 'GET /api/auth/profile (Protected)',
-      updateProfile: 'PUT /api/auth/profile (Protected)'
+      updateProfile: 'PUT /api/auth/profile (Protected)',
+      adminDashboard: 'GET /api/admin/dashboard (Admin Only)',
+      userManagement: 'GET /api/admin/users (Admin Only)'
     }
   });
 });
 
 // API Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Global error handler
 app.use((err, req, res, next) => {

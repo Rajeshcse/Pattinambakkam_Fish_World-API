@@ -6,6 +6,7 @@ import { authPaths } from './paths/auth.js';
 import { verificationPaths } from './paths/verification.js';
 import { passwordPaths } from './paths/password.js';
 import { profilePaths } from './paths/profile.js';
+import { adminPaths } from './paths/admin.js';
 
 // Swagger configuration options
 const options = {
@@ -14,7 +15,7 @@ const options = {
     info: {
       title: 'Kidzo API Documentation',
       version: '1.0.0',
-      description: 'Complete authentication and user management API for Kidzo application - AI picture books for Kids to publish in KDP',
+      description: 'Complete authentication and user management API for Kidzo application - AI picture books for Kids to publish in KDP. Includes role-based admin access control with comprehensive user management capabilities.',
       contact: {
         name: 'Kidzo API Support',
         email: 'support@kidzo.com'
@@ -26,7 +27,7 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:3000',
+        url: 'http://localhost:3001',
         description: 'Development server'
       },
       {
@@ -45,7 +46,8 @@ const options = {
       ...authPaths,
       ...verificationPaths,
       ...passwordPaths,
-      ...profilePaths
+      ...profilePaths,
+      ...adminPaths
     }
   },
   apis: [] // No annotations needed since we're defining everything inline

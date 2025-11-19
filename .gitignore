@@ -8,3 +8,23 @@ build/
 .idea/
 coverage/
 .nyc_output/
+
+# Test files
+test-*.js
+*-test.js
+*.test.js
+check-*.js
+promote-*.js
+create-*.js
+cleanup-*.js
+verify-*.js
+
+# Temporary documentation
+*_GUIDE.md
+*_REPORT.md
+*_IMPLEMENTATION.md
+
+# Temporary files
+token.txt
+temp/
+tmp/

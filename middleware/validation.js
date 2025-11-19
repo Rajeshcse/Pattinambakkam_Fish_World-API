@@ -176,3 +176,69 @@ export const validateLogout = [
     .notEmpty()
     .withMessage('Refresh token is required')
 ];
+
+// Admin validation rules
+
+export const validateAdminUpdateUser = [
+  body('name')
+    .optional()
+    .trim()
+    .isLength({ min: 2, max: 50 })
+    .withMessage('Name must be between 2 and 50 characters')
+    .bail()
+    .matches(/^[a-zA-Z\s]+$/)
+    .withMessage('Name can only contain letters and spaces'),
+  
+  body('email')
+    .optional()
+    .isEmail()
+    .normalizeEmail()
+    .withMessage('Please provide a valid email'),
+  
+  body('phone')
+    .optional()
+    .matches(/^[6-9]\d{9}$/)
+    .withMessage('Please provide a valid 10-digit phone number starting with 6, 7, 8, or 9'),
+  
+  body('avatar')
+    .optional()
+    .isURL()
+    .withMessage('Avatar must be a valid URL'),
+
+  body('isVerified')
+    .optional()
+    .isBoolean()
+    .withMessage('isVerified must be a boolean value')
+];
+
+export const validateAdminChangeRole = [
+  body('role')
+    .notEmpty()
+    .withMessage('Role is required')
+    .bail()
+    .isIn(['user', 'admin'])
+    .withMessage('Role must be either user or admin')
+];
+
+export const validateAdminBulkAction = [
+  body('action')
+    .notEmpty()
+    .withMessage('Action is required')
+    .bail()
+    .isIn(['delete', 'verify', 'unverify'])
+    .withMessage('Action must be one of: delete, verify, unverify'),
+
+  body('userIds')
+    .notEmpty()
+    .withMessage('User IDs array is required')
+    .bail()
+    .isArray({ min: 1 })
+    .withMessage('User IDs must be a non-empty array')
+    .bail()
+    .custom((userIds) => {
+      if (userIds.length > 100) {
+        throw new Error('Cannot perform bulk action on more than 100 users at once');
+      }
+      return true;
+    })
+];

@@ -25,6 +25,21 @@ export const responses = {
     }
   },
 
+  ForbiddenError: {
+    description: 'Insufficient permissions for this action',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean', example: false },
+            message: { type: 'string', example: 'Access denied. Insufficient permissions.' }
+          }
+        }
+      }
+    }
+  },
+
   ValidationError: {
     description: 'Validation error',
     content: {
@@ -66,5 +81,21 @@ export const tags = [
   {
     name: 'User Profile',
     description: 'User profile management'
+  },
+  {
+    name: 'Admin Management',
+    description: 'Admin dashboard and overview statistics'
+  },
+  {
+    name: 'Admin - User Management',
+    description: 'User CRUD operations (admin only)'
+  },
+  {
+    name: 'Admin - Role Management',
+    description: 'User role and permission management (admin only)'
+  },
+  {
+    name: 'Admin - Bulk Operations',
+    description: 'Bulk user operations (admin only)'
   }
 ];
