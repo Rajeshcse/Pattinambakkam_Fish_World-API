@@ -27,7 +27,7 @@ setupSwagger(app);
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'Welcome to Kidzo API - Authentication System',
+    message: 'Welcome to Pattinambakkam_Fish_World API - Authentication System',
     version: '1.0.0',
     documentation: 'http://localhost:3001/api-docs',
     endpoints: {

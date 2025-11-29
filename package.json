@@ -1,5 +1,5 @@
 {
-  "name": "kidzo-api",
+  "name": "Pattinambakkam_Fish_World-api",
   "version": "1.0.0",
   "description": "AI picture books for Kids to publish in KDP ",
   "main": "app.js",
@@ -7,7 +7,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon app.js",
-    "start": "node app.js"
+    "start": "node app.js",
+    "create-admin": "node scripts/createAdmin.js",
+    "promote-admin": "node scripts/promoteAdmin.js"
   },
   "author": "Rajesh Paramanandam",
   "license": "ISC",

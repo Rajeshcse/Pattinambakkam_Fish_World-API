@@ -13,12 +13,12 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Kidzo API Documentation',
+      title: 'Pattinambakkam_Fish_World API Documentation',
       version: '1.0.0',
-      description: 'Complete authentication and user management API for Kidzo application - AI picture books for Kids to publish in KDP. Includes role-based admin access control with comprehensive user management capabilities.',
+      description: 'Complete authentication and user management API for Pattinambakkam_Fish_World application - AI picture books for Kids to publish in KDP. Includes role-based admin access control with comprehensive user management capabilities.',
       contact: {
-        name: 'Kidzo API Support',
-        email: 'support@kidzo.com'
+        name: 'Pattinambakkam_Fish_World API Support',
+        email: 'support@Pattinambakkam_Fish_World.com'
       },
       license: {
         name: 'MIT',
@@ -31,7 +31,7 @@ const options = {
         description: 'Development server'
       },
       {
-        url: 'https://api.kidzo.com',
+        url: 'https://api.Pattinambakkam_Fish_World.com',
         description: 'Production server'
       }
     ],
@@ -60,7 +60,7 @@ const swaggerSpec = swaggerJsdoc(options);
 export const setupSwagger = (app) => {
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
     customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: 'Kidzo API Documentation',
+    customSiteTitle: 'Pattinambakkam_Fish_World API Documentation',
     customfavIcon: '/favicon.ico',
     swaggerOptions: {
       persistAuthorization: true,
