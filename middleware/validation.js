@@ -242,3 +242,54 @@ export const validateAdminBulkAction = [
       return true;
     })
 ];
+
+// Product validation rules
+
+export const validateCreateProduct = [
+  body('name')
+    .notEmpty()
+    .withMessage('Product name is required')
+    .bail()
+    .trim()
+    .isLength({ min: 2, max: 100 })
+    .withMessage('Product name must be between 2 and 100 characters'),
+
+  body('category')
+    .notEmpty()
+    .withMessage('Category is required')
+    .bail()
+    .isIn(['Vanjaram', 'Prawn', 'Crab', 'Squid'])
+    .withMessage('Category must be one of: Vanjaram, Prawn, Crab, Squid'),
+
+  body('price')
+    .notEmpty()
+    .withMessage('Price is required')
+    .bail()
+    .isFloat({ min: 0.01 })
+    .withMessage('Price must be a number greater than 0'),
+
+  body('stock')
+    .notEmpty()
+    .withMessage('Stock quantity is required')
+    .bail()
+    .isInt({ min: 0 })
+    .withMessage('Stock must be a non-negative integer'),
+
+  body('description')
+    .optional()
+    .trim()
+    .isLength({ max: 500 })
+    .withMessage('Description cannot exceed 500 characters'),
+
+  body('images')
+    .optional()
+    .isArray()
+    .withMessage('Images must be an array')
+    .bail()
+    .custom((images) => {
+      if (images && images.length > 10) {
+        throw new Error('Cannot add more than 10 images per product');
+      }
+      return true;
+    })
+];

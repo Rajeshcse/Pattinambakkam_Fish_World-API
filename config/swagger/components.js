@@ -97,5 +97,9 @@ export const tags = [
   {
     name: 'Admin - Bulk Operations',
     description: 'Bulk user operations (admin only)'
+  },
+  {
+    name: 'Admin - Product Management',
+    description: 'Fish product CRUD operations (admin only)'
   }
 ];
