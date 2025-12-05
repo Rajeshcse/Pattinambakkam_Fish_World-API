@@ -7,6 +7,7 @@ import { verificationPaths } from './paths/verification.js';
 import { passwordPaths } from './paths/password.js';
 import { profilePaths } from './paths/profile.js';
 import { adminPaths } from './paths/admin.js';
+import { productPaths } from './paths/products.js';
 
 // Swagger configuration options
 const options = {
@@ -47,7 +48,8 @@ const options = {
       ...verificationPaths,
       ...passwordPaths,
       ...profilePaths,
-      ...adminPaths
+      ...adminPaths,
+      ...productPaths
     }
   },
   apis: [] // No annotations needed since we're defining everything inline

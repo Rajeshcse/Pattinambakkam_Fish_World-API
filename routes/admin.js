@@ -23,6 +23,8 @@ import {
   adminBulkLimiter
 } from '../middleware/rateLimiter.js';
 
+import { asyncHandler } from '../middleware/errorHandler.js';
+
 const router = express.Router();
 
 // Apply authentication and admin authorization to all routes
@@ -33,21 +35,21 @@ router.use(authorizeRoles('admin'));
 router.use(adminLimiter);
 
 // Dashboard routes
-router.get('/dashboard', getDashboardStats);
+router.get('/dashboard', asyncHandler(getDashboardStats));
 
 // User management routes
-router.get('/users', getAllUsers);
-router.get('/users/:id', getUserById);
-router.put('/users/:id', validateAdminUpdateUser, updateUser);
-router.delete('/users/:id', deleteUser);
+router.get('/users', asyncHandler(getAllUsers));
+router.get('/users/:id', asyncHandler(getUserById));
+router.put('/users/:id', validateAdminUpdateUser, asyncHandler(updateUser));
+router.delete('/users/:id', asyncHandler(deleteUser));
 
 // Role management
-router.put('/users/:id/role', validateAdminChangeRole, changeUserRole);
+router.put('/users/:id/role', validateAdminChangeRole, asyncHandler(changeUserRole));
 
 // Verification management
-router.put('/users/:id/verification', toggleUserVerification);
+router.put('/users/:id/verification', asyncHandler(toggleUserVerification));
 
 // Bulk operations (with additional rate limiting)
-router.post('/users/bulk-action', adminBulkLimiter, validateAdminBulkAction, bulkUserAction);
+router.post('/users/bulk-action', adminBulkLimiter, validateAdminBulkAction, asyncHandler(bulkUserAction));
 
 export default router;

@@ -4,7 +4,10 @@ import cors from 'cors';
 import connectDB from './config/database.js';
 import authRoutes from './routes/auth.js';
 import adminRoutes from './routes/admin.js';
+import productRoutes from './routes/products.js';
 import setupSwagger from './config/swagger/setup.js';
+import { globalErrorHandler, notFoundHandler } from './middleware/errorHandler.js';
+import { sendSuccess } from './utils/helpers/responseHelper.js';
 
 // Load environment variables
 dotenv.config();
@@ -25,45 +28,59 @@ setupSwagger(app);
 
 // Routes
 app.get('/', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Welcome to Pattinambakkam_Fish_World API - Authentication System',
-    version: '1.0.0',
-    documentation: 'http://localhost:3001/api-docs',
+  const apiInfo = {
+    name: 'Pattinambakkam Fish World API',
+    version: '2.0.0',
+    description: 'Fish marketplace API with product management and authentication',
+    documentation: `http://localhost:${port}/api-docs`,
+    status: 'active',
     endpoints: {
-      register: 'POST /api/auth/register',
-      login: 'POST /api/auth/login',
-      profile: 'GET /api/auth/profile (Protected)',
-      updateProfile: 'PUT /api/auth/profile (Protected)',
-      adminDashboard: 'GET /api/admin/dashboard (Admin Only)',
-      userManagement: 'GET /api/admin/users (Admin Only)'
-    }
-  });
+      authentication: {
+        register: 'POST /api/auth/register',
+        login: 'POST /api/auth/login',
+        profile: 'GET /api/auth/profile (Protected)',
+        updateProfile: 'PUT /api/auth/profile (Protected)'
+      },
+      admin: {
+        dashboard: 'GET /api/admin/dashboard (Admin Only)',
+        userManagement: 'GET /api/admin/users (Admin Only)'
+      },
+      products: {
+        list: 'GET /api/products (Public)',
+        getById: 'GET /api/products/:id (Public)',
+        create: 'POST /api/products (Admin Only)',
+        update: 'PUT /api/products/:id (Admin Only)',
+        delete: 'DELETE /api/products/:id (Admin Only)',
+        toggleAvailability: 'PATCH /api/products/:id/availability (Admin Only)'
+      }
+    },
+    features: [
+      'JWT Authentication',
+      'Role-based Authorization',
+      'Product Management',
+      'File Upload Support',
+      'Rate Limiting',
+      'Input Validation',
+      'API Documentation',
+      'Error Handling'
+    ]
+  };
+
+  return sendSuccess(res, apiInfo, 'Welcome to Pattinambakkam Fish World API');
 });
 
 // API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/products', productRoutes);
 
-// Global error handler
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
-    success: false,
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err.message : {}
-  });
-});
-
-// Handle 404
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: 'Route not found'
-  });
-});
+// Error Handling Middleware (Must be last)
+app.use(notFoundHandler);
+app.use(globalErrorHandler);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
   console.log(`API Documentation available at http://localhost:${port}/api-docs`);
 });
+
+export default app;
