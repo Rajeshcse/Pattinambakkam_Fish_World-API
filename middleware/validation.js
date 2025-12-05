@@ -258,8 +258,8 @@ export const validateCreateProduct = [
     .notEmpty()
     .withMessage('Category is required')
     .bail()
-    .isIn(['Vanjaram', 'Prawn', 'Crab', 'Squid'])
-    .withMessage('Category must be one of: Vanjaram, Prawn, Crab, Squid'),
+    .isIn(['Fish', 'Prawn', 'Crab', 'Squid'])
+    .withMessage('Category must be one of: Fish, Prawn, Crab, Squid'),
 
   body('price')
     .notEmpty()
@@ -292,4 +292,50 @@ export const validateCreateProduct = [
       }
       return true;
     })
+];
+
+export const validateUpdateProduct = [
+  body('name')
+    .optional()
+    .trim()
+    .isLength({ min: 2, max: 100 })
+    .withMessage('Product name must be between 2 and 100 characters'),
+
+  body('category')
+    .optional()
+    .isIn(['Fish', 'Prawn', 'Crab', 'Squid'])
+    .withMessage('Category must be one of: Fish, Prawn, Crab, Squid'),
+
+  body('price')
+    .optional()
+    .isFloat({ min: 0.01 })
+    .withMessage('Price must be a number greater than 0'),
+
+  body('stock')
+    .optional()
+    .isInt({ min: 0 })
+    .withMessage('Stock must be a non-negative integer'),
+
+  body('description')
+    .optional()
+    .trim()
+    .isLength({ max: 500 })
+    .withMessage('Description cannot exceed 500 characters'),
+
+  body('images')
+    .optional()
+    .isArray()
+    .withMessage('Images must be an array')
+    .bail()
+    .custom((images) => {
+      if (images && images.length > 10) {
+        throw new Error('Cannot add more than 10 images per product');
+      }
+      return true;
+    }),
+
+  body('isAvailable')
+    .optional()
+    .isBoolean()
+    .withMessage('isAvailable must be a boolean value')
 ];

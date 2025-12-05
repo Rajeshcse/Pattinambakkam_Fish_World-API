@@ -12,8 +12,8 @@ const fishProductSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide a category'],
     enum: {
-      values: ['Vanjaram', 'Prawn', 'Crab', 'Squid'],
-      message: 'Category must be one of: Vanjaram, Prawn, Crab, Squid'
+      values: ['Fish', 'Prawn', 'Crab', 'Squid'],
+      message: 'Category must be one of: Fish, Prawn, Crab, Squid'
     }
   },
   price: {
