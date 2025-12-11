@@ -1,192 +1,178 @@
-import { validationResult } from 'express-validator';
-import User from '../models/User.js';
-import Token from '../models/Token.js';
-import { sendPasswordResetEmail } from '../utils/emailService.js';
+import User from "../models/User.js";
+import Token from "../models/Token.js";
+import jwt from "jsonwebtoken";
 
-// @desc    Request password reset (send OTP)
-// @route   POST /api/auth/forgot-password
-// @access  Publicp
+const generateAccessToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: "7d",
+  });
+};
+
+// 👉 Forgot Password – send reset code to phone (user provides email or phone)
 export const forgotPassword = async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
+    const { email, phone } = req.body;
+
+    // 1️⃣ Validate that either email or phone is provided
+    if (!email && !phone) {
       return res.status(400).json({
-        success: false,
-        message: 'Validation failed',
-        errors: errors.array()
+        message: "Please provide either email or phone number",
       });
     }
 
-    const { email } = req.body;
+    // 2️⃣ Find user by email or phone
+    const user = await User.findOne({
+      $or: [{ email: email || null }, { phone: phone || null }],
+    });
 
-    const user = await User.findOne({ email });
-
-    // For security, always return success even if user doesn't exist
-    // This prevents email enumeration attacks
+    // 3️⃣ Check if user exists
     if (!user) {
-      return res.status(200).json({
-        success: true,
-        message: 'If an account exists with this email, a password reset OTP has been sent'
+      return res.status(404).json({
+        message: "User not found",
       });
     }
 
-    // Delete any existing password reset tokens for this user
+    // 4️⃣ Delete any existing password reset tokens for this user
     await Token.deleteMany({
       userId: user._id,
-      type: 'password_reset'
+      type: "password_reset",
     });
 
-    // Create new password reset token
-    const tokenData = Token.createToken(user._id, 'password_reset');
+    // 5️⃣ Create new password reset token
+    const tokenData = Token.createToken(user._id, "password_reset");
     await Token.create(tokenData);
 
-    // Send password reset email
-    const emailResult = await sendPasswordResetEmail(user.email, tokenData.otp, user.name);
+    // 6️⃣ Display reset code in terminal for development (send to phone)
+    const resetCodeOutput = `
+========================================
+🔐 PASSWORD RESET CODE (SENT TO PHONE)
+========================================
+User Email: ${user.email}
+User Name: ${user.name}
+Phone Number: ${user.phone}
+Reset Code: ${tokenData.otp}
+Expires in: 10 minutes
+========================================
+`;
+    console.log(resetCodeOutput);
+    console.error(resetCodeOutput); // Also log to stderr to ensure visibility
 
-    if (!emailResult.success) {
-      console.error('Failed to send password reset email:', emailResult.error);
-      // Don't expose email sending failure to prevent information disclosure
-    }
-
-    res.status(200).json({
-      success: true,
-      message: 'If an account exists with this email, a password reset OTP has been sent',
-      expiresIn: '10 minutes'
+    return res.status(200).json({
+      message: "Reset code sent to your phone",
     });
   } catch (error) {
-    console.error('Forgot password error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error while processing password reset request'
+    console.error("Forgot password error:", error);
+    return res.status(500).json({
+      message: "Internal server error",
     });
   }
 };
 
-// @desc    Reset password with OTP
-// @route   POST /api/auth/reset-password
-// @access  Public
+// 👉 Reset Password – verify code and update password
 export const resetPassword = async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
+    const { email, phone, resetCode, newPassword } = req.body;
+
+    // 1️⃣ Validate that either email or phone is provided
+    if (!email && !phone) {
       return res.status(400).json({
-        success: false,
-        message: 'Validation failed',
-        errors: errors.array()
+        message: "Please provide either email or phone number",
       });
     }
 
-    const { email, otp, newPassword } = req.body;
+    // 2️⃣ Validate reset code and new password
+    if (!resetCode) {
+      return res.status(400).json({
+        message: "Reset code is required",
+      });
+    }
 
-    const user = await User.findOne({ email });
+    if (!newPassword) {
+      return res.status(400).json({
+        message: "New password is required",
+      });
+    }
+
+    // 3️⃣ Validate password strength
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        message: "Password must be at least 6 characters",
+      });
+    }
+
+    // Check for uppercase letter
+    if (!/[A-Z]/.test(newPassword)) {
+      return res.status(400).json({
+        message: "Password must contain at least one uppercase letter",
+      });
+    }
+
+    // Check for lowercase letter
+    if (!/[a-z]/.test(newPassword)) {
+      return res.status(400).json({
+        message: "Password must contain at least one lowercase letter",
+      });
+    }
+
+    // Check for number
+    if (!/\d/.test(newPassword)) {
+      return res.status(400).json({
+        message: "Password must contain at least one number",
+      });
+    }
+
+    // 4️⃣ Find user by email or phone
+    const user = await User.findOne({
+      $or: [{ email: email || null }, { phone: phone || null }],
+    });
 
     if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid or expired OTP'
+      return res.status(404).json({
+        message: "User not found",
       });
     }
 
-    // Find valid token
+    // 5️⃣ Find and validate token
     const token = await Token.findOne({
       userId: user._id,
-      type: 'password_reset',
-      otp: otp,
-      expiresAt: { $gt: new Date() }
+      type: "password_reset",
+      otp: resetCode,
+      expiresAt: { $gt: new Date() },
     });
 
     if (!token) {
       return res.status(400).json({
-        success: false,
-        message: 'Invalid or expired OTP'
+        message: "Invalid or expired reset code",
       });
     }
 
-    // Update password
+    // 6️⃣ Update password
     user.password = newPassword;
-    await user.save(); // This will trigger the pre-save hook to hash the password
+    await user.save();
 
-    // Delete the used token
+    // 7️⃣ Delete the used token
     await Token.deleteOne({ _id: token._id });
 
-    // Clear all refresh tokens for security
-    user.refreshTokens = [];
-    await user.save();
+    // 8️⃣ Log password reset for security
+    console.log(`
+========================================
+✅ PASSWORD RESET SUCCESSFUL
+========================================
+User Email: ${user.email}
+User Name: ${user.name}
+Phone Number: ${user.phone}
+Reset Time: ${new Date().toLocaleString()}
+========================================
+`);
 
-    res.status(200).json({
-      success: true,
-      message: 'Password reset successful. Please login with your new password.'
+    return res.status(200).json({
+      message: "Password reset successfully",
+      phone: user.phone,
     });
   } catch (error) {
-    console.error('Reset password error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error during password reset'
-    });
-  }
-};
-
-// @desc    Change password (for logged-in users)
-// @route   POST /api/auth/change-password
-// @access  Private
-export const changePassword = async (req, res) => {
-  try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        message: 'Validation failed',
-        errors: errors.array()
-      });
-    }
-
-    const { currentPassword, newPassword } = req.body;
-
-    // Get user with password field
-    const user = await User.findById(req.user.id).select('+password');
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found'
-      });
-    }
-
-    // Verify current password
-    const isPasswordValid = await user.comparePassword(currentPassword);
-    if (!isPasswordValid) {
-      return res.status(401).json({
-        success: false,
-        message: 'Current password is incorrect'
-      });
-    }
-
-    // Check if new password is same as current password
-    if (currentPassword === newPassword) {
-      return res.status(400).json({
-        success: false,
-        message: 'New password must be different from current password'
-      });
-    }
-
-    // Update password
-    user.password = newPassword;
-    await user.save(); // This will trigger the pre-save hook to hash the password
-
-    // Clear all refresh tokens except the current session
-    // This logs out all other sessions for security
-    user.refreshTokens = [];
-    await user.save();
-
-    res.status(200).json({
-      success: true,
-      message: 'Password changed successfully. Other sessions have been logged out.'
-    });
-  } catch (error) {
-    console.error('Change password error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error while changing password'
+    console.error("Reset password error:", error);
+    return res.status(500).json({
+      message: "Internal server error",
     });
   }
 };

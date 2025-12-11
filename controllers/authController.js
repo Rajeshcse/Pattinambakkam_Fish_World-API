@@ -1,20 +1,24 @@
-import jwt from 'jsonwebtoken';
-import crypto from 'crypto';
-import { validationResult } from 'express-validator';
-import User from '../models/User.js';
+import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import { validationResult } from "express-validator";
+import User from "../models/User.js";
 
 // Generate Access Token
 const generateAccessToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE || '15m'
+    expiresIn: process.env.JWT_EXPIRE || "15m",
   });
 };
 
 // Generate Refresh Token
 const generateRefreshToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_REFRESH_EXPIRE || '30d'
-  });
+  return jwt.sign(
+    { id },
+    process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_REFRESH_EXPIRE || "30d",
+    }
+  );
 };
 
 // @desc    Register user
@@ -27,22 +31,22 @@ export const register = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Validation failed',
-        errors: errors.array()
+        message: "Validation failed",
+        errors: errors.array(),
       });
     }
 
     const { name, email, phone, password } = req.body;
 
     // Check if user already exists with email or phone
-    const existingUser = await User.findOne({ 
-      $or: [{ email }, { phone }] 
+    const existingUser = await User.findOne({
+      $or: [{ email }, { phone }],
     });
     if (existingUser) {
-      const field = existingUser.email === email ? 'email' : 'phone number';
+      const field = existingUser.email === email ? "email" : "phone number";
       return res.status(400).json({
         success: false,
-        message: `User already exists with this ${field}`
+        message: `User already exists with this ${field}`,
       });
     }
 
@@ -51,7 +55,7 @@ export const register = async (req, res) => {
       name,
       email,
       phone,
-      password
+      password,
     });
 
     // Generate tokens
@@ -64,7 +68,7 @@ export const register = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'User registered successfully. Please verify your email.',
+      message: "User registered successfully. Please verify your email.",
       accessToken,
       refreshToken,
       user: {
@@ -74,14 +78,14 @@ export const register = async (req, res) => {
         phone: user.phone,
         role: user.role,
         isVerified: user.isVerified,
-        createdAt: user.createdAt
-      }
+        createdAt: user.createdAt,
+      },
     });
   } catch (error) {
-    console.error('Register error:', error);
+    console.error("Register error:", error);
     res.status(500).json({
       success: false,
-      message: 'Server error during registration'
+      message: "Server error during registration",
     });
   }
 };
@@ -96,8 +100,8 @@ export const login = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Validation failed',
-        errors: errors.array()
+        message: "Validation failed",
+        errors: errors.array(),
       });
     }
 
@@ -105,24 +109,25 @@ export const login = async (req, res) => {
 
     // Allow login with either email or phone
     const loginField = email || phone;
+
     if (!loginField) {
       return res.status(400).json({
         success: false,
-        message: 'Please provide either email or phone number'
+        message: "Please provide either email or phone number",
       });
     }
 
     // Check if user exists with email or phone and include password for comparison
-    const user = await User.findOne({ 
-      $or: [{ email: loginField }, { phone: loginField }] 
-    }).select('+password');
-    
+    const user = await User.findOne({
+      $or: [{ email: loginField }, { phone: loginField }],
+    }).select("+password");
+
     // For security, both missing user and invalid password return similar error.
     // If you want more specific errors for debugging, you can change the messages below.
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'User not found'
+        message: "User not found",
       });
     }
 
@@ -131,7 +136,7 @@ export const login = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
-        message: 'Incorrect password'
+        message: "Incorrect password",
       });
     }
 
@@ -151,7 +156,7 @@ export const login = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Login successful',
+      message: "Login successful",
       accessToken,
       refreshToken,
       user: {
@@ -161,14 +166,14 @@ export const login = async (req, res) => {
         phone: user.phone,
         role: user.role,
         isVerified: user.isVerified,
-        avatar: user.avatar
-      }
+        avatar: user.avatar,
+      },
     });
   } catch (error) {
-    console.error('Login error:', error);
+    console.error("Login error:", error);
     res.status(500).json({
       success: false,
-      message: 'Server error during login'
+      message: "Server error during login",
     });
   }
 };
@@ -179,7 +184,7 @@ export const login = async (req, res) => {
 export const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    
+
     res.status(200).json({
       success: true,
       user: {
@@ -190,14 +195,14 @@ export const getProfile = async (req, res) => {
         role: user.role,
         isVerified: user.isVerified,
         avatar: user.avatar,
-        createdAt: user.createdAt
-      }
+        createdAt: user.createdAt,
+      },
     });
   } catch (error) {
-    console.error('Get profile error:', error);
+    console.error("Get profile error:", error);
     res.status(500).json({
       success: false,
-      message: 'Server error while fetching profile'
+      message: "Server error while fetching profile",
     });
   }
 };
@@ -211,20 +216,20 @@ export const updateProfile = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: 'Validation failed',
-        errors: errors.array()
+        message: "Validation failed",
+        errors: errors.array(),
       });
     }
 
     const { name, email, phone, avatar } = req.body;
-    
+
     // Check if email is being changed and already exists
     if (email && email !== req.user.email) {
       const existingUser = await User.findOne({ email });
       if (existingUser) {
         return res.status(400).json({
           success: false,
-          message: 'Email already in use'
+          message: "Email already in use",
         });
       }
     }
@@ -235,7 +240,7 @@ export const updateProfile = async (req, res) => {
       if (existingUser) {
         return res.status(400).json({
           success: false,
-          message: 'Phone number already in use'
+          message: "Phone number already in use",
         });
       }
     }
@@ -248,7 +253,7 @@ export const updateProfile = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Profile updated successfully',
+      message: "Profile updated successfully",
       user: {
         id: user._id,
         name: user.name,
@@ -257,14 +262,14 @@ export const updateProfile = async (req, res) => {
         role: user.role,
         isVerified: user.isVerified,
         avatar: user.avatar,
-        createdAt: user.createdAt
-      }
+        createdAt: user.createdAt,
+      },
     });
   } catch (error) {
-    console.error('Update profile error:', error);
+    console.error("Update profile error:", error);
     res.status(500).json({
       success: false,
-      message: 'Server error while updating profile'
+      message: "Server error while updating profile",
     });
   }
 };
@@ -279,18 +284,21 @@ export const refreshAccessToken = async (req, res) => {
     if (!refreshToken) {
       return res.status(401).json({
         success: false,
-        message: 'Refresh token is required'
+        message: "Refresh token is required",
       });
     }
 
     // Verify refresh token
     let decoded;
     try {
-      decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET);
+      decoded = jwt.verify(
+        refreshToken,
+        process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET
+      );
     } catch (error) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid or expired refresh token'
+        message: "Invalid or expired refresh token",
       });
     }
 
@@ -300,17 +308,19 @@ export const refreshAccessToken = async (req, res) => {
     if (!user) {
       return res.status(401).json({
         success: false,
-        message: 'User not found'
+        message: "User not found",
       });
     }
 
     // Check if refresh token exists in user's tokens
-    const tokenExists = user.refreshTokens.some(t => t.token === refreshToken);
+    const tokenExists = user.refreshTokens.some(
+      (t) => t.token === refreshToken
+    );
 
     if (!tokenExists) {
       return res.status(401).json({
         success: false,
-        message: 'Invalid refresh token'
+        message: "Invalid refresh token",
       });
     }
 
@@ -319,13 +329,13 @@ export const refreshAccessToken = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      accessToken: newAccessToken
+      accessToken: newAccessToken,
     });
   } catch (error) {
-    console.error('Refresh token error:', error);
+    console.error("Refresh token error:", error);
     res.status(500).json({
       success: false,
-      message: 'Server error while refreshing token'
+      message: "Server error while refreshing token",
     });
   }
 };
@@ -340,7 +350,7 @@ export const logout = async (req, res) => {
     if (!refreshToken) {
       return res.status(400).json({
         success: false,
-        message: 'Refresh token is required'
+        message: "Refresh token is required",
       });
     }
 
@@ -349,23 +359,25 @@ export const logout = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'User not found'
+        message: "User not found",
       });
     }
 
     // Remove the specific refresh token
-    user.refreshTokens = user.refreshTokens.filter(t => t.token !== refreshToken);
+    user.refreshTokens = user.refreshTokens.filter(
+      (t) => t.token !== refreshToken
+    );
     await user.save();
 
     res.status(200).json({
       success: true,
-      message: 'Logged out successfully'
+      message: "Logged out successfully",
     });
   } catch (error) {
-    console.error('Logout error:', error);
+    console.error("Logout error:", error);
     res.status(500).json({
       success: false,
-      message: 'Server error during logout'
+      message: "Server error during logout",
     });
   }
 };
@@ -380,7 +392,7 @@ export const logoutAll = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'User not found'
+        message: "User not found",
       });
     }
 
@@ -390,13 +402,13 @@ export const logoutAll = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Logged out from all devices successfully'
+      message: "Logged out from all devices successfully",
     });
   } catch (error) {
-    console.error('Logout all error:', error);
+    console.error("Logout all error:", error);
     res.status(500).json({
       success: false,
-      message: 'Server error during logout'
+      message: "Server error during logout",
     });
   }
 };

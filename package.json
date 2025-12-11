@@ -20,12 +20,15 @@
     "express": "^5.1.0",
     "express-rate-limit": "^8.2.1",
     "express-validator": "^7.2.1",
+    "fast-two-sms": "^3.0.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.1",
     "node-fetch": "^3.3.2",
     "nodemailer": "^7.0.10",
+    "redis": "^5.10.0",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "twilio": "^5.10.7"
   },
   "devDependencies": {
     "nodemon": "^3.1.10"
