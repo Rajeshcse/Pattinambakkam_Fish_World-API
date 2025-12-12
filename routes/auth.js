@@ -22,6 +22,7 @@ import {
 import {
   forgotPassword,
   resetPassword,
+  changePassword,
 } from "../controllers/passwordController.js";
 
 import { authenticateToken } from "../middleware/auth.js";
@@ -63,7 +64,12 @@ router.post(
   authenticateToken,
   resendEmailVerificationOTP
 );
-router.post("/change-password", authenticateToken, validateChangePassword);
+router.put(
+  "/change-password",
+  authenticateToken,
+  validateChangePassword,
+  changePassword
+);
 
 // OpenAPI spec routes
 router.post("/forgot-password", validateForgotPasswordEmail, forgotPassword);

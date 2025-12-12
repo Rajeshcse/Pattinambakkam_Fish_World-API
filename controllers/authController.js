@@ -77,7 +77,8 @@ export const register = async (req, res) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
-        isVerified: user.isVerified,
+        emailVerified: user.emailVerified,
+        phoneVerified: user.phoneVerified,
         createdAt: user.createdAt,
       },
     });
@@ -165,7 +166,8 @@ export const login = async (req, res) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
-        isVerified: user.isVerified,
+        emailVerified: user.emailVerified,
+        phoneVerified: user.phoneVerified,
         avatar: user.avatar,
       },
     });
@@ -193,7 +195,8 @@ export const getProfile = async (req, res) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
-        isVerified: user.isVerified,
+        emailVerified: user.emailVerified,
+        phoneVerified: user.phoneVerified,
         avatar: user.avatar,
         createdAt: user.createdAt,
       },
@@ -222,9 +225,10 @@ export const updateProfile = async (req, res) => {
     }
 
     const { name, email, phone, avatar } = req.body;
+    const currentUser = await User.findById(req.user.id);
 
     // Check if email is being changed and already exists
-    if (email && email !== req.user.email) {
+    if (email && email !== currentUser.email) {
       const existingUser = await User.findOne({ email });
       if (existingUser) {
         return res.status(400).json({
@@ -235,7 +239,7 @@ export const updateProfile = async (req, res) => {
     }
 
     // Check if phone is being changed and already exists
-    if (phone && phone !== req.user.phone) {
+    if (phone && phone !== currentUser.phone) {
       const existingUser = await User.findOne({ phone });
       if (existingUser) {
         return res.status(400).json({
@@ -245,22 +249,36 @@ export const updateProfile = async (req, res) => {
       }
     }
 
-    const user = await User.findByIdAndUpdate(
-      req.user.id,
-      { name, email, phone, avatar },
-      { new: true, runValidators: true }
-    );
+    // Prepare update data
+    const updateData = { name, email, phone, avatar };
+
+    // Reset emailVerified if email is changed
+    if (email && email !== currentUser.email) {
+      updateData.emailVerified = false;
+      console.log(
+        `Email changed from ${currentUser.email} to ${email} - emailVerified reset to false`
+      );
+    }
+
+    const user = await User.findByIdAndUpdate(req.user.id, updateData, {
+      new: true,
+      runValidators: true,
+    });
 
     res.status(200).json({
       success: true,
-      message: "Profile updated successfully",
+      message:
+        email && email !== currentUser.email
+          ? "Profile updated. Please verify your new email."
+          : "Profile updated successfully",
       user: {
         id: user._id,
         name: user.name,
         email: user.email,
         phone: user.phone,
         role: user.role,
-        isVerified: user.isVerified,
+        emailVerified: user.emailVerified,
+        phoneVerified: user.phoneVerified,
         avatar: user.avatar,
         createdAt: user.createdAt,
       },

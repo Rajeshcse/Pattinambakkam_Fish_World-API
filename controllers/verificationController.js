@@ -26,9 +26,14 @@ export const sendEmailVerificationOTP = async (req, res) => {
       });
     }
 
-    console.log("User found:", user.email, "isVerified:", user.isVerified);
+    console.log(
+      "User found:",
+      user.email,
+      "emailVerified:",
+      user.emailVerified
+    );
 
-    if (user.isVerified) {
+    if (user.emailVerified) {
       return res.status(400).json({
         success: false,
         message: "Email is already verified",
@@ -108,7 +113,7 @@ export const verifyEmail = async (req, res) => {
       });
     }
 
-    if (user.isVerified) {
+    if (user.emailVerified) {
       return res.status(400).json({
         success: false,
         message: "Email is already verified",
@@ -131,7 +136,7 @@ export const verifyEmail = async (req, res) => {
     }
 
     // Update user verification status
-    user.isVerified = true;
+    user.emailVerified = true;
     await user.save();
 
     // Delete the used token
@@ -167,7 +172,7 @@ export const resendEmailVerificationOTP = async (req, res) => {
       });
     }
 
-    if (user.isVerified) {
+    if (user.emailVerified) {
       return res.status(400).json({
         success: false,
         message: "Email is already verified",
@@ -328,6 +333,10 @@ export const verifyPhoneOtp = async (req, res) => {
 
     // Delete the used token
     await Token.deleteOne({ _id: token._id });
+
+    // Update phoneVerified status
+    user.phoneVerified = true;
+    await user.save();
 
     return res.status(200).json({
       success: true,

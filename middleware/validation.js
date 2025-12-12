@@ -194,9 +194,7 @@ export const validateResetPassword = [
 ];
 
 export const validateChangePassword = [
-  body("currentPassword")
-    .notEmpty()
-    .withMessage("Current password is required"),
+  body("oldPassword").notEmpty().withMessage("Old password is required"),
 
   body("newPassword")
     .notEmpty()
@@ -210,9 +208,19 @@ export const validateChangePassword = [
       "New password must contain at least one lowercase letter, one uppercase letter, and one number"
     ),
 
+  body("confirmPassword")
+    .notEmpty()
+    .withMessage("Confirm password is required")
+    .custom((value, { req }) => {
+      if (value !== req.body.newPassword) {
+        throw new Error("Passwords do not match");
+      }
+      return true;
+    }),
+
   body("newPassword").custom((value, { req }) => {
-    if (value === req.body.currentPassword) {
-      throw new Error("New password must be different from current password");
+    if (value === req.body.oldPassword) {
+      throw new Error("New password must be different from old password");
     }
     return true;
   }),
