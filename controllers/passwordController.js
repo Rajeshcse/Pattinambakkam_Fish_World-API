@@ -1,11 +1,11 @@
-import User from "../models/User.js";
-import Token from "../models/Token.js";
-import jwt from "jsonwebtoken";
-import bcrypt from "bcryptjs";
+import User from '../models/User.js';
+import Token from '../models/Token.js';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 
 const generateAccessToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: "7d",
+    expiresIn: '7d',
   });
 };
 
@@ -17,7 +17,7 @@ export const forgotPassword = async (req, res) => {
     // 1️⃣ Validate that either email or phone is provided
     if (!email && !phone) {
       return res.status(400).json({
-        message: "Please provide either email or phone number",
+        message: 'Please provide either email or phone number',
       });
     }
 
@@ -29,18 +29,18 @@ export const forgotPassword = async (req, res) => {
     // 3️⃣ Check if user exists
     if (!user) {
       return res.status(404).json({
-        message: "User not found",
+        message: 'User not found',
       });
     }
 
     // 4️⃣ Delete any existing password reset tokens for this user
     await Token.deleteMany({
       userId: user._id,
-      type: "password_reset",
+      type: 'password_reset',
     });
 
     // 5️⃣ Create new password reset token
-    const tokenData = Token.createToken(user._id, "password_reset");
+    const tokenData = Token.createToken(user._id, 'password_reset');
     await Token.create(tokenData);
 
     // 6️⃣ Display reset code in terminal for development (send to phone)
@@ -59,12 +59,12 @@ Expires in: 10 minutes
     console.error(resetCodeOutput); // Also log to stderr to ensure visibility
 
     return res.status(200).json({
-      message: "Reset code sent to your phone",
+      message: 'Reset code sent to your phone',
     });
   } catch (error) {
-    console.error("Forgot password error:", error);
+    console.error('Forgot password error:', error);
     return res.status(500).json({
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 };
@@ -77,48 +77,48 @@ export const resetPassword = async (req, res) => {
     // 1️⃣ Validate that either email or phone is provided
     if (!email && !phone) {
       return res.status(400).json({
-        message: "Please provide either email or phone number",
+        message: 'Please provide either email or phone number',
       });
     }
 
     // 2️⃣ Validate reset code and new password
     if (!resetCode) {
       return res.status(400).json({
-        message: "Reset code is required",
+        message: 'Reset code is required',
       });
     }
 
     if (!newPassword) {
       return res.status(400).json({
-        message: "New password is required",
+        message: 'New password is required',
       });
     }
 
     // 3️⃣ Validate password strength
     if (newPassword.length < 6) {
       return res.status(400).json({
-        message: "Password must be at least 6 characters",
+        message: 'Password must be at least 6 characters',
       });
     }
 
     // Check for uppercase letter
     if (!/[A-Z]/.test(newPassword)) {
       return res.status(400).json({
-        message: "Password must contain at least one uppercase letter",
+        message: 'Password must contain at least one uppercase letter',
       });
     }
 
     // Check for lowercase letter
     if (!/[a-z]/.test(newPassword)) {
       return res.status(400).json({
-        message: "Password must contain at least one lowercase letter",
+        message: 'Password must contain at least one lowercase letter',
       });
     }
 
     // Check for number
     if (!/\d/.test(newPassword)) {
       return res.status(400).json({
-        message: "Password must contain at least one number",
+        message: 'Password must contain at least one number',
       });
     }
 
@@ -129,21 +129,21 @@ export const resetPassword = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({
-        message: "User not found",
+        message: 'User not found',
       });
     }
 
     // 5️⃣ Find and validate token
     const token = await Token.findOne({
       userId: user._id,
-      type: "password_reset",
+      type: 'password_reset',
       otp: resetCode,
       expiresAt: { $gt: new Date() },
     });
 
     if (!token) {
       return res.status(400).json({
-        message: "Invalid or expired reset code",
+        message: 'Invalid or expired reset code',
       });
     }
 
@@ -167,13 +167,13 @@ Reset Time: ${new Date().toLocaleString()}
 `);
 
     return res.status(200).json({
-      message: "Password reset successfully",
+      message: 'Password reset successfully',
       phone: user.phone,
     });
   } catch (error) {
-    console.error("Reset password error:", error);
+    console.error('Reset password error:', error);
     return res.status(500).json({
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 };
@@ -192,7 +192,7 @@ export const changePassword = async (req, res) => {
       return res.status(400).json({
         success: false,
         message:
-          "Please provide old password, new password, and confirm password",
+          'Please provide old password, new password, and confirm password',
       });
     }
 
@@ -200,7 +200,7 @@ export const changePassword = async (req, res) => {
     if (newPassword !== confirmPassword) {
       return res.status(400).json({
         success: false,
-        message: "New password and confirm password do not match",
+        message: 'New password and confirm password do not match',
       });
     }
 
@@ -208,7 +208,7 @@ export const changePassword = async (req, res) => {
     if (oldPassword === newPassword) {
       return res.status(400).json({
         success: false,
-        message: "New password must be different from old password",
+        message: 'New password must be different from old password',
       });
     }
 
@@ -216,7 +216,7 @@ export const changePassword = async (req, res) => {
     if (newPassword.length < 6) {
       return res.status(400).json({
         success: false,
-        message: "Password must be at least 6 characters",
+        message: 'Password must be at least 6 characters',
       });
     }
 
@@ -224,7 +224,7 @@ export const changePassword = async (req, res) => {
     if (!/[A-Z]/.test(newPassword)) {
       return res.status(400).json({
         success: false,
-        message: "Password must contain at least one uppercase letter",
+        message: 'Password must contain at least one uppercase letter',
       });
     }
 
@@ -232,7 +232,7 @@ export const changePassword = async (req, res) => {
     if (!/[a-z]/.test(newPassword)) {
       return res.status(400).json({
         success: false,
-        message: "Password must contain at least one lowercase letter",
+        message: 'Password must contain at least one lowercase letter',
       });
     }
 
@@ -240,17 +240,17 @@ export const changePassword = async (req, res) => {
     if (!/\d/.test(newPassword)) {
       return res.status(400).json({
         success: false,
-        message: "Password must contain at least one number",
+        message: 'Password must contain at least one number',
       });
     }
 
     // 5️⃣ Find user
-    const user = await User.findById(userId).select("+password");
+    const user = await User.findById(userId).select('+password');
 
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: 'User not found',
       });
     }
 
@@ -260,7 +260,7 @@ export const changePassword = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
-        message: "Old password is incorrect",
+        message: 'Old password is incorrect',
       });
     }
 
@@ -282,7 +282,7 @@ Change Time: ${new Date().toLocaleString()}
 
     return res.status(200).json({
       success: true,
-      message: "Password changed successfully",
+      message: 'Password changed successfully',
       user: {
         id: user._id,
         name: user.name,
@@ -296,10 +296,10 @@ Change Time: ${new Date().toLocaleString()}
       },
     });
   } catch (error) {
-    console.error("Change password error:", error);
+    console.error('Change password error:', error);
     return res.status(500).json({
       success: false,
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 };

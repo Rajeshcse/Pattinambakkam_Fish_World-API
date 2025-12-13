@@ -1,24 +1,24 @@
 // Phone Verification Endpoints Swagger Documentation
 
 export const verificationPaths = {
-  "/api/auth/send-phone-otp": {
+  '/api/auth/send-phone-otp': {
     post: {
-      tags: ["Phone Verification"],
-      summary: "Send phone verification OTP",
+      tags: ['Phone Verification'],
+      summary: 'Send phone verification OTP',
       description:
-        "Send a 6-digit OTP to user phone number for verification (called automatically during registration)",
+        'Send a 6-digit OTP to user phone number for verification (called automatically during registration)',
       requestBody: {
         required: true,
         content: {
-          "application/json": {
+          'application/json': {
             schema: {
-              type: "object",
-              required: ["phone"],
+              type: 'object',
+              required: ['phone'],
               properties: {
                 phone: {
-                  type: "string",
-                  pattern: "^\\d{10}$",
-                  example: "9876543210",
+                  type: 'string',
+                  pattern: '^\\d{10}$',
+                  example: '9876543210',
                 },
               },
             },
@@ -27,34 +27,34 @@ export const verificationPaths = {
       },
       responses: {
         200: {
-          description: "OTP sent successfully to phone",
+          description: 'OTP sent successfully to phone',
           content: {
-            "application/json": {
+            'application/json': {
               schema: {
-                type: "object",
+                type: 'object',
                 properties: {
-                  success: { type: "boolean", example: true },
+                  success: { type: 'boolean', example: true },
                   message: {
-                    type: "string",
-                    example: "Verification OTP sent to your phone",
+                    type: 'string',
+                    example: 'Verification OTP sent to your phone',
                   },
-                  expiresIn: { type: "string", example: "10 minutes" },
+                  expiresIn: { type: 'string', example: '10 minutes' },
                 },
               },
             },
           },
         },
         400: {
-          description: "Phone already verified or invalid phone number",
+          description: 'Phone already verified or invalid phone number',
           content: {
-            "application/json": {
+            'application/json': {
               schema: {
-                type: "object",
+                type: 'object',
                 properties: {
-                  success: { type: "boolean", example: false },
+                  success: { type: 'boolean', example: false },
                   message: {
-                    type: "string",
-                    example: "Phone number is already verified",
+                    type: 'string',
+                    example: 'Phone number is already verified',
                   },
                 },
               },
@@ -62,17 +62,17 @@ export const verificationPaths = {
           },
         },
         500: {
-          description: "Failed to send OTP",
+          description: 'Failed to send OTP',
           content: {
-            "application/json": {
+            'application/json': {
               schema: {
-                type: "object",
+                type: 'object',
                 properties: {
-                  success: { type: "boolean", example: false },
+                  success: { type: 'boolean', example: false },
                   message: {
-                    type: "string",
+                    type: 'string',
                     example:
-                      "Failed to send verification OTP. Please try again.",
+                      'Failed to send verification OTP. Please try again.',
                   },
                 },
               },
@@ -83,26 +83,26 @@ export const verificationPaths = {
     },
   },
 
-  "/api/auth/verify-phone-otp": {
+  '/api/auth/verify-phone-otp': {
     post: {
-      tags: ["Phone Verification"],
-      summary: "Verify phone number with OTP",
+      tags: ['Phone Verification'],
+      summary: 'Verify phone number with OTP',
       description:
-        "Verify user phone number using the OTP sent via SMS. Phone number is captured from registration form.",
+        'Verify user phone number using the OTP sent via SMS. Phone number is captured from registration form.',
       requestBody: {
         required: true,
         content: {
-          "application/json": {
+          'application/json': {
             schema: {
-              type: "object",
-              required: ["phone", "otp"],
+              type: 'object',
+              required: ['phone', 'otp'],
               properties: {
                 phone: {
-                  type: "string",
-                  pattern: "^\\d{10}$",
-                  example: "9876543210",
+                  type: 'string',
+                  pattern: '^\\d{10}$',
+                  example: '9876543210',
                 },
-                otp: { type: "string", pattern: "^\\d{6}$", example: "123456" },
+                otp: { type: 'string', pattern: '^\\d{6}$', example: '123456' },
               },
             },
           },
@@ -110,16 +110,16 @@ export const verificationPaths = {
       },
       responses: {
         200: {
-          description: "Phone number verified successfully",
+          description: 'Phone number verified successfully',
           content: {
-            "application/json": {
+            'application/json': {
               schema: {
-                type: "object",
+                type: 'object',
                 properties: {
-                  success: { type: "boolean", example: true },
+                  success: { type: 'boolean', example: true },
                   message: {
-                    type: "string",
-                    example: "Phone number verified successfully",
+                    type: 'string',
+                    example: 'Phone number verified successfully',
                   },
                 },
               },
@@ -127,16 +127,16 @@ export const verificationPaths = {
           },
         },
         400: {
-          description: "Invalid or expired OTP, or phone already verified",
+          description: 'Invalid or expired OTP, or phone already verified',
           content: {
-            "application/json": {
+            'application/json': {
               schema: {
-                type: "object",
+                type: 'object',
                 properties: {
-                  success: { type: "boolean", example: false },
+                  success: { type: 'boolean', example: false },
                   message: {
-                    type: "string",
-                    example: "Invalid or expired OTP",
+                    type: 'string',
+                    example: 'Invalid or expired OTP',
                     description:
                       'Can be "Invalid or expired OTP", "Phone is already verified", or validation errors',
                   },
@@ -145,29 +145,29 @@ export const verificationPaths = {
             },
           },
         },
-        500: { $ref: "#/components/responses/ServerError" },
+        500: { $ref: '#/components/responses/ServerError' },
       },
     },
   },
 
-  "/api/auth/resend-phone-otp": {
+  '/api/auth/resend-phone-otp': {
     post: {
-      tags: ["Phone Verification"],
-      summary: "Resend phone verification OTP",
+      tags: ['Phone Verification'],
+      summary: 'Resend phone verification OTP',
       description:
-        "Resend verification OTP to user phone number. Used when user does not receive initial OTP or it expires.",
+        'Resend verification OTP to user phone number. Used when user does not receive initial OTP or it expires.',
       requestBody: {
         required: true,
         content: {
-          "application/json": {
+          'application/json': {
             schema: {
-              type: "object",
-              required: ["phone"],
+              type: 'object',
+              required: ['phone'],
               properties: {
                 phone: {
-                  type: "string",
-                  pattern: "^\\d{10}$",
-                  example: "9876543210",
+                  type: 'string',
+                  pattern: '^\\d{10}$',
+                  example: '9876543210',
                 },
               },
             },
@@ -176,34 +176,34 @@ export const verificationPaths = {
       },
       responses: {
         200: {
-          description: "OTP resent successfully",
+          description: 'OTP resent successfully',
           content: {
-            "application/json": {
+            'application/json': {
               schema: {
-                type: "object",
+                type: 'object',
                 properties: {
-                  success: { type: "boolean", example: true },
+                  success: { type: 'boolean', example: true },
                   message: {
-                    type: "string",
-                    example: "New verification OTP sent to your phone",
+                    type: 'string',
+                    example: 'New verification OTP sent to your phone',
                   },
-                  expiresIn: { type: "string", example: "10 minutes" },
+                  expiresIn: { type: 'string', example: '10 minutes' },
                 },
               },
             },
           },
         },
         400: {
-          description: "Phone already verified or invalid phone number",
+          description: 'Phone already verified or invalid phone number',
           content: {
-            "application/json": {
+            'application/json': {
               schema: {
-                type: "object",
+                type: 'object',
                 properties: {
-                  success: { type: "boolean", example: false },
+                  success: { type: 'boolean', example: false },
                   message: {
-                    type: "string",
-                    example: "Phone number is already verified",
+                    type: 'string',
+                    example: 'Phone number is already verified',
                   },
                 },
               },
@@ -211,17 +211,17 @@ export const verificationPaths = {
           },
         },
         429: {
-          description: "Too many requests",
+          description: 'Too many requests',
           content: {
-            "application/json": {
+            'application/json': {
               schema: {
-                type: "object",
+                type: 'object',
                 properties: {
-                  success: { type: "boolean", example: false },
+                  success: { type: 'boolean', example: false },
                   message: {
-                    type: "string",
+                    type: 'string',
                     example:
-                      "Please wait at least 1 minute before requesting a new OTP",
+                      'Please wait at least 1 minute before requesting a new OTP',
                   },
                 },
               },
@@ -229,17 +229,17 @@ export const verificationPaths = {
           },
         },
         500: {
-          description: "Failed to send OTP",
+          description: 'Failed to send OTP',
           content: {
-            "application/json": {
+            'application/json': {
               schema: {
-                type: "object",
+                type: 'object',
                 properties: {
-                  success: { type: "boolean", example: false },
+                  success: { type: 'boolean', example: false },
                   message: {
-                    type: "string",
+                    type: 'string',
                     example:
-                      "Failed to send verification OTP. Please try again.",
+                      'Failed to send verification OTP. Please try again.',
                   },
                 },
               },

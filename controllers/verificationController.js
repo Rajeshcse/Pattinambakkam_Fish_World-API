@@ -1,10 +1,10 @@
-import { validationResult } from "express-validator";
-import User from "../models/User.js";
-import Token from "../models/Token.js";
+import { validationResult } from 'express-validator';
+import User from '../models/User.js';
+import Token from '../models/Token.js';
 import {
   sendVerificationEmail,
   sendWelcomeEmail,
-} from "../utils/emailService.js";
+} from '../utils/emailService.js';
 
 // @desc    Send email verification OTP
 // @route   POST /api/auth/send-verification-email
@@ -12,47 +12,47 @@ import {
 export const sendEmailVerificationOTP = async (req, res) => {
   try {
     console.log(
-      "Send verification email request received for user:",
+      'Send verification email request received for user:',
       req.user?.id
     );
 
     const user = await User.findById(req.user.id);
 
     if (!user) {
-      console.log("User not found:", req.user.id);
+      console.log('User not found:', req.user.id);
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: 'User not found',
       });
     }
 
     console.log(
-      "User found:",
+      'User found:',
       user.email,
-      "emailVerified:",
+      'emailVerified:',
       user.emailVerified
     );
 
     if (user.emailVerified) {
       return res.status(400).json({
         success: false,
-        message: "Email is already verified",
+        message: 'Email is already verified',
       });
     }
 
     // Delete any existing verification tokens for this user
     await Token.deleteMany({
       userId: user._id,
-      type: "email_verification",
+      type: 'email_verification',
     });
 
     // Create new verification token
-    const tokenData = Token.createToken(user._id, "email_verification");
-    console.log("Token created with OTP:", tokenData.otp);
+    const tokenData = Token.createToken(user._id, 'email_verification');
+    console.log('Token created with OTP:', tokenData.otp);
     await Token.create(tokenData);
 
     // Send verification email
-    console.log("Calling sendVerificationEmail with:", {
+    console.log('Calling sendVerificationEmail with:', {
       email: user.email,
       otp: tokenData.otp,
       name: user.name,
@@ -63,28 +63,28 @@ export const sendEmailVerificationOTP = async (req, res) => {
       tokenData.otp,
       user.name
     );
-    console.log("Email result:", emailResult);
+    console.log('Email result:', emailResult);
 
     if (!emailResult.success) {
-      console.log("Email sending failed, error:", emailResult.error);
+      console.log('Email sending failed, error:', emailResult.error);
       return res.status(500).json({
         success: false,
-        message: "Failed to send verification email. Please try again.",
+        message: 'Failed to send verification email. Please try again.',
       });
     }
 
-    console.log("Email sent successfully, messageId:", emailResult.messageId);
+    console.log('Email sent successfully, messageId:', emailResult.messageId);
 
     res.status(200).json({
       success: true,
-      message: "Verification OTP sent to your email",
-      expiresIn: "10 minutes",
+      message: 'Verification OTP sent to your email',
+      expiresIn: '10 minutes',
     });
   } catch (error) {
-    console.error("Send verification OTP error:", error);
+    console.error('Send verification OTP error:', error);
     res.status(500).json({
       success: false,
-      message: "Server error while sending verification OTP",
+      message: 'Server error while sending verification OTP',
     });
   }
 };
@@ -98,7 +98,7 @@ export const verifyEmail = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: "Validation failed",
+        message: 'Validation failed',
         errors: errors.array(),
       });
     }
@@ -109,21 +109,21 @@ export const verifyEmail = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: 'User not found',
       });
     }
 
     if (user.emailVerified) {
       return res.status(400).json({
         success: false,
-        message: "Email is already verified",
+        message: 'Email is already verified',
       });
     }
 
     // Find valid token
     const token = await Token.findOne({
       userId: user._id,
-      type: "email_verification",
+      type: 'email_verification',
       otp: otp,
       expiresAt: { $gt: new Date() },
     });
@@ -131,7 +131,7 @@ export const verifyEmail = async (req, res) => {
     if (!token) {
       return res.status(400).json({
         success: false,
-        message: "Invalid or expired OTP",
+        message: 'Invalid or expired OTP',
       });
     }
 
@@ -147,13 +147,13 @@ export const verifyEmail = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Email verified successfully",
+      message: 'Email verified successfully',
     });
   } catch (error) {
-    console.error("Verify email error:", error);
+    console.error('Verify email error:', error);
     res.status(500).json({
       success: false,
-      message: "Server error during email verification",
+      message: 'Server error during email verification',
     });
   }
 };
@@ -168,39 +168,39 @@ export const resendEmailVerificationOTP = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: 'User not found',
       });
     }
 
     if (user.emailVerified) {
       return res.status(400).json({
         success: false,
-        message: "Email is already verified",
+        message: 'Email is already verified',
       });
     }
 
     // Check if there's a recent token (to prevent spam)
     const recentToken = await Token.findOne({
       userId: user._id,
-      type: "email_verification",
+      type: 'email_verification',
       createdAt: { $gt: new Date(Date.now() - 60 * 1000) }, // Within last 1 minute
     });
 
     if (recentToken) {
       return res.status(429).json({
         success: false,
-        message: "Please wait at least 1 minute before requesting a new OTP",
+        message: 'Please wait at least 1 minute before requesting a new OTP',
       });
     }
 
     // Delete any existing verification tokens
     await Token.deleteMany({
       userId: user._id,
-      type: "email_verification",
+      type: 'email_verification',
     });
 
     // Create new token
-    const tokenData = Token.createToken(user._id, "email_verification");
+    const tokenData = Token.createToken(user._id, 'email_verification');
     await Token.create(tokenData);
 
     // Send verification email
@@ -213,20 +213,20 @@ export const resendEmailVerificationOTP = async (req, res) => {
     if (!emailResult.success) {
       return res.status(500).json({
         success: false,
-        message: "Failed to send verification email. Please try again.",
+        message: 'Failed to send verification email. Please try again.',
       });
     }
 
     res.status(200).json({
       success: true,
-      message: "New verification OTP sent to your email",
-      expiresIn: "10 minutes",
+      message: 'New verification OTP sent to your email',
+      expiresIn: '10 minutes',
     });
   } catch (error) {
-    console.error("Resend verification OTP error:", error);
+    console.error('Resend verification OTP error:', error);
     res.status(500).json({
       success: false,
-      message: "Server error while resending verification OTP",
+      message: 'Server error while resending verification OTP',
     });
   }
 };
@@ -242,7 +242,7 @@ export const sendOtpToPhone = async (req, res) => {
     if (!phone) {
       return res.status(400).json({
         success: false,
-        message: "Phone number is required",
+        message: 'Phone number is required',
       });
     }
 
@@ -252,40 +252,40 @@ export const sendOtpToPhone = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found with this phone number",
+        message: 'User not found with this phone number',
       });
     }
 
     // Delete any existing phone verification tokens
     await Token.deleteMany({
       userId: user._id,
-      type: "phone_verification",
+      type: 'phone_verification',
     });
 
     // Create new verification token
-    const tokenData = Token.createToken(user._id, "phone_verification");
+    const tokenData = Token.createToken(user._id, 'phone_verification');
     await Token.create(tokenData);
 
     // Display OTP in terminal for development
-    console.log("\n========================================");
-    console.log("📱 PHONE VERIFICATION OTP (TERMINAL DISPLAY)");
-    console.log("========================================");
-    console.log("User Phone:", user.phone);
-    console.log("User Name:", user.name);
-    console.log("OTP Code:", tokenData.otp);
-    console.log("Expires in: 10 minutes");
-    console.log("========================================\n");
+    console.log('\n========================================');
+    console.log('📱 PHONE VERIFICATION OTP (TERMINAL DISPLAY)');
+    console.log('========================================');
+    console.log('User Phone:', user.phone);
+    console.log('User Name:', user.name);
+    console.log('OTP Code:', tokenData.otp);
+    console.log('Expires in: 10 minutes');
+    console.log('========================================\n');
 
     return res.status(200).json({
       success: true,
-      message: "Verification OTP sent to your phone",
-      expiresIn: "10 minutes",
+      message: 'Verification OTP sent to your phone',
+      expiresIn: '10 minutes',
     });
   } catch (error) {
-    console.error("Send OTP to phone error:", error);
+    console.error('Send OTP to phone error:', error);
     return res.status(500).json({
       success: false,
-      message: "Failed to send verification OTP. Please try again.",
+      message: 'Failed to send verification OTP. Please try again.',
     });
   }
 };
@@ -299,7 +299,7 @@ export const verifyPhoneOtp = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({
         success: false,
-        message: "Validation failed",
+        message: 'Validation failed',
         errors: errors.array(),
       });
     }
@@ -312,14 +312,14 @@ export const verifyPhoneOtp = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found",
+        message: 'User not found',
       });
     }
 
     // Find valid token
     const token = await Token.findOne({
       userId: user._id,
-      type: "phone_verification",
+      type: 'phone_verification',
       otp: otp,
       expiresAt: { $gt: new Date() },
     });
@@ -327,7 +327,7 @@ export const verifyPhoneOtp = async (req, res) => {
     if (!token) {
       return res.status(400).json({
         success: false,
-        message: "Invalid or expired OTP",
+        message: 'Invalid or expired OTP',
       });
     }
 
@@ -340,13 +340,13 @@ export const verifyPhoneOtp = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Phone number verified successfully",
+      message: 'Phone number verified successfully',
     });
   } catch (error) {
-    console.error("Verify phone OTP error:", error);
+    console.error('Verify phone OTP error:', error);
     return res.status(500).json({
       success: false,
-      message: "Server error during phone verification",
+      message: 'Server error during phone verification',
     });
   }
 };
@@ -362,7 +362,7 @@ export const resendPhoneOtp = async (req, res) => {
     if (!phone) {
       return res.status(400).json({
         success: false,
-        message: "Phone number is required",
+        message: 'Phone number is required',
       });
     }
 
@@ -372,54 +372,54 @@ export const resendPhoneOtp = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "User not found with this phone number",
+        message: 'User not found with this phone number',
       });
     }
 
     // Check if there's a recent token (to prevent spam)
     const recentToken = await Token.findOne({
       userId: user._id,
-      type: "phone_verification",
+      type: 'phone_verification',
       createdAt: { $gt: new Date(Date.now() - 60 * 1000) }, // Within last 1 minute
     });
 
     if (recentToken) {
       return res.status(429).json({
         success: false,
-        message: "Please wait at least 1 minute before requesting a new OTP",
+        message: 'Please wait at least 1 minute before requesting a new OTP',
       });
     }
 
     // Delete any existing phone verification tokens
     await Token.deleteMany({
       userId: user._id,
-      type: "phone_verification",
+      type: 'phone_verification',
     });
 
     // Create new verification token
-    const tokenData = Token.createToken(user._id, "phone_verification");
+    const tokenData = Token.createToken(user._id, 'phone_verification');
     await Token.create(tokenData);
 
     // Display OTP in terminal for development
-    console.log("\n========================================");
-    console.log("📱 PHONE VERIFICATION OTP (TERMINAL DISPLAY)");
-    console.log("========================================");
-    console.log("User Phone:", user.phone);
-    console.log("User Name:", user.name);
-    console.log("OTP Code:", tokenData.otp);
-    console.log("Expires in: 10 minutes");
-    console.log("========================================\n");
+    console.log('\n========================================');
+    console.log('📱 PHONE VERIFICATION OTP (TERMINAL DISPLAY)');
+    console.log('========================================');
+    console.log('User Phone:', user.phone);
+    console.log('User Name:', user.name);
+    console.log('OTP Code:', tokenData.otp);
+    console.log('Expires in: 10 minutes');
+    console.log('========================================\n');
 
     return res.status(200).json({
       success: true,
-      message: "New verification OTP sent to your phone",
-      expiresIn: "10 minutes",
+      message: 'New verification OTP sent to your phone',
+      expiresIn: '10 minutes',
     });
   } catch (error) {
-    console.error("Resend phone OTP error:", error);
+    console.error('Resend phone OTP error:', error);
     return res.status(500).json({
       success: false,
-      message: "Failed to send verification OTP. Please try again.",
+      message: 'Failed to send verification OTP. Please try again.',
     });
   }
 };

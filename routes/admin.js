@@ -7,21 +7,28 @@ import {
   changeUserRole,
   toggleUserVerification,
   getDashboardStats,
-  bulkUserAction
+  bulkUserAction,
 } from '../controllers/adminController.js';
+
+import {
+  createProduct,
+  getAllProducts,
+  getProductById,
+  updateProduct,
+  deleteProduct,
+} from '../controllers/productController.js';
 
 import { authenticateToken, authorizeRoles } from '../middleware/auth.js';
 
 import {
   validateAdminUpdateUser,
   validateAdminChangeRole,
-  validateAdminBulkAction
+  validateAdminBulkAction,
+  validateCreateProduct,
+  validateUpdateProduct,
 } from '../middleware/validation.js';
 
-import {
-  adminLimiter,
-  adminBulkLimiter
-} from '../middleware/rateLimiter.js';
+import { adminLimiter, adminBulkLimiter } from '../middleware/rateLimiter.js';
 
 const router = express.Router();
 
@@ -48,6 +55,27 @@ router.put('/users/:id/role', validateAdminChangeRole, changeUserRole);
 router.put('/users/:id/verification', toggleUserVerification);
 
 // Bulk operations (with additional rate limiting)
-router.post('/users/bulk-action', adminBulkLimiter, validateAdminBulkAction, bulkUserAction);
+router.post(
+  '/users/bulk-action',
+  adminBulkLimiter,
+  validateAdminBulkAction,
+  bulkUserAction
+);
+
+// ✅ PRODUCT ROUTES (Admin only, must verify both email & phone)
+// Create product (requires both email & phone verification)
+router.post('/products', validateCreateProduct, createProduct);
+
+// Get all products
+router.get('/products', getAllProducts);
+
+// Get product by ID
+router.get('/products/:id', getProductById);
+
+// Update product (creator or super admin only)
+router.put('/products/:id', validateUpdateProduct, updateProduct);
+
+// Delete product (creator or super admin only)
+router.delete('/products/:id', deleteProduct);
 
 export default router;
