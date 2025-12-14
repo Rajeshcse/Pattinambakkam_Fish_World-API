@@ -215,23 +215,74 @@ export const bulkUserAction = async (req, res) => {
 
     const { action, userIds } = req.body;
     const result = await bulkUserActionService(action, userIds, req.user.id, req.user.email);
-    
+
     return sendSuccess(res, { affected: result.affected }, result.message);
   } catch (error) {
     console.error('Bulk user action error:', error);
-    
+
     if (error.message.includes('Invalid user IDs') || error.message.includes('array is required')) {
       return sendError(res, error.message, HTTP_STATUS.BAD_REQUEST);
     }
-    
+
     if (error.message.includes('Cannot perform bulk')) {
       return sendError(res, error.message, HTTP_STATUS.BAD_REQUEST);
     }
-    
+
     if (error.message.includes('Invalid action')) {
       return sendError(res, error.message, HTTP_STATUS.BAD_REQUEST);
     }
-    
+
+    return sendError(res, error.message, HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  }
+};
+
+// @desc    Confirm payment for razorpay-link orders
+// @route   PUT /api/admin/orders/:orderId/confirm-payment
+// @access  Private/Admin
+export const confirmPayment = async (req, res) => {
+  try {
+    const Order = (await import('../models/Order.js')).default;
+    const { orderId } = req.params;
+    const { transactionId, note } = req.body;
+
+    // Find order
+    const order = await Order.findOne({ orderId });
+
+    if (!order) {
+      return sendNotFound(res, 'Order');
+    }
+
+    // Check if order payment is pending
+    if (order.payment.status === 'completed') {
+      return sendError(res, 'Payment already confirmed', HTTP_STATUS.BAD_REQUEST);
+    }
+
+    // Check if order is razorpay-link payment
+    if (order.payment.method !== 'razorpay-link') {
+      return sendError(res, 'This order is not an online payment order', HTTP_STATUS.BAD_REQUEST);
+    }
+
+    // Update payment status
+    order.payment.status = 'completed';
+    order.payment.paidAt = new Date();
+    order.payment.amount = order.totalAmount;
+
+    if (transactionId) {
+      order.payment.razorpayTransactionId = transactionId;
+    }
+
+    if (note) {
+      order.payment.paymentNote = note;
+    }
+
+    // Update order status to confirmed
+    order.status = 'confirmed';
+
+    await order.save();
+
+    return sendSuccess(res, order, 'Payment confirmed successfully');
+  } catch (error) {
+    console.error('Confirm payment error:', error);
     return sendError(res, error.message, HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };

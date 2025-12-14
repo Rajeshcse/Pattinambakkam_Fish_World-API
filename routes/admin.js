@@ -7,15 +7,23 @@ import {
   changeUserRole,
   toggleUserVerification,
   getDashboardStats,
-  bulkUserAction
+  bulkUserAction,
+  confirmPayment
 } from '../controllers/adminController.js';
+
+import {
+  adminGetAllOrders,
+  adminUpdateOrderStatus,
+  adminGetOrderStats
+} from '../controllers/orderController.js';
 
 import { authenticateToken, authorizeRoles } from '../middleware/auth.js';
 
 import {
   validateAdminUpdateUser,
   validateAdminChangeRole,
-  validateAdminBulkAction
+  validateAdminBulkAction,
+  validateAdminUpdateOrderStatus
 } from '../middleware/validation.js';
 
 import {
@@ -51,5 +59,11 @@ router.put('/users/:id/verification', asyncHandler(toggleUserVerification));
 
 // Bulk operations (with additional rate limiting)
 router.post('/users/bulk-action', adminBulkLimiter, validateAdminBulkAction, asyncHandler(bulkUserAction));
+
+// Order management routes
+router.get('/orders', asyncHandler(adminGetAllOrders));
+router.get('/orders/stats', asyncHandler(adminGetOrderStats));
+router.put('/orders/:orderId/status', validateAdminUpdateOrderStatus, asyncHandler(adminUpdateOrderStatus));
+router.put('/orders/:orderId/confirm-payment', asyncHandler(confirmPayment));
 
 export default router;
