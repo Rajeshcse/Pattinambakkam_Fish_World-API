@@ -4,7 +4,7 @@ import {
   getMyOrders,
   getOrderDetails,
   cancelUserOrder,
-  getMyOrderStats
+  getMyOrderStats,
 } from '../controllers/orderController.js';
 import { authenticateToken } from '../middleware/auth.js';
 import { validateCreateOrder } from '../middleware/validation.js';

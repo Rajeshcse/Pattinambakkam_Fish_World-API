@@ -17,11 +17,11 @@ export const authPaths = {
                 name: { type: 'string', example: 'John Doe' },
                 email: { type: 'string', format: 'email', example: 'john@example.com' },
                 phone: { type: 'string', pattern: '^[6-9]\\d{9}$', example: '9876543210' },
-                password: { type: 'string', minLength: 6, example: 'Password123' }
-              }
-            }
-          }
-        }
+                password: { type: 'string', minLength: 6, example: 'Password123' },
+              },
+            },
+          },
+        },
       },
       responses: {
         201: {
@@ -32,14 +32,23 @@ export const authPaths = {
                 type: 'object',
                 properties: {
                   success: { type: 'boolean', example: true },
-                  message: { type: 'string', example: 'User registered successfully. Please verify your email.' },
-                  accessToken: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
-                  refreshToken: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
-                  user: { $ref: '#/components/schemas/User' }
-                }
-              }
-            }
-          }
+                  message: {
+                    type: 'string',
+                    example: 'User registered successfully. Please verify your email.',
+                  },
+                  accessToken: {
+                    type: 'string',
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+                  },
+                  refreshToken: {
+                    type: 'string',
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+                  },
+                  user: { $ref: '#/components/schemas/User' },
+                },
+              },
+            },
+          },
         },
         400: {
           description: 'Validation failed or user already exists',
@@ -52,17 +61,17 @@ export const authPaths = {
                     type: 'object',
                     properties: {
                       success: { type: 'boolean', example: false },
-                      message: { type: 'string', example: 'User already exists with this email' }
-                    }
-                  }
-                ]
-              }
-            }
-          }
+                      message: { type: 'string', example: 'User already exists with this email' },
+                    },
+                  },
+                ],
+              },
+            },
+          },
         },
-        500: { $ref: '#/components/responses/ServerError' }
-      }
-    }
+        500: { $ref: '#/components/responses/ServerError' },
+      },
+    },
   },
 
   '/api/auth/login': {
@@ -81,18 +90,18 @@ export const authPaths = {
                 email: {
                   type: 'string',
                   example: 'john@example.com',
-                  description: 'Email or phone number (one is required)'
+                  description: 'Email or phone number (one is required)',
                 },
                 phone: {
                   type: 'string',
                   example: '9876543210',
-                  description: 'Phone number or email (one is required)'
+                  description: 'Phone number or email (one is required)',
                 },
-                password: { type: 'string', example: 'Password123' }
-              }
-            }
-          }
-        }
+                password: { type: 'string', example: 'Password123' },
+              },
+            },
+          },
+        },
       },
       responses: {
         200: {
@@ -104,13 +113,19 @@ export const authPaths = {
                 properties: {
                   success: { type: 'boolean', example: true },
                   message: { type: 'string', example: 'Login successful' },
-                  accessToken: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
-                  refreshToken: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
-                  user: { $ref: '#/components/schemas/User' }
-                }
-              }
-            }
-          }
+                  accessToken: {
+                    type: 'string',
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+                  },
+                  refreshToken: {
+                    type: 'string',
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+                  },
+                  user: { $ref: '#/components/schemas/User' },
+                },
+              },
+            },
+          },
         },
         400: { $ref: '#/components/responses/ValidationError' },
         401: {
@@ -124,16 +139,16 @@ export const authPaths = {
                   message: {
                     type: 'string',
                     example: 'User not found',
-                    description: 'Can be "User not found" or "Incorrect password"'
-                  }
-                }
-              }
-            }
-          }
+                    description: 'Can be "User not found" or "Incorrect password"',
+                  },
+                },
+              },
+            },
+          },
         },
-        500: { $ref: '#/components/responses/ServerError' }
-      }
-    }
+        500: { $ref: '#/components/responses/ServerError' },
+      },
+    },
   },
 
   '/api/auth/refresh-token': {
@@ -149,11 +164,14 @@ export const authPaths = {
               type: 'object',
               required: ['refreshToken'],
               properties: {
-                refreshToken: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' }
-              }
-            }
-          }
-        }
+                refreshToken: {
+                  type: 'string',
+                  example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+                },
+              },
+            },
+          },
+        },
       },
       responses: {
         200: {
@@ -164,11 +182,14 @@ export const authPaths = {
                 type: 'object',
                 properties: {
                   success: { type: 'boolean', example: true },
-                  accessToken: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' }
-                }
-              }
-            }
-          }
+                  accessToken: {
+                    type: 'string',
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+                  },
+                },
+              },
+            },
+          },
         },
         401: {
           description: 'Invalid or expired refresh token',
@@ -181,16 +202,17 @@ export const authPaths = {
                   message: {
                     type: 'string',
                     example: 'Invalid or expired refresh token',
-                    description: 'Can be "Refresh token is required", "Invalid or expired refresh token", "User not found", or "Invalid refresh token"'
-                  }
-                }
-              }
-            }
-          }
+                    description:
+                      'Can be "Refresh token is required", "Invalid or expired refresh token", "User not found", or "Invalid refresh token"',
+                  },
+                },
+              },
+            },
+          },
         },
-        500: { $ref: '#/components/responses/ServerError' }
-      }
-    }
+        500: { $ref: '#/components/responses/ServerError' },
+      },
+    },
   },
 
   '/api/auth/logout': {
@@ -207,11 +229,14 @@ export const authPaths = {
               type: 'object',
               required: ['refreshToken'],
               properties: {
-                refreshToken: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' }
-              }
-            }
-          }
-        }
+                refreshToken: {
+                  type: 'string',
+                  example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+                },
+              },
+            },
+          },
+        },
       },
       responses: {
         200: {
@@ -222,32 +247,32 @@ export const authPaths = {
                 type: 'object',
                 properties: {
                   success: { type: 'boolean', example: true },
-                  message: { type: 'string', example: 'Logged out successfully' }
-                }
-              }
-            }
-          }
+                  message: { type: 'string', example: 'Logged out successfully' },
+                },
+              },
+            },
+          },
         },
         400: {
           description: 'Refresh token is required',
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/Error' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/Error' },
+            },
+          },
         },
         401: { $ref: '#/components/responses/UnauthorizedError' },
         404: {
           description: 'User not found',
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/Error' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/Error' },
+            },
+          },
         },
-        500: { $ref: '#/components/responses/ServerError' }
-      }
-    }
+        500: { $ref: '#/components/responses/ServerError' },
+      },
+    },
   },
 
   '/api/auth/logout-all': {
@@ -265,23 +290,23 @@ export const authPaths = {
                 type: 'object',
                 properties: {
                   success: { type: 'boolean', example: true },
-                  message: { type: 'string', example: 'Logged out from all devices successfully' }
-                }
-              }
-            }
-          }
+                  message: { type: 'string', example: 'Logged out from all devices successfully' },
+                },
+              },
+            },
+          },
         },
         401: { $ref: '#/components/responses/UnauthorizedError' },
         404: {
           description: 'User not found',
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/Error' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/Error' },
+            },
+          },
         },
-        500: { $ref: '#/components/responses/ServerError' }
-      }
-    }
-  }
+        500: { $ref: '#/components/responses/ServerError' },
+      },
+    },
+  },
 };

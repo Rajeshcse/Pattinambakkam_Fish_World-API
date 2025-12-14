@@ -1,5 +1,5 @@
 import { validationResult } from 'express-validator';
-import User from '../models/User.js';
+import User from '../models/User.js'
 import Token from '../models/Token.js';
 import { sendPasswordResetEmail } from '../utils/emailService.js';
 
@@ -13,7 +13,7 @@ export const forgotPassword = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: 'Validation failed',
-        errors: errors.array()
+        errors: errors.array(),
       });
     }
 
@@ -26,14 +26,14 @@ export const forgotPassword = async (req, res) => {
     if (!user) {
       return res.status(200).json({
         success: true,
-        message: 'If an account exists with this email, a password reset OTP has been sent'
+        message: 'If an account exists with this email, a password reset OTP has been sent',
       });
     }
 
     // Delete any existing password reset tokens for this user
     await Token.deleteMany({
       userId: user._id,
-      type: 'password_reset'
+      type: 'password_reset',
     });
 
     // Create new password reset token
@@ -51,13 +51,13 @@ export const forgotPassword = async (req, res) => {
     res.status(200).json({
       success: true,
       message: 'If an account exists with this email, a password reset OTP has been sent',
-      expiresIn: '10 minutes'
+      expiresIn: '10 minutes',
     });
   } catch (error) {
     console.error('Forgot password error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error while processing password reset request'
+      message: 'Server error while processing password reset request',
     });
   }
 };
@@ -72,7 +72,7 @@ export const resetPassword = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: 'Validation failed',
-        errors: errors.array()
+        errors: errors.array(),
       });
     }
 
@@ -83,7 +83,7 @@ export const resetPassword = async (req, res) => {
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid or expired OTP'
+        message: 'Invalid or expired OTP',
       });
     }
 
@@ -92,13 +92,13 @@ export const resetPassword = async (req, res) => {
       userId: user._id,
       type: 'password_reset',
       otp: otp,
-      expiresAt: { $gt: new Date() }
+      expiresAt: { $gt: new Date() },
     });
 
     if (!token) {
       return res.status(400).json({
         success: false,
-        message: 'Invalid or expired OTP'
+        message: 'Invalid or expired OTP',
       });
     }
 
@@ -115,13 +115,13 @@ export const resetPassword = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Password reset successful. Please login with your new password.'
+      message: 'Password reset successful. Please login with your new password.',
     });
   } catch (error) {
     console.error('Reset password error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error during password reset'
+      message: 'Server error during password reset',
     });
   }
 };
@@ -136,7 +136,7 @@ export const changePassword = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: 'Validation failed',
-        errors: errors.array()
+        errors: errors.array(),
       });
     }
 
@@ -148,7 +148,7 @@ export const changePassword = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'User not found'
+        message: 'User not found',
       });
     }
 
@@ -157,7 +157,7 @@ export const changePassword = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
-        message: 'Current password is incorrect'
+        message: 'Current password is incorrect',
       });
     }
 
@@ -165,7 +165,7 @@ export const changePassword = async (req, res) => {
     if (currentPassword === newPassword) {
       return res.status(400).json({
         success: false,
-        message: 'New password must be different from current password'
+        message: 'New password must be different from current password',
       });
     }
 
@@ -180,13 +180,13 @@ export const changePassword = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Password changed successfully. Other sessions have been logged out.'
+      message: 'Password changed successfully. Other sessions have been logged out.',
     });
   } catch (error) {
     console.error('Change password error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error while changing password'
+      message: 'Server error while changing password',
     });
   }
 };

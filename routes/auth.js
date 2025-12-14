@@ -7,19 +7,19 @@ import {
   updateProfile,
   refreshAccessToken,
   logout,
-  logoutAll
+  logoutAll,
 } from '../controllers/authController.js';
 
 import {
   sendEmailVerificationOTP,
   verifyEmail,
-  resendEmailVerificationOTP
+  resendEmailVerificationOTP,
 } from '../controllers/verificationController.js';
 
 import {
   forgotPassword,
   resetPassword,
-  changePassword
+  changePassword,
 } from '../controllers/passwordController.js';
 
 import { authenticateToken } from '../middleware/auth.js';
@@ -33,9 +33,8 @@ import {
   validateResetPassword,
   validateChangePassword,
   validateRefreshToken,
-  validateLogout
+  validateLogout,
 } from '../middleware/validation.js';
-
 
 const router = express.Router();
 

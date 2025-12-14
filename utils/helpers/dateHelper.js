@@ -20,14 +20,14 @@ export const getCurrentDate = () => {
  */
 export const formatDate = (date, locale = 'en-IN', options = {}) => {
   if (!date) return '';
-  
+
   const defaultOptions = {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-    ...options
+    ...options,
   };
-  
+
   return new Intl.DateTimeFormat(locale, defaultOptions).format(new Date(date));
 };
 
@@ -50,7 +50,7 @@ export const getDaysDifference = (date1, date2) => {
   const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
   const firstDate = new Date(date1);
   const secondDate = new Date(date2);
-  
+
   return Math.round(Math.abs((firstDate - secondDate) / oneDay));
 };
 
@@ -62,7 +62,7 @@ export const getDaysDifference = (date1, date2) => {
 export const isToday = (date) => {
   const today = new Date();
   const checkDate = new Date(date);
-  
+
   return today.toDateString() === checkDate.toDateString();
 };
 
@@ -75,8 +75,8 @@ export const isToday = (date) => {
 export const isWithinLastDays = (date, days) => {
   const now = new Date();
   const checkDate = new Date(date);
-  const daysAgo = new Date(now.getTime() - (days * 24 * 60 * 60 * 1000));
-  
+  const daysAgo = new Date(now.getTime() - days * 24 * 60 * 60 * 1000);
+
   return checkDate >= daysAgo && checkDate <= now;
 };
 
@@ -122,13 +122,13 @@ export const getEndOfDay = (date) => {
 export const getTimeAgo = (date) => {
   const now = new Date();
   const diffInSeconds = Math.floor((now - new Date(date)) / 1000);
-  
+
   if (diffInSeconds < 60) return 'Just now';
   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
   if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
   if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)} days ago`;
   if (diffInSeconds < 31536000) return `${Math.floor(diffInSeconds / 2592000)} months ago`;
-  
+
   return `${Math.floor(diffInSeconds / 31536000)} years ago`;
 };
 
@@ -140,7 +140,7 @@ export const getTimeAgo = (date) => {
 export const getDateRange = (period) => {
   const now = new Date();
   let start, end;
-  
+
   switch (period) {
     case 'today':
       start = getStartOfDay(now);
@@ -162,6 +162,6 @@ export const getDateRange = (period) => {
       start = getStartOfDay(now);
       end = getEndOfDay(now);
   }
-  
+
   return { start, end };
 };

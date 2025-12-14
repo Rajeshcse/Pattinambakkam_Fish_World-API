@@ -5,13 +5,10 @@ import {
   updateCartItem,
   removeItemFromCart,
   clearUserCart,
-  getCartCount
+  getCartCount,
 } from '../controllers/cartController.js';
 import { authenticateToken } from '../middleware/auth.js';
-import {
-  validateAddToCart,
-  validateUpdateCartItem
-} from '../middleware/validation.js';
+import { validateAddToCart, validateUpdateCartItem } from '../middleware/validation.js';
 
 const router = express.Router();
 

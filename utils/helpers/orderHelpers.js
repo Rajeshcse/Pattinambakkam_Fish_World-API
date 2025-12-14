@@ -16,7 +16,7 @@ export const generateOrderId = async () => {
   const endOfDay = new Date(today.setHours(23, 59, 59, 999));
 
   const todayOrderCount = await Order.countDocuments({
-    createdAt: { $gte: startOfDay, $lte: endOfDay }
+    createdAt: { $gte: startOfDay, $lte: endOfDay },
   });
 
   // Increment and pad to 3 digits
@@ -44,7 +44,7 @@ export const validateDeliveryTime = (deliveryDate, deliveryTime) => {
     return {
       valid: false,
       message: 'Invalid delivery time slot. Must be 08:00-12:00, 12:00-16:00, or 16:00-20:00',
-      minimumTime: minimumDeliveryTime
+      minimumTime: minimumDeliveryTime,
     };
   }
 
@@ -60,12 +60,15 @@ export const validateDeliveryTime = (deliveryDate, deliveryTime) => {
   if (selectedDeliveryTime < minimumDeliveryTime) {
     return {
       valid: false,
-      message: `Delivery time must be at least 4 hours from now. Minimum delivery time: ${minimumDeliveryTime.toLocaleString('en-IN', {
-        timeZone: 'Asia/Kolkata',
-        dateStyle: 'medium',
-        timeStyle: 'short'
-      })}`,
-      minimumTime: minimumDeliveryTime
+      message: `Delivery time must be at least 4 hours from now. Minimum delivery time: ${minimumDeliveryTime.toLocaleString(
+        'en-IN',
+        {
+          timeZone: 'Asia/Kolkata',
+          dateStyle: 'medium',
+          timeStyle: 'short',
+        }
+      )}`,
+      minimumTime: minimumDeliveryTime,
     };
   }
 
@@ -74,14 +77,14 @@ export const validateDeliveryTime = (deliveryDate, deliveryTime) => {
     return {
       valid: false,
       message: 'Delivery date cannot be in the past',
-      minimumTime: minimumDeliveryTime
+      minimumTime: minimumDeliveryTime,
     };
   }
 
   return {
     valid: true,
     message: 'Delivery time is valid',
-    minimumTime: minimumDeliveryTime
+    minimumTime: minimumDeliveryTime,
   };
 };
 
@@ -114,7 +117,7 @@ export const getAvailableTimeSlots = (date) => {
   const timeSlots = [
     { slot: '08:00-12:00', start: 8 },
     { slot: '12:00-16:00', start: 12 },
-    { slot: '16:00-20:00', start: 16 }
+    { slot: '16:00-20:00', start: 16 },
   ];
 
   return timeSlots.map(({ slot, start }) => {
@@ -122,9 +125,7 @@ export const getAvailableTimeSlots = (date) => {
     slotDateTime.setHours(start, 0, 0, 0);
 
     const available = slotDateTime >= minimumTime;
-    const reason = available
-      ? 'Available'
-      : 'Requires at least 4 hours advance notice';
+    const reason = available ? 'Available' : 'Requires at least 4 hours advance notice';
 
     return { slot, available, reason };
   });
@@ -151,7 +152,7 @@ export const getStatusColor = (status) => {
     preparing: 'purple',
     'out-for-delivery': 'indigo',
     delivered: 'green',
-    cancelled: 'red'
+    cancelled: 'red',
   };
 
   return statusColors[status] || 'gray';

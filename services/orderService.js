@@ -1,7 +1,11 @@
 import Order from '../models/Order.js';
 import Cart from '../models/Cart.js';
 import FishProduct from '../models/FishProduct.js';
-import { generateOrderId, validateDeliveryTime, calculateOrderTotal } from '../utils/helpers/orderHelpers.js';
+import {
+  generateOrderId,
+  validateDeliveryTime,
+  calculateOrderTotal,
+} from '../utils/helpers/orderHelpers.js';
 import { validateCart, clearCart } from './cartService.js';
 
 /**
@@ -56,7 +60,7 @@ export const createOrder = async (userId, orderData) => {
       name: product.name,
       price: product.price,
       quantity: cartItem.quantity,
-      subtotal
+      subtotal,
     });
 
     // Reduce stock
@@ -77,12 +81,12 @@ export const createOrder = async (userId, orderData) => {
       address: deliveryDetails.address,
       phone: deliveryDetails.phone,
       deliveryDate: new Date(deliveryDetails.deliveryDate),
-      deliveryTime: deliveryDetails.deliveryTime
+      deliveryTime: deliveryDetails.deliveryTime,
     },
     orderNotes: orderNotes || '',
     paymentMethod: paymentMethod || 'Google Pay',
     status: 'pending',
-    paymentStatus: 'pending'
+    paymentStatus: 'pending',
   });
 
   // Clear cart after successful order
@@ -207,7 +211,7 @@ export const getUserOrderStats = async (userId) => {
     pendingOrders,
     deliveredOrders,
     cancelledOrders,
-    totalSpent
+    totalSpent,
   };
 };
 
@@ -242,7 +246,7 @@ export const getAllOrders = async (filters = {}) => {
     orders,
     total,
     page: Math.floor(skip / limit) + 1,
-    pages: Math.ceil(total / limit)
+    pages: Math.ceil(total / limit),
   };
 };
 
@@ -253,7 +257,14 @@ export const getAllOrders = async (filters = {}) => {
  * @returns {Promise<Object>} Updated order
  */
 export const updateOrderStatus = async (orderId, status) => {
-  const validStatuses = ['pending', 'confirmed', 'preparing', 'out-for-delivery', 'delivered', 'cancelled'];
+  const validStatuses = [
+    'pending',
+    'confirmed',
+    'preparing',
+    'out-for-delivery',
+    'delivered',
+    'cancelled',
+  ];
 
   if (!validStatuses.includes(status)) {
     throw new Error('Invalid status');
@@ -314,6 +325,6 @@ export const getOrderStats = async () => {
     deliveredOrders,
     cancelledOrders,
     totalRevenue,
-    todayOrders
+    todayOrders,
   };
 };

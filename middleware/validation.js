@@ -4,14 +4,14 @@ export const validateRegister = [
   body('name')
     .notEmpty()
     .withMessage('Name is required')
-    .bail() 
+    .bail()
     .trim()
     .isLength({ min: 2, max: 50 })
     .withMessage('Name must be between 2 and 50 characters')
-    .bail() 
+    .bail()
     .matches(/^[a-zA-Z\s]+$/)
     .withMessage('Name can only contain letters and spaces'),
-  
+
   body('email')
     .notEmpty()
     .withMessage('Email is required')
@@ -19,14 +19,14 @@ export const validateRegister = [
     .isEmail()
     .normalizeEmail()
     .withMessage('Please provide a valid email'),
-  
+
   body('phone')
     .notEmpty()
     .withMessage('Phone number is required')
     .bail()
     .matches(/^[6-9]\d{9}$/)
     .withMessage('Please provide a valid 10-digit phone number '),
-  
+
   body('password')
     .notEmpty()
     .withMessage('Password is required')
@@ -35,24 +35,20 @@ export const validateRegister = [
     .withMessage('Password must be at least 6 characters long')
     .bail()
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
-    .withMessage('Password must contain at least one lowercase letter, one uppercase letter, and one number')
+    .withMessage(
+      'Password must contain at least one lowercase letter, one uppercase letter, and one number'
+    ),
 ];
 
 export const validateLogin = [
-  body('email')
-    .optional()
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('Please provide a valid email'),
-  
+  body('email').optional().isEmail().normalizeEmail().withMessage('Please provide a valid email'),
+
   body('phone')
     .optional()
     .matches(/^[6-9]\d{9}$/)
     .withMessage('Please provide a valid 10-digit Indian phone number'),
-  
-  body('password')
-    .notEmpty()
-    .withMessage('Password is required'),
+
+  body('password').notEmpty().withMessage('Password is required'),
 
   // Custom validation to ensure either email or phone is provided
   body('email').custom((value, { req }) => {
@@ -60,7 +56,7 @@ export const validateLogin = [
       throw new Error('Please provide either email or phone number');
     }
     return true;
-  })
+  }),
 ];
 
 export const validateProfileUpdate = [
@@ -72,22 +68,15 @@ export const validateProfileUpdate = [
     .bail()
     .matches(/^[a-zA-Z\s]+$/)
     .withMessage('Name can only contain letters and spaces'),
-  
-  body('email')
-    .optional()
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('Please provide a valid email'),
-  
+
+  body('email').optional().isEmail().normalizeEmail().withMessage('Please provide a valid email'),
+
   body('phone')
     .optional()
     .matches(/^[6-9]\d{9}$/)
     .withMessage('Please provide a valid 10-digit Indian phone number starting with 6, 7, 8, or 9'),
-  
-  body('avatar')
-    .optional()
-    .isURL()
-    .withMessage('Avatar must be a valid URL')
+
+  body('avatar').optional().isURL().withMessage('Avatar must be a valid URL'),
 ];
 
 export const validateVerifyEmail = [
@@ -99,7 +88,7 @@ export const validateVerifyEmail = [
     .withMessage('OTP must be 6 digits')
     .bail()
     .isNumeric()
-    .withMessage('OTP must contain only numbers')
+    .withMessage('OTP must contain only numbers'),
 ];
 
 export const validateForgotPassword = [
@@ -109,7 +98,7 @@ export const validateForgotPassword = [
     .bail()
     .isEmail()
     .normalizeEmail()
-    .withMessage('Please provide a valid email')
+    .withMessage('Please provide a valid email'),
 ];
 
 export const validateResetPassword = [
@@ -139,13 +128,13 @@ export const validateResetPassword = [
     .withMessage('Password must be at least 6 characters long')
     .bail()
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
-    .withMessage('Password must contain at least one lowercase letter, one uppercase letter, and one number')
+    .withMessage(
+      'Password must contain at least one lowercase letter, one uppercase letter, and one number'
+    ),
 ];
 
 export const validateChangePassword = [
-  body('currentPassword')
-    .notEmpty()
-    .withMessage('Current password is required'),
+  body('currentPassword').notEmpty().withMessage('Current password is required'),
 
   body('newPassword')
     .notEmpty()
@@ -155,26 +144,24 @@ export const validateChangePassword = [
     .withMessage('New password must be at least 6 characters long')
     .bail()
     .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
-    .withMessage('New password must contain at least one lowercase letter, one uppercase letter, and one number'),
+    .withMessage(
+      'New password must contain at least one lowercase letter, one uppercase letter, and one number'
+    ),
 
   body('newPassword').custom((value, { req }) => {
     if (value === req.body.currentPassword) {
       throw new Error('New password must be different from current password');
     }
     return true;
-  })
+  }),
 ];
 
 export const validateRefreshToken = [
-  body('refreshToken')
-    .notEmpty()
-    .withMessage('Refresh token is required')
+  body('refreshToken').notEmpty().withMessage('Refresh token is required'),
 ];
 
 export const validateLogout = [
-  body('refreshToken')
-    .notEmpty()
-    .withMessage('Refresh token is required')
+  body('refreshToken').notEmpty().withMessage('Refresh token is required'),
 ];
 
 // Admin validation rules
@@ -188,27 +175,17 @@ export const validateAdminUpdateUser = [
     .bail()
     .matches(/^[a-zA-Z\s]+$/)
     .withMessage('Name can only contain letters and spaces'),
-  
-  body('email')
-    .optional()
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('Please provide a valid email'),
-  
+
+  body('email').optional().isEmail().normalizeEmail().withMessage('Please provide a valid email'),
+
   body('phone')
     .optional()
     .matches(/^[6-9]\d{9}$/)
     .withMessage('Please provide a valid 10-digit phone number starting with 6, 7, 8, or 9'),
-  
-  body('avatar')
-    .optional()
-    .isURL()
-    .withMessage('Avatar must be a valid URL'),
 
-  body('isVerified')
-    .optional()
-    .isBoolean()
-    .withMessage('isVerified must be a boolean value')
+  body('avatar').optional().isURL().withMessage('Avatar must be a valid URL'),
+
+  body('isVerified').optional().isBoolean().withMessage('isVerified must be a boolean value'),
 ];
 
 export const validateAdminChangeRole = [
@@ -217,7 +194,7 @@ export const validateAdminChangeRole = [
     .withMessage('Role is required')
     .bail()
     .isIn(['user', 'admin'])
-    .withMessage('Role must be either user or admin')
+    .withMessage('Role must be either user or admin'),
 ];
 
 export const validateAdminBulkAction = [
@@ -240,7 +217,7 @@ export const validateAdminBulkAction = [
         throw new Error('Cannot perform bulk action on more than 100 users at once');
       }
       return true;
-    })
+    }),
 ];
 
 // Product validation rules
@@ -291,7 +268,7 @@ export const validateCreateProduct = [
         throw new Error('Cannot add more than 10 images per product');
       }
       return true;
-    })
+    }),
 ];
 
 export const validateUpdateProduct = [
@@ -311,10 +288,7 @@ export const validateUpdateProduct = [
     .isFloat({ min: 0.01 })
     .withMessage('Price must be a number greater than 0'),
 
-  body('stock')
-    .optional()
-    .isInt({ min: 0 })
-    .withMessage('Stock must be a non-negative integer'),
+  body('stock').optional().isInt({ min: 0 }).withMessage('Stock must be a non-negative integer'),
 
   body('description')
     .optional()
@@ -334,10 +308,7 @@ export const validateUpdateProduct = [
       return true;
     }),
 
-  body('isAvailable')
-    .optional()
-    .isBoolean()
-    .withMessage('isAvailable must be a boolean value')
+  body('isAvailable').optional().isBoolean().withMessage('isAvailable must be a boolean value'),
 ];
 
 // Cart validation rules
@@ -355,7 +326,7 @@ export const validateAddToCart = [
     .withMessage('Quantity is required')
     .bail()
     .isInt({ min: 1 })
-    .withMessage('Quantity must be a positive integer')
+    .withMessage('Quantity must be a positive integer'),
 ];
 
 export const validateUpdateCartItem = [
@@ -364,7 +335,7 @@ export const validateUpdateCartItem = [
     .withMessage('Quantity is required')
     .bail()
     .isInt({ min: 1 })
-    .withMessage('Quantity must be a positive integer')
+    .withMessage('Quantity must be a positive integer'),
 ];
 
 // Order validation rules
@@ -417,7 +388,7 @@ export const validateCreateOrder = [
     .optional()
     .trim()
     .isLength({ max: 50 })
-    .withMessage('Payment method cannot exceed 50 characters')
+    .withMessage('Payment method cannot exceed 50 characters'),
 ];
 
 // Admin order validation rules
@@ -428,5 +399,5 @@ export const validateAdminUpdateOrderStatus = [
     .withMessage('Status is required')
     .bail()
     .isIn(['pending', 'confirmed', 'preparing', 'out-for-delivery', 'delivered', 'cancelled'])
-    .withMessage('Invalid order status')
+    .withMessage('Invalid order status'),
 ];

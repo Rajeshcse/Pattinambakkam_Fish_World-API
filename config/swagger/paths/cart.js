@@ -3,7 +3,7 @@ export const cartPaths = {
     post: {
       tags: ['Cart'],
       summary: 'Add item to cart',
-      description: 'Add a product to the user\'s shopping cart with specified quantity',
+      description: "Add a product to the user's shopping cart with specified quantity",
       security: [{ bearerAuth: [] }],
       requestBody: {
         required: true,
@@ -16,52 +16,52 @@ export const cartPaths = {
                 productId: {
                   type: 'string',
                   description: 'Product ID to add to cart',
-                  example: '65a1b2c3d4e5f6789012345'
+                  example: '65a1b2c3d4e5f6789012345',
                 },
                 quantity: {
                   type: 'number',
                   minimum: 1,
                   description: 'Quantity to add (in kg)',
-                  example: 2
-                }
-              }
-            }
-          }
-        }
+                  example: 2,
+                },
+              },
+            },
+          },
+        },
       },
       responses: {
         200: {
           description: 'Item added to cart successfully',
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/CartResponse' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/CartResponse' },
+            },
+          },
         },
         400: { $ref: '#/components/responses/BadRequest' },
         401: { $ref: '#/components/responses/Unauthorized' },
-        404: { description: 'Product not found' }
-      }
-    }
+        404: { description: 'Product not found' },
+      },
+    },
   },
   '/api/cart': {
     get: {
       tags: ['Cart'],
       summary: 'Get user cart',
-      description: 'Retrieve the authenticated user\'s shopping cart with populated product details',
+      description: "Retrieve the authenticated user's shopping cart with populated product details",
       security: [{ bearerAuth: [] }],
       responses: {
         200: {
           description: 'Cart retrieved successfully',
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/CartResponse' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/CartResponse' },
+            },
+          },
         },
-        401: { $ref: '#/components/responses/Unauthorized' }
-      }
-    }
+        401: { $ref: '#/components/responses/Unauthorized' },
+      },
+    },
   },
   '/api/cart/count': {
     get: {
@@ -81,17 +81,17 @@ export const cartPaths = {
                   data: {
                     type: 'object',
                     properties: {
-                      count: { type: 'number', example: 5 }
-                    }
-                  }
-                }
-              }
-            }
-          }
+                      count: { type: 'number', example: 5 },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
-        401: { $ref: '#/components/responses/Unauthorized' }
-      }
-    }
+        401: { $ref: '#/components/responses/Unauthorized' },
+      },
+    },
   },
   '/api/cart/update/{itemId}': {
     put: {
@@ -105,8 +105,8 @@ export const cartPaths = {
           in: 'path',
           required: true,
           schema: { type: 'string' },
-          description: 'Cart item ID'
-        }
+          description: 'Cart item ID',
+        },
       ],
       requestBody: {
         required: true,
@@ -119,27 +119,27 @@ export const cartPaths = {
                 quantity: {
                   type: 'number',
                   minimum: 1,
-                  example: 3
-                }
-              }
-            }
-          }
-        }
+                  example: 3,
+                },
+              },
+            },
+          },
+        },
       },
       responses: {
         200: {
           description: 'Cart updated successfully',
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/CartResponse' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/CartResponse' },
+            },
+          },
         },
         400: { $ref: '#/components/responses/BadRequest' },
         401: { $ref: '#/components/responses/Unauthorized' },
-        404: { description: 'Cart item not found' }
-      }
-    }
+        404: { description: 'Cart item not found' },
+      },
+    },
   },
   '/api/cart/remove/{itemId}': {
     delete: {
@@ -153,22 +153,22 @@ export const cartPaths = {
           in: 'path',
           required: true,
           schema: { type: 'string' },
-          description: 'Cart item ID to remove'
-        }
+          description: 'Cart item ID to remove',
+        },
       ],
       responses: {
         200: {
           description: 'Item removed from cart',
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/CartResponse' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/CartResponse' },
+            },
+          },
         },
         401: { $ref: '#/components/responses/Unauthorized' },
-        404: { description: 'Cart item not found' }
-      }
-    }
+        404: { description: 'Cart item not found' },
+      },
+    },
   },
   '/api/cart/clear': {
     delete: {
@@ -181,12 +181,12 @@ export const cartPaths = {
           description: 'Cart cleared successfully',
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/CartResponse' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/CartResponse' },
+            },
+          },
         },
-        401: { $ref: '#/components/responses/Unauthorized' }
-      }
-    }
-  }
+        401: { $ref: '#/components/responses/Unauthorized' },
+      },
+    },
+  },
 };

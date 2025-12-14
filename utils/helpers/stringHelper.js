@@ -20,7 +20,11 @@ export const capitalize = (str) => {
  */
 export const toTitleCase = (str) => {
   if (!str || typeof str !== 'string') return '';
-  return str.toLowerCase().split(' ').map(word => capitalize(word)).join(' ');
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map((word) => capitalize(word))
+    .join(' ');
 };
 
 /**
@@ -87,7 +91,10 @@ export const isValidPhone = (phone) => {
  * @param {string} chars - Characters to use
  * @returns {string} Random string
  */
-export const generateRandomString = (length = 8, chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789') => {
+export const generateRandomString = (
+  length = 8,
+  chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+) => {
   let result = '';
   for (let i = 0; i < length; i++) {
     result += chars.charAt(Math.floor(Math.random() * chars.length));
@@ -112,18 +119,21 @@ export const generateOTP = (length = 6) => {
  */
 export const maskSensitiveData = (str, type = 'email') => {
   if (!str || typeof str !== 'string') return '';
-  
+
   if (type === 'email') {
     const [username, domain] = str.split('@');
     if (!username || !domain) return str;
-    const maskedUsername = username.charAt(0) + '*'.repeat(Math.max(0, username.length - 2)) + username.charAt(username.length - 1);
+    const maskedUsername =
+      username.charAt(0) +
+      '*'.repeat(Math.max(0, username.length - 2)) +
+      username.charAt(username.length - 1);
     return `${maskedUsername}@${domain}`;
   }
-  
+
   if (type === 'phone') {
     if (str.length < 4) return str;
     return str.substring(0, 2) + '*'.repeat(str.length - 4) + str.substring(str.length - 2);
   }
-  
+
   return str;
 };

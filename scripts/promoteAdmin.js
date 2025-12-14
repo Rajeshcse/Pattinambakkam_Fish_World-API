@@ -13,7 +13,7 @@ const promoteUserToAdmin = async () => {
   try {
     // Get email from command line argument
     const email = process.argv[2];
-    
+
     if (!email) {
       console.log('❌ Please provide an email address');
       console.log('Usage: npm run promote-admin <email>');
@@ -24,7 +24,7 @@ const promoteUserToAdmin = async () => {
 
     // Find user by email
     const user = await User.findOne({ email: email.toLowerCase() });
-    
+
     if (!user) {
       console.log('❌ User not found with email:', email);
       process.exit(1);
@@ -44,7 +44,6 @@ const promoteUserToAdmin = async () => {
     console.log('User:', user.name);
     console.log('Email:', user.email);
     console.log('Role:', user.role);
-
   } catch (error) {
     console.error('❌ Error promoting user to admin:', error.message);
   } finally {

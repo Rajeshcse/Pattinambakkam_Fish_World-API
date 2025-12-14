@@ -5,7 +5,8 @@ export const adminPaths = {
     get: {
       tags: ['Admin Management'],
       summary: 'Get admin dashboard statistics',
-      description: 'Retrieve comprehensive dashboard statistics including user counts, recent registrations, role distribution, and recent users',
+      description:
+        'Retrieve comprehensive dashboard statistics including user counts, recent registrations, role distribution, and recent users',
       security: [{ bearerAuth: [] }],
       responses: {
         200: {
@@ -24,8 +25,8 @@ export const adminPaths = {
                         properties: {
                           totalUsers: { type: 'number', example: 150 },
                           verifiedUsers: { type: 'number', example: 120 },
-                          adminUsers: { type: 'number', example: 3 }
-                        }
+                          adminUsers: { type: 'number', example: 3 },
+                        },
                       },
                       recentRegistrations: {
                         type: 'array',
@@ -33,9 +34,9 @@ export const adminPaths = {
                           type: 'object',
                           properties: {
                             _id: { type: 'string', example: '2024-01-15' },
-                            count: { type: 'number', example: 5 }
-                          }
-                        }
+                            count: { type: 'number', example: 5 },
+                          },
+                        },
                       },
                       roleDistribution: {
                         type: 'array',
@@ -43,65 +44,66 @@ export const adminPaths = {
                           type: 'object',
                           properties: {
                             _id: { type: 'string', example: 'user' },
-                            count: { type: 'number', example: 147 }
-                          }
-                        }
+                            count: { type: 'number', example: 147 },
+                          },
+                        },
                       },
                       recentUsers: {
                         type: 'array',
-                        items: { $ref: '#/components/schemas/UserSummary' }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
+                        items: { $ref: '#/components/schemas/UserSummary' },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
         401: { $ref: '#/components/responses/UnauthorizedError' },
         403: { $ref: '#/components/responses/ForbiddenError' },
-        500: { $ref: '#/components/responses/ServerError' }
-      }
-    }
+        500: { $ref: '#/components/responses/ServerError' },
+      },
+    },
   },
 
   '/api/admin/users': {
     get: {
       tags: ['Admin - User Management'],
       summary: 'Get all users with pagination and filters',
-      description: 'Retrieve paginated list of users with optional filtering by role, verification status, and search',
+      description:
+        'Retrieve paginated list of users with optional filtering by role, verification status, and search',
       security: [{ bearerAuth: [] }],
       parameters: [
         {
           in: 'query',
           name: 'page',
           schema: { type: 'integer', minimum: 1, default: 1 },
-          description: 'Page number for pagination'
+          description: 'Page number for pagination',
         },
         {
           in: 'query',
           name: 'limit',
           schema: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
-          description: 'Number of users per page (max 100)'
+          description: 'Number of users per page (max 100)',
         },
         {
           in: 'query',
           name: 'role',
           schema: { type: 'string', enum: ['user', 'admin'] },
-          description: 'Filter by user role'
+          description: 'Filter by user role',
         },
         {
           in: 'query',
           name: 'isVerified',
           schema: { type: 'boolean' },
-          description: 'Filter by verification status'
+          description: 'Filter by verification status',
         },
         {
           in: 'query',
           name: 'search',
           schema: { type: 'string' },
-          description: 'Search in name and email fields'
-        }
+          description: 'Search in name and email fields',
+        },
       ],
       responses: {
         200: {
@@ -114,20 +116,20 @@ export const adminPaths = {
                   success: { type: 'boolean', example: true },
                   users: {
                     type: 'array',
-                    items: { $ref: '#/components/schemas/User' }
+                    items: { $ref: '#/components/schemas/User' },
                   },
                   pagination: { $ref: '#/components/schemas/Pagination' },
-                  stats: { $ref: '#/components/schemas/UserStats' }
-                }
-              }
-            }
-          }
+                  stats: { $ref: '#/components/schemas/UserStats' },
+                },
+              },
+            },
+          },
         },
         401: { $ref: '#/components/responses/UnauthorizedError' },
         403: { $ref: '#/components/responses/ForbiddenError' },
-        500: { $ref: '#/components/responses/ServerError' }
-      }
-    }
+        500: { $ref: '#/components/responses/ServerError' },
+      },
+    },
   },
 
   '/api/admin/users/{id}': {
@@ -142,8 +144,8 @@ export const adminPaths = {
           name: 'id',
           required: true,
           schema: { type: 'string' },
-          description: 'User ID'
-        }
+          description: 'User ID',
+        },
       ],
       responses: {
         200: {
@@ -154,19 +156,19 @@ export const adminPaths = {
                 type: 'object',
                 properties: {
                   success: { type: 'boolean', example: true },
-                  user: { $ref: '#/components/schemas/User' }
-                }
-              }
-            }
-          }
+                  user: { $ref: '#/components/schemas/User' },
+                },
+              },
+            },
+          },
         },
         400: {
           description: 'Invalid user ID',
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/Error' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/Error' },
+            },
+          },
         },
         401: { $ref: '#/components/responses/UnauthorizedError' },
         403: { $ref: '#/components/responses/ForbiddenError' },
@@ -174,12 +176,12 @@ export const adminPaths = {
           description: 'User not found',
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/Error' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/Error' },
+            },
+          },
         },
-        500: { $ref: '#/components/responses/ServerError' }
-      }
+        500: { $ref: '#/components/responses/ServerError' },
+      },
     },
 
     put: {
@@ -193,8 +195,8 @@ export const adminPaths = {
           name: 'id',
           required: true,
           schema: { type: 'string' },
-          description: 'User ID'
-        }
+          description: 'User ID',
+        },
       ],
       requestBody: {
         required: true,
@@ -206,12 +208,16 @@ export const adminPaths = {
                 name: { type: 'string', example: 'John Updated' },
                 email: { type: 'string', format: 'email', example: 'john.updated@example.com' },
                 phone: { type: 'string', pattern: '^[6-9]\\d{9}$', example: '9876543211' },
-                avatar: { type: 'string', format: 'uri', example: 'https://example.com/avatar.jpg' },
-                isVerified: { type: 'boolean', example: true }
-              }
-            }
-          }
-        }
+                avatar: {
+                  type: 'string',
+                  format: 'uri',
+                  example: 'https://example.com/avatar.jpg',
+                },
+                isVerified: { type: 'boolean', example: true },
+              },
+            },
+          },
+        },
       },
       responses: {
         200: {
@@ -223,11 +229,11 @@ export const adminPaths = {
                 properties: {
                   success: { type: 'boolean', example: true },
                   message: { type: 'string', example: 'User updated successfully' },
-                  user: { $ref: '#/components/schemas/User' }
-                }
-              }
-            }
-          }
+                  user: { $ref: '#/components/schemas/User' },
+                },
+              },
+            },
+          },
         },
         400: {
           description: 'Validation failed or email/phone already in use',
@@ -236,11 +242,11 @@ export const adminPaths = {
               schema: {
                 oneOf: [
                   { $ref: '#/components/schemas/ValidationError' },
-                  { $ref: '#/components/schemas/Error' }
-                ]
-              }
-            }
-          }
+                  { $ref: '#/components/schemas/Error' },
+                ],
+              },
+            },
+          },
         },
         401: { $ref: '#/components/responses/UnauthorizedError' },
         403: { $ref: '#/components/responses/ForbiddenError' },
@@ -248,12 +254,12 @@ export const adminPaths = {
           description: 'User not found',
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/Error' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/Error' },
+            },
+          },
         },
-        500: { $ref: '#/components/responses/ServerError' }
-      }
+        500: { $ref: '#/components/responses/ServerError' },
+      },
     },
 
     delete: {
@@ -267,8 +273,8 @@ export const adminPaths = {
           name: 'id',
           required: true,
           schema: { type: 'string' },
-          description: 'User ID'
-        }
+          description: 'User ID',
+        },
       ],
       responses: {
         200: {
@@ -279,19 +285,19 @@ export const adminPaths = {
                 type: 'object',
                 properties: {
                   success: { type: 'boolean', example: true },
-                  message: { type: 'string', example: 'User deleted successfully' }
-                }
-              }
-            }
-          }
+                  message: { type: 'string', example: 'User deleted successfully' },
+                },
+              },
+            },
+          },
         },
         400: {
           description: 'Invalid user ID or cannot delete own account',
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/Error' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/Error' },
+            },
+          },
         },
         401: { $ref: '#/components/responses/UnauthorizedError' },
         403: { $ref: '#/components/responses/ForbiddenError' },
@@ -299,13 +305,13 @@ export const adminPaths = {
           description: 'User not found',
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/Error' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/Error' },
+            },
+          },
         },
-        500: { $ref: '#/components/responses/ServerError' }
-      }
-    }
+        500: { $ref: '#/components/responses/ServerError' },
+      },
+    },
   },
 
   '/api/admin/users/{id}/role': {
@@ -320,8 +326,8 @@ export const adminPaths = {
           name: 'id',
           required: true,
           schema: { type: 'string' },
-          description: 'User ID'
-        }
+          description: 'User ID',
+        },
       ],
       requestBody: {
         required: true,
@@ -331,11 +337,11 @@ export const adminPaths = {
               type: 'object',
               required: ['role'],
               properties: {
-                role: { type: 'string', enum: ['user', 'admin'], example: 'admin' }
-              }
-            }
-          }
-        }
+                role: { type: 'string', enum: ['user', 'admin'], example: 'admin' },
+              },
+            },
+          },
+        },
       },
       responses: {
         200: {
@@ -354,13 +360,13 @@ export const adminPaths = {
                       name: { type: 'string' },
                       email: { type: 'string' },
                       role: { type: 'string' },
-                      previousRole: { type: 'string' }
-                    }
-                  }
-                }
-              }
-            }
-          }
+                      previousRole: { type: 'string' },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
         400: {
           description: 'Validation failed or cannot change own role',
@@ -369,11 +375,11 @@ export const adminPaths = {
               schema: {
                 oneOf: [
                   { $ref: '#/components/schemas/ValidationError' },
-                  { $ref: '#/components/schemas/Error' }
-                ]
-              }
-            }
-          }
+                  { $ref: '#/components/schemas/Error' },
+                ],
+              },
+            },
+          },
         },
         401: { $ref: '#/components/responses/UnauthorizedError' },
         403: { $ref: '#/components/responses/ForbiddenError' },
@@ -381,13 +387,13 @@ export const adminPaths = {
           description: 'User not found',
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/Error' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/Error' },
+            },
+          },
         },
-        500: { $ref: '#/components/responses/ServerError' }
-      }
-    }
+        500: { $ref: '#/components/responses/ServerError' },
+      },
+    },
   },
 
   '/api/admin/users/{id}/verification': {
@@ -402,8 +408,8 @@ export const adminPaths = {
           name: 'id',
           required: true,
           schema: { type: 'string' },
-          description: 'User ID'
-        }
+          description: 'User ID',
+        },
       ],
       responses: {
         200: {
@@ -422,21 +428,21 @@ export const adminPaths = {
                       name: { type: 'string' },
                       email: { type: 'string' },
                       isVerified: { type: 'boolean' },
-                      previousStatus: { type: 'boolean' }
-                    }
-                  }
-                }
-              }
-            }
-          }
+                      previousStatus: { type: 'boolean' },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
         400: {
           description: 'Invalid user ID',
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/Error' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/Error' },
+            },
+          },
         },
         401: { $ref: '#/components/responses/UnauthorizedError' },
         403: { $ref: '#/components/responses/ForbiddenError' },
@@ -444,20 +450,21 @@ export const adminPaths = {
           description: 'User not found',
           content: {
             'application/json': {
-              schema: { $ref: '#/components/schemas/Error' }
-            }
-          }
+              schema: { $ref: '#/components/schemas/Error' },
+            },
+          },
         },
-        500: { $ref: '#/components/responses/ServerError' }
-      }
-    }
+        500: { $ref: '#/components/responses/ServerError' },
+      },
+    },
   },
 
   '/api/admin/users/bulk-action': {
     post: {
       tags: ['Admin - Bulk Operations'],
       summary: 'Perform bulk operations on users',
-      description: 'Perform bulk delete, verify, or unverify operations on multiple users (max 100)',
+      description:
+        'Perform bulk delete, verify, or unverify operations on multiple users (max 100)',
       security: [{ bearerAuth: [] }],
       requestBody: {
         required: true,
@@ -467,22 +474,22 @@ export const adminPaths = {
               type: 'object',
               required: ['action', 'userIds'],
               properties: {
-                action: { 
-                  type: 'string', 
-                  enum: ['delete', 'verify', 'unverify'], 
-                  example: 'verify' 
+                action: {
+                  type: 'string',
+                  enum: ['delete', 'verify', 'unverify'],
+                  example: 'verify',
                 },
                 userIds: {
                   type: 'array',
                   items: { type: 'string' },
                   minItems: 1,
                   maxItems: 100,
-                  example: ['507f1f77bcf86cd799439011', '507f1f77bcf86cd799439012']
-                }
-              }
-            }
-          }
-        }
+                  example: ['507f1f77bcf86cd799439011', '507f1f77bcf86cd799439012'],
+                },
+              },
+            },
+          },
+        },
       },
       responses: {
         200: {
@@ -494,11 +501,11 @@ export const adminPaths = {
                 properties: {
                   success: { type: 'boolean', example: true },
                   message: { type: 'string', example: 'Bulk verify operation completed' },
-                  affected: { type: 'number', example: 25 }
-                }
-              }
-            }
-          }
+                  affected: { type: 'number', example: 25 },
+                },
+              },
+            },
+          },
         },
         400: {
           description: 'Validation failed or invalid operation',
@@ -511,17 +518,20 @@ export const adminPaths = {
                     type: 'object',
                     properties: {
                       success: { type: 'boolean', example: false },
-                      message: { type: 'string', example: 'Cannot perform bulk actions on your own account' },
-                      invalidIds: { 
+                      message: {
+                        type: 'string',
+                        example: 'Cannot perform bulk actions on your own account',
+                      },
+                      invalidIds: {
                         type: 'array',
-                        items: { type: 'string' }
-                      }
-                    }
-                  }
-                ]
-              }
-            }
-          }
+                        items: { type: 'string' },
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
         },
         401: { $ref: '#/components/responses/UnauthorizedError' },
         403: { $ref: '#/components/responses/ForbiddenError' },
@@ -533,14 +543,17 @@ export const adminPaths = {
                 type: 'object',
                 properties: {
                   success: { type: 'boolean', example: false },
-                  message: { type: 'string', example: 'Too many bulk operations, please try again after 15 minutes' }
-                }
-              }
-            }
-          }
+                  message: {
+                    type: 'string',
+                    example: 'Too many bulk operations, please try again after 15 minutes',
+                  },
+                },
+              },
+            },
+          },
         },
-        500: { $ref: '#/components/responses/ServerError' }
-      }
-    }
-  }
+        500: { $ref: '#/components/responses/ServerError' },
+      },
+    },
+  },
 };

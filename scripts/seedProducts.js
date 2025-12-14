@@ -10,30 +10,33 @@ const sampleProducts = [
     category: 'Fish',
     price: 650,
     stock: 25,
-    description: 'Premium king fish, வஞ்சரம் - Rich in omega-3, perfect for fry or curry. Fresh catch from Pattinambakkam.',
+    description:
+      'Premium king fish, வஞ்சரம் - Rich in omega-3, perfect for fry or curry. Fresh catch from Pattinambakkam.',
     images: ['https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500'],
     createdBy: 'admin@example.com',
-    isAvailable: true
+    isAvailable: true,
   },
   {
     name: 'White Pomfret (Vellai Vaval)',
     category: 'Fish',
     price: 800,
     stock: 15,
-    description: 'வெள்ளை வாவல் - Soft, delicate white meat. Best for frying. Highly sought after premium fish.',
+    description:
+      'வெள்ளை வாவல் - Soft, delicate white meat. Best for frying. Highly sought after premium fish.',
     images: ['https://images.unsplash.com/photo-1559717201-fbb671ff56b7?w=500'],
     createdBy: 'admin@example.com',
-    isAvailable: true
+    isAvailable: true,
   },
   {
     name: 'Tiger Prawns (Eral)',
     category: 'Prawn',
     price: 550,
     stock: 30,
-    description: 'இறால் - Jumbo size tiger prawns. Perfect for biryani, fry, or curry. Fresh and meaty.',
+    description:
+      'இறால் - Jumbo size tiger prawns. Perfect for biryani, fry, or curry. Fresh and meaty.',
     images: ['https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=500'],
     createdBy: 'admin@example.com',
-    isAvailable: true
+    isAvailable: true,
   },
   {
     name: 'Sea Crab (Nandu)',
@@ -43,7 +46,7 @@ const sampleProducts = [
     description: 'நண்டு - Fresh, meaty sea crabs. Perfect for crab masala and curry. Rich flavor.',
     images: ['https://images.unsplash.com/photo-1580822432022-cfa9f0a84d83?w=500'],
     createdBy: 'admin@example.com',
-    isAvailable: true
+    isAvailable: true,
   },
   {
     name: 'Squid (Kanava)',
@@ -53,7 +56,7 @@ const sampleProducts = [
     description: 'கணவா - Fresh squid rings. Perfect for frying and gravy. Tender and delicious.',
     images: ['https://images.unsplash.com/photo-1559717201-fbb671ff56b7?w=500'],
     createdBy: 'admin@example.com',
-    isAvailable: true
+    isAvailable: true,
   },
   {
     name: 'Red Snapper (Sankara)',
@@ -63,7 +66,7 @@ const sampleProducts = [
     description: 'சங்கரா - Premium fish with firm texture. Great for grilling, frying, and curry.',
     images: ['https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500'],
     createdBy: 'admin@example.com',
-    isAvailable: true
+    isAvailable: true,
   },
   {
     name: 'Mackerel (Ayla)',
@@ -73,17 +76,18 @@ const sampleProducts = [
     description: 'ஐலா - Budget-friendly, tasty fish. Perfect for fry and curry. High in omega-3.',
     images: ['https://images.unsplash.com/photo-1580476262798-bddd9f4b7369?w=500'],
     createdBy: 'admin@example.com',
-    isAvailable: true
+    isAvailable: true,
   },
   {
     name: 'Sardine (Mathi)',
     category: 'Fish',
     price: 200,
     stock: 50,
-    description: 'மத்தி - Small, delicious fish. Perfect for frying. Very affordable and nutritious.',
+    description:
+      'மத்தி - Small, delicious fish. Perfect for frying. Very affordable and nutritious.',
     images: ['https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500'],
     createdBy: 'admin@example.com',
-    isAvailable: true
+    isAvailable: true,
   },
   {
     name: 'Black Pomfret (Karuppu Vaval)',
@@ -93,7 +97,7 @@ const sampleProducts = [
     description: 'கருப்பு வாவல் - Premium quality with rich flavor. Excellent for frying.',
     images: ['https://images.unsplash.com/photo-1559717201-fbb671ff56b7?w=500'],
     createdBy: 'admin@example.com',
-    isAvailable: true
+    isAvailable: true,
   },
   {
     name: 'Tuna (Soorai)',
@@ -103,7 +107,7 @@ const sampleProducts = [
     description: 'சூரை - Meaty fish perfect for steaks and curry. Rich in protein.',
     images: ['https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500'],
     createdBy: 'admin@example.com',
-    isAvailable: true
+    isAvailable: true,
   },
   {
     name: 'Jumbo Prawns',
@@ -113,7 +117,7 @@ const sampleProducts = [
     description: 'Extra large prawns. Perfect for special occasions. Very meaty and delicious.',
     images: ['https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=500'],
     createdBy: 'admin@example.com',
-    isAvailable: true
+    isAvailable: true,
   },
   {
     name: 'Mud Crab',
@@ -123,8 +127,8 @@ const sampleProducts = [
     description: 'Premium mud crab with sweet meat. Best for crab curry and masala.',
     images: ['https://images.unsplash.com/photo-1580822432022-cfa9f0a84d83?w=500'],
     createdBy: 'admin@example.com',
-    isAvailable: true
-  }
+    isAvailable: true,
+  },
 ];
 
 const seedProducts = async () => {

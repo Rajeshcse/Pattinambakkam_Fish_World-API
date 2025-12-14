@@ -41,11 +41,11 @@ app.get('/', (req, res) => {
         register: 'POST /api/auth/register',
         login: 'POST /api/auth/login',
         profile: 'GET /api/auth/profile (Protected)',
-        updateProfile: 'PUT /api/auth/profile (Protected)'
+        updateProfile: 'PUT /api/auth/profile (Protected)',
       },
       admin: {
         dashboard: 'GET /api/admin/dashboard (Admin Only)',
-        userManagement: 'GET /api/admin/users (Admin Only)'
+        userManagement: 'GET /api/admin/users (Admin Only)',
       },
       products: {
         list: 'GET /api/products (Public)',
@@ -53,21 +53,21 @@ app.get('/', (req, res) => {
         create: 'POST /api/products (Admin Only)',
         update: 'PUT /api/products/:id (Admin Only)',
         delete: 'DELETE /api/products/:id (Admin Only)',
-        toggleAvailability: 'PATCH /api/products/:id/availability (Admin Only)'
+        toggleAvailability: 'PATCH /api/products/:id/availability (Admin Only)',
       },
       cart: {
         addItem: 'POST /api/cart/add (Protected)',
         getCart: 'GET /api/cart (Protected)',
         updateItem: 'PUT /api/cart/update/:itemId (Protected)',
         removeItem: 'DELETE /api/cart/remove/:itemId (Protected)',
-        clearCart: 'DELETE /api/cart/clear (Protected)'
+        clearCart: 'DELETE /api/cart/clear (Protected)',
       },
       orders: {
         create: 'POST /api/orders/create (Protected)',
         myOrders: 'GET /api/orders (Protected)',
         orderDetails: 'GET /api/orders/:orderId (Protected)',
-        cancelOrder: 'PUT /api/orders/:orderId/cancel (Protected)'
-      }
+        cancelOrder: 'PUT /api/orders/:orderId/cancel (Protected)',
+      },
     },
     features: [
       'JWT Authentication',
@@ -81,8 +81,8 @@ app.get('/', (req, res) => {
       'Rate Limiting',
       'Input Validation',
       'API Documentation',
-      'Error Handling'
-    ]
+      'Error Handling',
+    ],
   };
 
   return sendSuccess(res, apiInfo, 'Welcome to Pattinambakkam Fish World API');

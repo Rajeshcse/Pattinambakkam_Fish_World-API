@@ -10,10 +10,15 @@
  * @param {string} message - Success message
  * @param {number} statusCode - HTTP status code
  */
-export const sendSuccess = (res, data = null, message = 'Operation successful', statusCode = 200) => {
+export const sendSuccess = (
+  res,
+  data = null,
+  message = 'Operation successful',
+  statusCode = 200
+) => {
   const response = {
     success: true,
-    message
+    message,
   };
 
   if (data !== null) {
@@ -35,10 +40,15 @@ export const sendSuccess = (res, data = null, message = 'Operation successful', 
  * @param {number} statusCode - HTTP status code
  * @param {Array} errors - Validation errors array
  */
-export const sendError = (res, message = 'Something went wrong', statusCode = 500, errors = null) => {
+export const sendError = (
+  res,
+  message = 'Something went wrong',
+  statusCode = 500,
+  errors = null
+) => {
   const response = {
     success: false,
-    message
+    message,
   };
 
   if (errors) {
@@ -56,12 +66,18 @@ export const sendError = (res, message = 'Something went wrong', statusCode = 50
  * @param {Object} stats - Optional statistics
  * @param {string} message - Success message
  */
-export const sendPaginatedSuccess = (res, data, pagination, stats = null, message = 'Data retrieved successfully') => {
+export const sendPaginatedSuccess = (
+  res,
+  data,
+  pagination,
+  stats = null,
+  message = 'Data retrieved successfully'
+) => {
   const response = {
     success: true,
     message,
     data,
-    pagination
+    pagination,
   };
 
   if (stats) {

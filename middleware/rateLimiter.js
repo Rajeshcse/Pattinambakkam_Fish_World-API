@@ -6,7 +6,7 @@ export const apiLimiter = rateLimit({
   max: 100, // Limit each IP to 100 requests per windowMs
   message: {
     success: false,
-    message: 'Too many requests from this IP, please try again after 15 minutes'
+    message: 'Too many requests from this IP, please try again after 15 minutes',
   },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
   legacyHeaders: false, // Disable the `X-RateLimit-*` headers
@@ -18,7 +18,7 @@ export const authLimiter = rateLimit({
   max: 5, // Limit each IP to 5 requests per windowMs
   message: {
     success: false,
-    message: 'Too many authentication attempts, please try again after 15 minutes'
+    message: 'Too many authentication attempts, please try again after 15 minutes',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -31,7 +31,7 @@ export const loginLimiter = rateLimit({
   max: 5, // Limit each IP to 5 login attempts per windowMs
   message: {
     success: false,
-    message: 'Too many login attempts from this IP, please try again after 15 minutes'
+    message: 'Too many login attempts from this IP, please try again after 15 minutes',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -44,7 +44,7 @@ export const registerLimiter = rateLimit({
   max: 3, // Limit each IP to 3 registration attempts per hour
   message: {
     success: false,
-    message: 'Too many accounts created from this IP, please try again after an hour'
+    message: 'Too many accounts created from this IP, please try again after an hour',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -56,7 +56,7 @@ export const passwordResetLimiter = rateLimit({
   max: 3, // Limit each IP to 3 password reset requests per windowMs
   message: {
     success: false,
-    message: 'Too many password reset attempts, please try again after 15 minutes'
+    message: 'Too many password reset attempts, please try again after 15 minutes',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -68,7 +68,7 @@ export const otpLimiter = rateLimit({
   max: 5, // Limit each IP to 5 OTP requests per windowMs
   message: {
     success: false,
-    message: 'Too many OTP requests, please try again after 15 minutes'
+    message: 'Too many OTP requests, please try again after 15 minutes',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -80,7 +80,7 @@ export const profileUpdateLimiter = rateLimit({
   max: 10, // Limit each IP to 10 profile updates per windowMs
   message: {
     success: false,
-    message: 'Too many profile update requests, please try again later'
+    message: 'Too many profile update requests, please try again later',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -94,7 +94,7 @@ export const adminLimiter = rateLimit({
   max: 100, // Limit each IP to 100 admin requests per windowMs
   message: {
     success: false,
-    message: 'Too many admin requests, please try again after 15 minutes'
+    message: 'Too many admin requests, please try again after 15 minutes',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -106,7 +106,7 @@ export const adminBulkLimiter = rateLimit({
   max: 5, // Limit each IP to 5 bulk operations per windowMs
   message: {
     success: false,
-    message: 'Too many bulk operations, please try again after 15 minutes'
+    message: 'Too many bulk operations, please try again after 15 minutes',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -118,7 +118,7 @@ export const adminDeleteLimiter = rateLimit({
   max: 20, // Limit each IP to 20 delete operations per hour
   message: {
     success: false,
-    message: 'Too many delete operations, please try again after an hour'
+    message: 'Too many delete operations, please try again after an hour',
   },
   standardHeaders: true,
   legacyHeaders: false,

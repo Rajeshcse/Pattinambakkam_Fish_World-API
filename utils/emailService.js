@@ -13,8 +13,8 @@ const createTransporter = () => {
       secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
       auth: {
         user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD
-      }
+        pass: process.env.SMTP_PASSWORD,
+      },
     });
   } else {
     // Development - Log to console instead of sending real emails
@@ -24,8 +24,8 @@ const createTransporter = () => {
       secure: false,
       auth: {
         user: process.env.SMTP_USER || 'test@test.com',
-        pass: process.env.SMTP_PASSWORD || 'test'
-      }
+        pass: process.env.SMTP_PASSWORD || 'test',
+      },
     });
   }
 };
@@ -34,7 +34,7 @@ const createTransporter = () => {
 export const sendVerificationEmail = async (email, otp, name) => {
   try {
     console.log('sendVerificationEmail called with:', { email, otp, name });
-    
+
     // In development, just log to console instead of sending real email
     if (process.env.NODE_ENV !== 'production') {
       console.log('\n========================================');
@@ -68,7 +68,7 @@ export const sendVerificationEmail = async (email, otp, name) => {
           <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
           <p style="color: #999; font-size: 12px;">This is an automated email, please do not reply.</p>
         </div>
-      `
+      `,
     };
 
     const info = await transporter.sendMail(mailOptions);
@@ -116,7 +116,7 @@ export const sendPasswordResetEmail = async (email, otp, name) => {
           <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
           <p style="color: #999; font-size: 12px;">This is an automated email, please do not reply.</p>
         </div>
-      `
+      `,
     };
 
     const info = await transporter.sendMail(mailOptions);
@@ -158,7 +158,7 @@ export const sendWelcomeEmail = async (email, name) => {
           <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
           <p style="color: #999; font-size: 12px;">This is an automated email, please do not reply.</p>
         </div>
-      `
+      `,
     };
 
     const info = await transporter.sendMail(mailOptions);

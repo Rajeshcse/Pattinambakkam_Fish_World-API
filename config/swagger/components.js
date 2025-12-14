@@ -5,8 +5,8 @@ export const securitySchemes = {
     type: 'http',
     scheme: 'bearer',
     bearerFormat: 'JWT',
-    description: 'Enter your JWT token in the format: Bearer <token>'
-  }
+    description: 'Enter your JWT token in the format: Bearer <token>',
+  },
 };
 
 export const responses = {
@@ -18,11 +18,11 @@ export const responses = {
           type: 'object',
           properties: {
             success: { type: 'boolean', example: false },
-            message: { type: 'string', example: 'Access denied. No token provided' }
-          }
-        }
-      }
-    }
+            message: { type: 'string', example: 'Access denied. No token provided' },
+          },
+        },
+      },
+    },
   },
 
   ForbiddenError: {
@@ -33,20 +33,20 @@ export const responses = {
           type: 'object',
           properties: {
             success: { type: 'boolean', example: false },
-            message: { type: 'string', example: 'Access denied. Insufficient permissions.' }
-          }
-        }
-      }
-    }
+            message: { type: 'string', example: 'Access denied. Insufficient permissions.' },
+          },
+        },
+      },
+    },
   },
 
   ValidationError: {
     description: 'Validation error',
     content: {
       'application/json': {
-        schema: { $ref: '#/components/schemas/ValidationError' }
-      }
-    }
+        schema: { $ref: '#/components/schemas/ValidationError' },
+      },
+    },
   },
 
   ServerError: {
@@ -57,11 +57,11 @@ export const responses = {
           type: 'object',
           properties: {
             success: { type: 'boolean', example: false },
-            message: { type: 'string', example: 'Server error' }
-          }
-        }
-      }
-    }
+            message: { type: 'string', example: 'Server error' },
+          },
+        },
+      },
+    },
   },
 
   BadRequest: {
@@ -72,11 +72,11 @@ export const responses = {
           type: 'object',
           properties: {
             success: { type: 'boolean', example: false },
-            message: { type: 'string', example: 'Invalid request data' }
-          }
-        }
-      }
-    }
+            message: { type: 'string', example: 'Invalid request data' },
+          },
+        },
+      },
+    },
   },
 
   Unauthorized: {
@@ -87,11 +87,11 @@ export const responses = {
           type: 'object',
           properties: {
             success: { type: 'boolean', example: false },
-            message: { type: 'string', example: 'Authentication required' }
-          }
-        }
-      }
-    }
+            message: { type: 'string', example: 'Authentication required' },
+          },
+        },
+      },
+    },
   },
 
   Forbidden: {
@@ -102,65 +102,65 @@ export const responses = {
           type: 'object',
           properties: {
             success: { type: 'boolean', example: false },
-            message: { type: 'string', example: 'Access denied. Admin role required.' }
-          }
-        }
-      }
-    }
-  }
+            message: { type: 'string', example: 'Access denied. Admin role required.' },
+          },
+        },
+      },
+    },
+  },
 };
 
 export const tags = [
   {
     name: 'Authentication',
-    description: 'User authentication endpoints (register, login, logout, token refresh)'
+    description: 'User authentication endpoints (register, login, logout, token refresh)',
   },
   {
     name: 'Email Verification',
-    description: 'Email verification with OTP'
+    description: 'Email verification with OTP',
   },
   {
     name: 'Password Management',
-    description: 'Password reset and change operations'
+    description: 'Password reset and change operations',
   },
   {
     name: 'User Profile',
-    description: 'User profile management'
+    description: 'User profile management',
   },
   {
     name: 'Admin Management',
-    description: 'Admin dashboard and overview statistics'
+    description: 'Admin dashboard and overview statistics',
   },
   {
     name: 'Admin - User Management',
-    description: 'User CRUD operations (admin only)'
+    description: 'User CRUD operations (admin only)',
   },
   {
     name: 'Admin - Role Management',
-    description: 'User role and permission management (admin only)'
+    description: 'User role and permission management (admin only)',
   },
   {
     name: 'Admin - Bulk Operations',
-    description: 'Bulk user operations (admin only)'
+    description: 'Bulk user operations (admin only)',
   },
   {
     name: 'Admin - Product Management',
-    description: 'Fish product CRUD operations (admin only)'
+    description: 'Fish product CRUD operations (admin only)',
   },
   {
     name: 'Products',
-    description: 'Fish product listing and details for customers'
+    description: 'Fish product listing and details for customers',
   },
   {
     name: 'Cart',
-    description: 'Shopping cart management for authenticated users'
+    description: 'Shopping cart management for authenticated users',
   },
   {
     name: 'Orders',
-    description: 'Order placement and management for authenticated users'
+    description: 'Order placement and management for authenticated users',
   },
   {
     name: 'Admin - Orders',
-    description: 'Order management and status updates (admin only)'
-  }
+    description: 'Order management and status updates (admin only)',
+  },
 ];

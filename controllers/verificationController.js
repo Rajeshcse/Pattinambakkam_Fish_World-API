@@ -16,7 +16,7 @@ export const sendEmailVerificationOTP = async (req, res) => {
       console.log('User not found:', req.user.id);
       return res.status(404).json({
         success: false,
-        message: 'User not found'
+        message: 'User not found',
       });
     }
 
@@ -25,14 +25,14 @@ export const sendEmailVerificationOTP = async (req, res) => {
     if (user.isVerified) {
       return res.status(400).json({
         success: false,
-        message: 'Email is already verified'
+        message: 'Email is already verified',
       });
     }
 
     // Delete any existing verification tokens for this user
     await Token.deleteMany({
       userId: user._id,
-      type: 'email_verification'
+      type: 'email_verification',
     });
 
     // Create new verification token
@@ -44,9 +44,9 @@ export const sendEmailVerificationOTP = async (req, res) => {
     console.log('Calling sendVerificationEmail with:', {
       email: user.email,
       otp: tokenData.otp,
-      name: user.name
+      name: user.name,
     });
-    
+
     const emailResult = await sendVerificationEmail(user.email, tokenData.otp, user.name);
     console.log('Email result:', emailResult);
 
@@ -54,10 +54,10 @@ export const sendEmailVerificationOTP = async (req, res) => {
       console.log('Email sending failed, error:', emailResult.error);
       return res.status(500).json({
         success: false,
-        message: 'Failed to send verification email. Please try again.'
+        message: 'Failed to send verification email. Please try again.',
       });
     }
-    
+
     console.log('Email sent successfully, messageId:', emailResult.messageId);
 
     // 🟢 DEVELOPMENT MODE: Display OTP in console
@@ -72,7 +72,7 @@ export const sendEmailVerificationOTP = async (req, res) => {
     const response = {
       success: true,
       message: 'Verification OTP sent to your email',
-      expiresIn: '10 minutes'
+      expiresIn: '10 minutes',
     };
 
     // 🟢 DEVELOPMENT MODE: Include OTP in response
@@ -86,7 +86,7 @@ export const sendEmailVerificationOTP = async (req, res) => {
     console.error('Send verification OTP error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error while sending verification OTP'
+      message: 'Server error while sending verification OTP',
     });
   }
 };
@@ -101,7 +101,7 @@ export const verifyEmail = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: 'Validation failed',
-        errors: errors.array()
+        errors: errors.array(),
       });
     }
 
@@ -111,14 +111,14 @@ export const verifyEmail = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'User not found'
+        message: 'User not found',
       });
     }
 
     if (user.isVerified) {
       return res.status(400).json({
         success: false,
-        message: 'Email is already verified'
+        message: 'Email is already verified',
       });
     }
 
@@ -127,7 +127,7 @@ export const verifyEmail = async (req, res) => {
       userId: user._id,
       type: 'email_verification',
       otp: otp,
-      expiresAt: { $gt: new Date() }
+      expiresAt: { $gt: new Date() },
     });
 
     if (!token) {
@@ -135,7 +135,7 @@ export const verifyEmail = async (req, res) => {
       console.log(`\n❌ INVALID OTP ATTEMPT - User: ${user.email}, OTP: ${otp}`);
       return res.status(400).json({
         success: false,
-        message: 'Invalid or expired OTP'
+        message: 'Invalid or expired OTP',
       });
     }
 
@@ -159,13 +159,13 @@ export const verifyEmail = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Email verified successfully'
+      message: 'Email verified successfully',
     });
   } catch (error) {
     console.error('Verify email error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error during email verification'
+      message: 'Server error during email verification',
     });
   }
 };
@@ -180,14 +180,14 @@ export const resendEmailVerificationOTP = async (req, res) => {
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: 'User not found'
+        message: 'User not found',
       });
     }
 
     if (user.isVerified) {
       return res.status(400).json({
         success: false,
-        message: 'Email is already verified'
+        message: 'Email is already verified',
       });
     }
 
@@ -195,20 +195,20 @@ export const resendEmailVerificationOTP = async (req, res) => {
     const recentToken = await Token.findOne({
       userId: user._id,
       type: 'email_verification',
-      createdAt: { $gt: new Date(Date.now() - 60 * 1000) } // Within last 1 minute
+      createdAt: { $gt: new Date(Date.now() - 60 * 1000) }, // Within last 1 minute
     });
 
     if (recentToken) {
       return res.status(429).json({
         success: false,
-        message: 'Please wait at least 1 minute before requesting a new OTP'
+        message: 'Please wait at least 1 minute before requesting a new OTP',
       });
     }
 
     // Delete any existing verification tokens
     await Token.deleteMany({
       userId: user._id,
-      type: 'email_verification'
+      type: 'email_verification',
     });
 
     // Create new token
@@ -221,7 +221,7 @@ export const resendEmailVerificationOTP = async (req, res) => {
     if (!emailResult.success) {
       return res.status(500).json({
         success: false,
-        message: 'Failed to send verification email. Please try again.'
+        message: 'Failed to send verification email. Please try again.',
       });
     }
 
@@ -237,7 +237,7 @@ export const resendEmailVerificationOTP = async (req, res) => {
     const response = {
       success: true,
       message: 'New verification OTP sent to your email',
-      expiresIn: '10 minutes'
+      expiresIn: '10 minutes',
     };
 
     // 🟢 DEVELOPMENT MODE: Include OTP in response
@@ -251,7 +251,7 @@ export const resendEmailVerificationOTP = async (req, res) => {
     console.error('Resend verification OTP error:', error);
     res.status(500).json({
       success: false,
-      message: 'Server error while resending verification OTP'
+      message: 'Server error while resending verification OTP',
     });
   }
 };

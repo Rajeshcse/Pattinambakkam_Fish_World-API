@@ -17,7 +17,7 @@ export const globalErrorHandler = (err, req, res, next) => {
     stack: err.stack,
     url: req.url,
     method: req.method,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 
   // Default error
@@ -40,7 +40,9 @@ export const globalErrorHandler = (err, req, res, next) => {
 
   // Mongoose validation error
   if (err.name === 'ValidationError') {
-    const message = Object.values(err.errors).map(val => val.message).join(', ');
+    const message = Object.values(err.errors)
+      .map((val) => val.message)
+      .join(', ');
     return sendError(res, message, HTTP_STATUS.BAD_REQUEST);
   }
 
@@ -114,7 +116,7 @@ export const developmentErrorHandler = (err, req, res, next) => {
     message: err.message,
     stack: err.stack,
     url: req.url,
-    method: req.method
+    method: req.method,
   });
 };
 
@@ -129,12 +131,8 @@ export const productionErrorHandler = (err, req, res, next) => {
   } else {
     // Log error for internal monitoring
     console.error('Production Error:', err);
-    
+
     // Send generic message to client
-    sendError(
-      res,
-      ERROR_MESSAGES.INTERNAL_SERVER_ERROR,
-      HTTP_STATUS.INTERNAL_SERVER_ERROR
-    );
+    sendError(res, ERROR_MESSAGES.INTERNAL_SERVER_ERROR, HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };

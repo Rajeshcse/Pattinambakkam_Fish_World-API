@@ -6,35 +6,35 @@ const cartSchema = new mongoose.Schema({
     ref: 'User',
     required: [true, 'User is required'],
     unique: true,
-    index: true
+    index: true,
   },
   items: [
     {
       product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'FishProduct',
-        required: [true, 'Product is required']
+        required: [true, 'Product is required'],
       },
       quantity: {
         type: Number,
         required: [true, 'Quantity is required'],
         min: [1, 'Quantity must be at least 1'],
-        default: 1
+        default: 1,
       },
       addedAt: {
         type: Date,
-        default: Date.now
-      }
-    }
+        default: Date.now,
+      },
+    },
   ],
   updatedAt: {
     type: Date,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 // Update the updatedAt field before saving
-cartSchema.pre('save', function(next) {
+cartSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });

@@ -12,13 +12,7 @@ import { SUCCESS_MESSAGES } from '../constants/index.js';
  * Get all users with pagination and filters
  */
 export const getAllUsersService = async (queryParams) => {
-  const {
-    page = 1,
-    limit = 10,
-    role,
-    isVerified,
-    search
-  } = queryParams;
+  const { page = 1, limit = 10, role, isVerified, search } = queryParams;
 
   const skip = (page - 1) * limit;
 
@@ -35,10 +29,7 @@ export const getAllUsersService = async (queryParams) => {
 
   if (search) {
     const searchRegex = new RegExp(search, 'i');
-    filter.$or = [
-      { name: searchRegex },
-      { email: searchRegex }
-    ];
+    filter.$or = [{ name: searchRegex }, { email: searchRegex }];
   }
 
   // Get users with pagination
@@ -66,12 +57,12 @@ export const getAllUsersService = async (queryParams) => {
             $cond: [
               { $gte: ['$createdAt', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)] },
               1,
-              0
-            ]
-          }
-        }
-      }
-    }
+              0,
+            ],
+          },
+        },
+      },
+    },
   ]);
 
   return {
@@ -81,14 +72,14 @@ export const getAllUsersService = async (queryParams) => {
       totalPages,
       totalUsers,
       hasNextPage: page < totalPages,
-      hasPrevPage: page > 1
+      hasPrevPage: page > 1,
     },
     stats: stats[0] || {
       totalUsers: 0,
       verifiedUsers: 0,
       adminUsers: 0,
-      recentUsers: 0
-    }
+      recentUsers: 0,
+    },
   };
 };
 
@@ -148,18 +139,19 @@ export const updateUserService = async (userId, updateData, adminEmail) => {
   if (avatar !== undefined) updateFields.avatar = avatar;
   if (isEmailVerified !== undefined) updateFields.isEmailVerified = isEmailVerified;
 
-  const updatedUser = await User.findByIdAndUpdate(
-    userId,
-    updateFields,
-    { new: true, runValidators: true }
-  ).select('-password -refreshTokens').lean();
+  const updatedUser = await User.findByIdAndUpdate(userId, updateFields, {
+    new: true,
+    runValidators: true,
+  })
+    .select('-password -refreshTokens')
+    .lean();
 
   // Log admin action
   console.log(`Admin ${adminEmail} updated user ${updatedUser.email}:`, updateFields);
 
   return {
     user: updatedUser,
-    message: SUCCESS_MESSAGES.USER_UPDATED
+    message: SUCCESS_MESSAGES.USER_UPDATED,
   };
 };
 
@@ -187,7 +179,7 @@ export const deleteUserService = async (userId, adminId, adminEmail) => {
   console.log(`Admin ${adminEmail} deleted user ${user.email} (ID: ${userId})`);
 
   return {
-    message: SUCCESS_MESSAGES.USER_DELETED
+    message: SUCCESS_MESSAGES.USER_DELETED,
   };
 };
 
@@ -222,7 +214,9 @@ export const changeUserRoleService = async (userId, newRole, adminId, adminEmail
   await user.save();
 
   // Log admin action
-  console.log(`Admin ${adminEmail} changed user ${user.email} role from ${previousRole} to ${newRole}`);
+  console.log(
+    `Admin ${adminEmail} changed user ${user.email} role from ${previousRole} to ${newRole}`
+  );
 
   return {
     user: {
@@ -230,9 +224,9 @@ export const changeUserRoleService = async (userId, newRole, adminId, adminEmail
       name: user.name,
       email: user.email,
       role: user.role,
-      previousRole
+      previousRole,
     },
-    message: `User role changed from ${previousRole} to ${newRole}`
+    message: `User role changed from ${previousRole} to ${newRole}`,
   };
 };
 
@@ -255,7 +249,9 @@ export const toggleUserVerificationService = async (userId, adminEmail) => {
   await user.save();
 
   // Log admin action
-  console.log(`Admin ${adminEmail} ${user.isEmailVerified ? 'verified' : 'unverified'} user ${user.email}`);
+  console.log(
+    `Admin ${adminEmail} ${user.isEmailVerified ? 'verified' : 'unverified'} user ${user.email}`
+  );
 
   return {
     user: {
@@ -263,9 +259,9 @@ export const toggleUserVerificationService = async (userId, adminEmail) => {
       name: user.name,
       email: user.email,
       isEmailVerified: user.isEmailVerified,
-      previousStatus
+      previousStatus,
     },
-    message: `User ${user.isEmailVerified ? 'verified' : 'unverified'} successfully`
+    message: `User ${user.isEmailVerified ? 'verified' : 'unverified'} successfully`,
   };
 };
 
@@ -284,9 +280,9 @@ export const getDashboardStatsService = async () => {
               totalUsers: { $sum: 1 },
               verifiedUsers: { $sum: { $cond: ['$isEmailVerified', 1, 0] } },
               unverifiedUsers: { $sum: { $cond: [{ $not: '$isEmailVerified' }, 1, 0] } },
-              totalAdmins: { $sum: { $cond: [{ $eq: ['$role', 'admin'] }, 1, 0] } }
-            }
-          }
+              totalAdmins: { $sum: { $cond: [{ $eq: ['$role', 'admin'] }, 1, 0] } },
+            },
+          },
         ],
         recentUsers: [
           { $sort: { createdAt: -1 } },
@@ -300,12 +296,12 @@ export const getDashboardStatsService = async () => {
               role: 1,
               isVerified: '$isEmailVerified',
               createdAt: 1,
-              updatedAt: 1
-            }
-          }
-        ]
-      }
-    }
+              updatedAt: 1,
+            },
+          },
+        ],
+      },
+    },
   ]);
 
   const result = userStats[0];
@@ -313,7 +309,7 @@ export const getDashboardStatsService = async () => {
     totalUsers: 0,
     verifiedUsers: 0,
     unverifiedUsers: 0,
-    totalAdmins: 0
+    totalAdmins: 0,
   };
 
   return {
@@ -321,7 +317,7 @@ export const getDashboardStatsService = async () => {
     verifiedUsers: overview.verifiedUsers,
     unverifiedUsers: overview.unverifiedUsers,
     totalAdmins: overview.totalAdmins,
-    recentUsers: result.recentUsers || []
+    recentUsers: result.recentUsers || [],
   };
 };
 
@@ -334,7 +330,7 @@ export const bulkUserActionService = async (action, userIds, adminId, adminEmail
   }
 
   // Validate all user IDs
-  const invalidIds = userIds.filter(id => !isValidObjectId(id));
+  const invalidIds = userIds.filter((id) => !isValidObjectId(id));
   if (invalidIds.length > 0) {
     throw new Error(`Invalid user IDs found: ${invalidIds.join(', ')}`);
   }
@@ -352,7 +348,7 @@ export const bulkUserActionService = async (action, userIds, adminId, adminEmail
       console.log(`Admin ${adminEmail} bulk deleted ${result.deletedCount} users`);
       return {
         affected: result.deletedCount,
-        message: `Bulk delete operation completed. ${result.deletedCount} users deleted.`
+        message: `Bulk delete operation completed. ${result.deletedCount} users deleted.`,
       };
 
     case 'verify':
@@ -363,7 +359,7 @@ export const bulkUserActionService = async (action, userIds, adminId, adminEmail
       console.log(`Admin ${adminEmail} bulk verified ${result.modifiedCount} users`);
       return {
         affected: result.modifiedCount,
-        message: `Bulk verify operation completed. ${result.modifiedCount} users verified.`
+        message: `Bulk verify operation completed. ${result.modifiedCount} users verified.`,
       };
 
     case 'unverify':
@@ -374,7 +370,7 @@ export const bulkUserActionService = async (action, userIds, adminId, adminEmail
       console.log(`Admin ${adminEmail} bulk unverified ${result.modifiedCount} users`);
       return {
         affected: result.modifiedCount,
-        message: `Bulk unverify operation completed. ${result.modifiedCount} users unverified.`
+        message: `Bulk unverify operation completed. ${result.modifiedCount} users unverified.`,
       };
 
     default:

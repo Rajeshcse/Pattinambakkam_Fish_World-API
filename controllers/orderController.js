@@ -13,14 +13,14 @@ import {
   getUserOrderStats,
   getAllOrders,
   updateOrderStatus,
-  getOrderStats
+  getOrderStats,
 } from '../services/orderService.js';
 import {
   sendSuccess,
   sendError,
   sendValidationError,
   sendNotFound,
-  sendPaginatedSuccess
+  sendPaginatedSuccess,
 } from '../utils/helpers/responseHelper.js';
 import { HTTP_STATUS, SUCCESS_MESSAGES } from '../constants/index.js';
 
@@ -40,12 +40,7 @@ export const placeOrder = async (req, res) => {
 
     const order = await createOrder(userId, orderData);
 
-    return sendSuccess(
-      res,
-      order,
-      'Order placed successfully',
-      HTTP_STATUS.CREATED
-    );
+    return sendSuccess(res, order, 'Order placed successfully', HTTP_STATUS.CREATED);
   } catch (error) {
     console.error('Place order error:', error);
 
@@ -162,7 +157,7 @@ export const adminGetAllOrders = async (req, res) => {
         page: result.page,
         pages: result.pages,
         total: result.total,
-        limit: parseInt(filters.limit) || 20
+        limit: parseInt(filters.limit) || 20,
       },
       null,
       SUCCESS_MESSAGES.DATA_RETRIEVED

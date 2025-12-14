@@ -4,8 +4,20 @@
  */
 
 import FishProduct from '../models/FishProduct.js';
-import { validatePagination, validateFishCategory, validatePrice, validateStock, validateProductName, validateImages } from '../utils/helpers/validationHelper.js';
-import { FISH_CATEGORIES, PAGINATION, SUCCESS_MESSAGES, RESOURCE_ERRORS } from '../constants/index.js';
+import {
+  validatePagination,
+  validateFishCategory,
+  validatePrice,
+  validateStock,
+  validateProductName,
+  validateImages,
+} from '../utils/helpers/validationHelper.js';
+import {
+  FISH_CATEGORIES,
+  PAGINATION,
+  SUCCESS_MESSAGES,
+  RESOURCE_ERRORS,
+} from '../constants/index.js';
 
 /**
  * Get all products with pagination and filtering
@@ -50,10 +62,7 @@ export const getAllProductsService = async (filters = {}) => {
     // Search filter
     if (filters.search) {
       const searchRegex = new RegExp(filters.search.trim(), 'i');
-      queryFilter.$or = [
-        { name: searchRegex },
-        { description: searchRegex }
-      ];
+      queryFilter.$or = [{ name: searchRegex }, { description: searchRegex }];
     }
 
     // Get products with pagination
@@ -74,7 +83,7 @@ export const getAllProductsService = async (filters = {}) => {
       totalProducts,
       hasNextPage: page < totalPages,
       hasPrevPage: page > 1,
-      limit
+      limit,
     };
 
     // Get product statistics
@@ -86,16 +95,16 @@ export const getAllProductsService = async (filters = {}) => {
           totalProducts: { $sum: 1 },
           availableProducts: { $sum: { $cond: ['$isAvailable', 1, 0] } },
           totalStock: { $sum: '$stock' },
-          averagePrice: { $avg: '$price' }
-        }
-      }
+          averagePrice: { $avg: '$price' },
+        },
+      },
     ]);
 
     const productStats = stats[0] || {
       totalProducts: 0,
       availableProducts: 0,
       totalStock: 0,
-      averagePrice: 0
+      averagePrice: 0,
     };
 
     return {
@@ -104,8 +113,8 @@ export const getAllProductsService = async (filters = {}) => {
       pagination,
       stats: {
         ...productStats,
-        averagePrice: Math.round(productStats.averagePrice * 100) / 100 // Round to 2 decimal places
-      }
+        averagePrice: Math.round(productStats.averagePrice * 100) / 100, // Round to 2 decimal places
+      },
     };
   } catch (error) {
     console.error('Get all products service error:', error);
@@ -121,14 +130,14 @@ export const getAllProductsService = async (filters = {}) => {
 export const getProductByIdService = async (productId) => {
   try {
     const product = await FishProduct.findById(productId).lean();
-    
+
     if (!product) {
       throw new Error(RESOURCE_ERRORS.PRODUCT_NOT_FOUND);
     }
 
     return {
       success: true,
-      product
+      product,
     };
   } catch (error) {
     console.error('Get product by ID service error:', error);
@@ -177,11 +186,13 @@ export const createProductService = async (productData, adminEmail) => {
     // Check for duplicate product (same name and category)
     const existingProduct = await FishProduct.findOne({
       name: { $regex: `^${nameValidation.value}$`, $options: 'i' },
-      category: categoryValidation.value
+      category: categoryValidation.value,
     });
 
     if (existingProduct) {
-      throw new Error(`A product named "${nameValidation.value}" in the "${categoryValidation.value}" category already exists`);
+      throw new Error(
+        `A product named "${nameValidation.value}" in the "${categoryValidation.value}" category already exists`
+      );
     }
 
     // Create new product
@@ -192,7 +203,7 @@ export const createProductService = async (productData, adminEmail) => {
       stock: stockValidation.value,
       description: productData.description ? productData.description.trim() : '',
       images: imagesValidation.value,
-      createdBy: adminEmail
+      createdBy: adminEmail,
     });
 
     await newProduct.save();
@@ -214,8 +225,8 @@ export const createProductService = async (productData, adminEmail) => {
         createdBy: newProduct.createdBy,
         isAvailable: newProduct.isAvailable,
         createdAt: newProduct.createdAt,
-        updatedAt: newProduct.updatedAt
-      }
+        updatedAt: newProduct.updatedAt,
+      },
     };
   } catch (error) {
     console.error('Create product service error:', error);
@@ -233,7 +244,7 @@ export const createProductService = async (productData, adminEmail) => {
 export const updateProductService = async (productId, updateData, adminEmail) => {
   try {
     const product = await FishProduct.findById(productId);
-    
+
     if (!product) {
       throw new Error(RESOURCE_ERRORS.PRODUCT_NOT_FOUND);
     }
@@ -293,32 +304,36 @@ export const updateProductService = async (productId, updateData, adminEmail) =>
     if (updatedFields.name || updatedFields.category) {
       const nameToCheck = updatedFields.name || product.name;
       const categoryToCheck = updatedFields.category || product.category;
-      
+
       const duplicateProduct = await FishProduct.findOne({
         _id: { $ne: productId },
         name: { $regex: `^${nameToCheck}$`, $options: 'i' },
-        category: categoryToCheck
+        category: categoryToCheck,
       });
 
       if (duplicateProduct) {
-        throw new Error(`A product named "${nameToCheck}" in the "${categoryToCheck}" category already exists`);
+        throw new Error(
+          `A product named "${nameToCheck}" in the "${categoryToCheck}" category already exists`
+        );
       }
     }
 
     // Update the product
-    const updatedProduct = await FishProduct.findByIdAndUpdate(
-      productId,
-      updatedFields,
-      { new: true, runValidators: true }
-    ).lean();
+    const updatedProduct = await FishProduct.findByIdAndUpdate(productId, updatedFields, {
+      new: true,
+      runValidators: true,
+    }).lean();
 
     // Log the update
-    console.log(`Admin ${adminEmail} updated product ${updatedProduct.name} (ID: ${productId}):`, Object.keys(updatedFields));
+    console.log(
+      `Admin ${adminEmail} updated product ${updatedProduct.name} (ID: ${productId}):`,
+      Object.keys(updatedFields)
+    );
 
     return {
       success: true,
       message: SUCCESS_MESSAGES.PRODUCT_UPDATED,
-      product: updatedProduct
+      product: updatedProduct,
     };
   } catch (error) {
     console.error('Update product service error:', error);
@@ -335,7 +350,7 @@ export const updateProductService = async (productId, updateData, adminEmail) =>
 export const deleteProductService = async (productId, adminEmail) => {
   try {
     const product = await FishProduct.findById(productId);
-    
+
     if (!product) {
       throw new Error(RESOURCE_ERRORS.PRODUCT_NOT_FOUND);
     }
@@ -347,7 +362,7 @@ export const deleteProductService = async (productId, adminEmail) => {
 
     return {
       success: true,
-      message: SUCCESS_MESSAGES.PRODUCT_DELETED
+      message: SUCCESS_MESSAGES.PRODUCT_DELETED,
     };
   } catch (error) {
     console.error('Delete product service error:', error);
@@ -364,7 +379,7 @@ export const deleteProductService = async (productId, adminEmail) => {
 export const toggleProductAvailabilityService = async (productId, adminEmail) => {
   try {
     const product = await FishProduct.findById(productId);
-    
+
     if (!product) {
       throw new Error(RESOURCE_ERRORS.PRODUCT_NOT_FOUND);
     }
@@ -373,7 +388,9 @@ export const toggleProductAvailabilityService = async (productId, adminEmail) =>
     await product.save();
 
     // Log the action
-    console.log(`Admin ${adminEmail} ${product.isAvailable ? 'enabled' : 'disabled'} product ${product.name} (ID: ${productId})`);
+    console.log(
+      `Admin ${adminEmail} ${product.isAvailable ? 'enabled' : 'disabled'} product ${product.name} (ID: ${productId})`
+    );
 
     return {
       success: true,
@@ -381,8 +398,8 @@ export const toggleProductAvailabilityService = async (productId, adminEmail) =>
       product: {
         id: product._id,
         name: product.name,
-        isAvailable: product.isAvailable
-      }
+        isAvailable: product.isAvailable,
+      },
     };
   } catch (error) {
     console.error('Toggle product availability service error:', error);

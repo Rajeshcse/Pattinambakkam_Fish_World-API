@@ -7,15 +7,13 @@ export const authenticateToken = async (req, res, next) => {
     const authHeader = req.headers.authorization;
     console.log('Auth header:', authHeader ? 'Present' : 'Missing');
 
-    const token = authHeader && authHeader.startsWith('Bearer ')
-      ? authHeader.substring(7)
-      : null;
+    const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null;
 
     if (!token) {
       console.log('No token found in header');
       return res.status(401).json({
         success: false,
-        message: 'Access denied. No token provided'
+        message: 'Access denied. No token provided',
       });
     }
 
@@ -29,7 +27,7 @@ export const authenticateToken = async (req, res, next) => {
       console.log('User not found for ID:', decoded.id);
       return res.status(401).json({
         success: false,
-        message: 'Invalid token. User not found.'
+        message: 'Invalid token. User not found.',
       });
     }
 
@@ -41,20 +39,20 @@ export const authenticateToken = async (req, res, next) => {
     if (error.name === 'JsonWebTokenError') {
       return res.status(401).json({
         success: false,
-        message: 'Invalid token.'
+        message: 'Invalid token.',
       });
     }
 
     if (error.name === 'TokenExpiredError') {
       return res.status(401).json({
         success: false,
-        message: 'Token expired.'
+        message: 'Token expired.',
       });
     }
 
     res.status(500).json({
       success: false,
-      message: 'Server error during authentication'
+      message: 'Server error during authentication',
     });
   }
 };
@@ -64,7 +62,7 @@ export const authorizeRoles = (...roles) => {
     if (!roles.includes(req.user.role)) {
       return res.status(403).json({
         success: false,
-        message: 'Access denied. Insufficient permissions.'
+        message: 'Access denied. Insufficient permissions.',
       });
     }
     next();
