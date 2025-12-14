@@ -166,5 +166,117 @@ export const schemas = {
       },
       isAvailable: { type: 'boolean', example: true }
     }
+  },
+
+  // Cart Schemas
+  CartItem: {
+    type: 'object',
+    properties: {
+      _id: { type: 'string', example: '507f1f77bcf86cd799439011' },
+      product: { $ref: '#/components/schemas/FishProduct' },
+      quantity: { type: 'number', minimum: 1, example: 2 },
+      addedAt: { type: 'string', format: 'date-time', example: '2025-12-06T10:30:00.000Z' }
+    }
+  },
+
+  Cart: {
+    type: 'object',
+    properties: {
+      _id: { type: 'string', example: '507f1f77bcf86cd799439011' },
+      user: { type: 'string', example: '507f1f77bcf86cd799439012' },
+      items: {
+        type: 'array',
+        items: { $ref: '#/components/schemas/CartItem' }
+      },
+      updatedAt: { type: 'string', format: 'date-time', example: '2025-12-06T10:30:00.000Z' }
+    }
+  },
+
+  CartResponse: {
+    type: 'object',
+    properties: {
+      success: { type: 'boolean', example: true },
+      message: { type: 'string', example: 'Cart retrieved successfully' },
+      data: { $ref: '#/components/schemas/Cart' }
+    }
+  },
+
+  // Order Schemas
+  OrderItem: {
+    type: 'object',
+    properties: {
+      product: { type: 'string', example: '507f1f77bcf86cd799439011' },
+      name: { type: 'string', example: 'Fresh Vanjaram' },
+      price: { type: 'number', example: 450 },
+      quantity: { type: 'number', example: 2 },
+      subtotal: { type: 'number', example: 900 }
+    }
+  },
+
+  DeliveryDetails: {
+    type: 'object',
+    properties: {
+      address: {
+        type: 'string',
+        minLength: 10,
+        maxLength: 300,
+        example: '123 Beach Road, Pattinambakkam, Chennai - 600041'
+      },
+      phone: {
+        type: 'string',
+        pattern: '^[6-9]\\d{9}$',
+        example: '9994072395'
+      },
+      deliveryDate: {
+        type: 'string',
+        format: 'date',
+        example: '2025-12-07'
+      },
+      deliveryTime: {
+        type: 'string',
+        enum: ['08:00-12:00', '12:00-16:00', '16:00-20:00'],
+        example: '16:00-20:00'
+      }
+    }
+  },
+
+  Order: {
+    type: 'object',
+    properties: {
+      _id: { type: 'string', example: '507f1f77bcf86cd799439011' },
+      orderId: { type: 'string', example: 'ORD-20251206-001' },
+      user: {
+        type: 'object',
+        properties: {
+          _id: { type: 'string' },
+          name: { type: 'string' },
+          email: { type: 'string' }
+        }
+      },
+      items: {
+        type: 'array',
+        items: { $ref: '#/components/schemas/OrderItem' }
+      },
+      totalAmount: { type: 'number', example: 1800.00 },
+      deliveryDetails: { $ref: '#/components/schemas/DeliveryDetails' },
+      orderNotes: { type: 'string', example: 'Please clean and cut into medium pieces' },
+      paymentMethod: { type: 'string', example: 'Google Pay' },
+      status: {
+        type: 'string',
+        enum: ['pending', 'confirmed', 'preparing', 'out-for-delivery', 'delivered', 'cancelled'],
+        example: 'pending'
+      },
+      createdAt: { type: 'string', format: 'date-time', example: '2025-12-06T10:30:00.000Z' },
+      updatedAt: { type: 'string', format: 'date-time', example: '2025-12-06T10:30:00.000Z' }
+    }
+  },
+
+  OrderResponse: {
+    type: 'object',
+    properties: {
+      success: { type: 'boolean', example: true },
+      message: { type: 'string', example: 'Order created successfully' },
+      data: { $ref: '#/components/schemas/Order' }
+    }
   }
 };

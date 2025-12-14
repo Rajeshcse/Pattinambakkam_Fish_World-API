@@ -60,11 +60,28 @@ export const sendEmailVerificationOTP = async (req, res) => {
     
     console.log('Email sent successfully, messageId:', emailResult.messageId);
 
-    res.status(200).json({
+    // 🟢 DEVELOPMENT MODE: Display OTP in console
+    console.log('\n' + '='.repeat(50));
+    console.log('📧 EMAIL VERIFICATION OTP SENT');
+    console.log('='.repeat(50));
+    console.log(`👤 User: ${user.email}`);
+    console.log(`🔐 OTP: ${tokenData.otp}`);
+    console.log(`⏱️  Expires in: 10 minutes`);
+    console.log('='.repeat(50) + '\n');
+
+    const response = {
       success: true,
       message: 'Verification OTP sent to your email',
       expiresIn: '10 minutes'
-    });
+    };
+
+    // 🟢 DEVELOPMENT MODE: Include OTP in response
+    if (process.env.NODE_ENV === 'development') {
+      response.otp = tokenData.otp;
+      response.note = '⚠️  OTP shown only in DEVELOPMENT mode';
+    }
+
+    res.status(200).json(response);
   } catch (error) {
     console.error('Send verification OTP error:', error);
     res.status(500).json({
@@ -114,6 +131,8 @@ export const verifyEmail = async (req, res) => {
     });
 
     if (!token) {
+      // 🔴 DEVELOPMENT MODE: Log failed OTP attempt
+      console.log(`\n❌ INVALID OTP ATTEMPT - User: ${user.email}, OTP: ${otp}`);
       return res.status(400).json({
         success: false,
         message: 'Invalid or expired OTP'
@@ -129,6 +148,14 @@ export const verifyEmail = async (req, res) => {
 
     // Send welcome email
     await sendWelcomeEmail(user.email, user.name);
+
+    // 🟢 DEVELOPMENT MODE: Success log
+    console.log('\n' + '='.repeat(50));
+    console.log('✅ EMAIL VERIFICATION SUCCESS');
+    console.log('='.repeat(50));
+    console.log(`👤 User: ${user.email}`);
+    console.log(`🔐 OTP: ${otp}`);
+    console.log('='.repeat(50) + '\n');
 
     res.status(200).json({
       success: true,
@@ -198,11 +225,28 @@ export const resendEmailVerificationOTP = async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    // 🟢 DEVELOPMENT MODE: Display new OTP in console
+    console.log('\n' + '='.repeat(50));
+    console.log('📧 NEW EMAIL VERIFICATION OTP SENT (RESEND)');
+    console.log('='.repeat(50));
+    console.log(`👤 User: ${user.email}`);
+    console.log(`🔐 OTP: ${tokenData.otp}`);
+    console.log(`⏱️  Expires in: 10 minutes`);
+    console.log('='.repeat(50) + '\n');
+
+    const response = {
       success: true,
       message: 'New verification OTP sent to your email',
       expiresIn: '10 minutes'
-    });
+    };
+
+    // 🟢 DEVELOPMENT MODE: Include OTP in response
+    if (process.env.NODE_ENV === 'development') {
+      response.otp = tokenData.otp;
+      response.note = '⚠️  OTP shown only in DEVELOPMENT mode';
+    }
+
+    res.status(200).json(response);
   } catch (error) {
     console.error('Resend verification OTP error:', error);
     res.status(500).json({

@@ -62,6 +62,51 @@ export const responses = {
         }
       }
     }
+  },
+
+  BadRequest: {
+    description: 'Bad request - invalid input',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean', example: false },
+            message: { type: 'string', example: 'Invalid request data' }
+          }
+        }
+      }
+    }
+  },
+
+  Unauthorized: {
+    description: 'Authentication required',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean', example: false },
+            message: { type: 'string', example: 'Authentication required' }
+          }
+        }
+      }
+    }
+  },
+
+  Forbidden: {
+    description: 'Access forbidden - insufficient permissions',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            success: { type: 'boolean', example: false },
+            message: { type: 'string', example: 'Access denied. Admin role required.' }
+          }
+        }
+      }
+    }
   }
 };
 
@@ -101,5 +146,21 @@ export const tags = [
   {
     name: 'Admin - Product Management',
     description: 'Fish product CRUD operations (admin only)'
+  },
+  {
+    name: 'Products',
+    description: 'Fish product listing and details for customers'
+  },
+  {
+    name: 'Cart',
+    description: 'Shopping cart management for authenticated users'
+  },
+  {
+    name: 'Orders',
+    description: 'Order placement and management for authenticated users'
+  },
+  {
+    name: 'Admin - Orders',
+    description: 'Order management and status updates (admin only)'
   }
 ];

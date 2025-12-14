@@ -339,3 +339,94 @@ export const validateUpdateProduct = [
     .isBoolean()
     .withMessage('isAvailable must be a boolean value')
 ];
+
+// Cart validation rules
+
+export const validateAddToCart = [
+  body('productId')
+    .notEmpty()
+    .withMessage('Product ID is required')
+    .bail()
+    .isMongoId()
+    .withMessage('Invalid product ID format'),
+
+  body('quantity')
+    .notEmpty()
+    .withMessage('Quantity is required')
+    .bail()
+    .isInt({ min: 1 })
+    .withMessage('Quantity must be a positive integer')
+];
+
+export const validateUpdateCartItem = [
+  body('quantity')
+    .notEmpty()
+    .withMessage('Quantity is required')
+    .bail()
+    .isInt({ min: 1 })
+    .withMessage('Quantity must be a positive integer')
+];
+
+// Order validation rules
+
+export const validateCreateOrder = [
+  body('deliveryDetails')
+    .notEmpty()
+    .withMessage('Delivery details are required')
+    .bail()
+    .isObject()
+    .withMessage('Delivery details must be an object'),
+
+  body('deliveryDetails.address')
+    .notEmpty()
+    .withMessage('Delivery address is required')
+    .bail()
+    .trim()
+    .isLength({ min: 10, max: 300 })
+    .withMessage('Address must be between 10 and 300 characters'),
+
+  body('deliveryDetails.phone')
+    .notEmpty()
+    .withMessage('Phone number is required')
+    .bail()
+    .matches(/^[6-9]\d{9}$/)
+    .withMessage('Please provide a valid 10-digit phone number'),
+
+  body('deliveryDetails.deliveryDate')
+    .notEmpty()
+    .withMessage('Delivery date is required')
+    .bail()
+    .isISO8601()
+    .toDate()
+    .withMessage('Invalid date format'),
+
+  body('deliveryDetails.deliveryTime')
+    .notEmpty()
+    .withMessage('Delivery time slot is required')
+    .bail()
+    .isIn(['08:00-12:00', '12:00-16:00', '16:00-20:00'])
+    .withMessage('Delivery time must be one of: 08:00-12:00, 12:00-16:00, 16:00-20:00'),
+
+  body('orderNotes')
+    .optional()
+    .trim()
+    .isLength({ max: 500 })
+    .withMessage('Order notes cannot exceed 500 characters'),
+
+  body('paymentMethod')
+    .optional()
+    .trim()
+    .isLength({ max: 50 })
+    .withMessage('Payment method cannot exceed 50 characters')
+];
+
+// Admin order validation rules
+
+export const validateAdminUpdateOrderStatus = [
+  body('status')
+    .notEmpty()
+    .withMessage('Status is required')
+    .bail()
+    .isIn(['pending', 'confirmed', 'preparing', 'out-for-delivery', 'delivered', 'cancelled'])
+    .withMessage('Invalid order status')
+];

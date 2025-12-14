@@ -5,6 +5,8 @@ import connectDB from './config/database.js';
 import authRoutes from './routes/auth.js';
 import adminRoutes from './routes/admin.js';
 import productRoutes from './routes/products.js';
+import cartRoutes from './routes/cart.js';
+import orderRoutes from './routes/orders.js';
 import setupSwagger from './config/swagger/setup.js';
 import { globalErrorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { sendSuccess } from './utils/helpers/responseHelper.js';
@@ -52,12 +54,29 @@ app.get('/', (req, res) => {
         update: 'PUT /api/products/:id (Admin Only)',
         delete: 'DELETE /api/products/:id (Admin Only)',
         toggleAvailability: 'PATCH /api/products/:id/availability (Admin Only)'
+      },
+      cart: {
+        addItem: 'POST /api/cart/add (Protected)',
+        getCart: 'GET /api/cart (Protected)',
+        updateItem: 'PUT /api/cart/update/:itemId (Protected)',
+        removeItem: 'DELETE /api/cart/remove/:itemId (Protected)',
+        clearCart: 'DELETE /api/cart/clear (Protected)'
+      },
+      orders: {
+        create: 'POST /api/orders/create (Protected)',
+        myOrders: 'GET /api/orders (Protected)',
+        orderDetails: 'GET /api/orders/:orderId (Protected)',
+        cancelOrder: 'PUT /api/orders/:orderId/cancel (Protected)'
       }
     },
     features: [
       'JWT Authentication',
       'Role-based Authorization',
       'Product Management',
+      'Shopping Cart',
+      'Order Management',
+      'WhatsApp Order Confirmation',
+      '4-Hour Delivery Validation',
       'File Upload Support',
       'Rate Limiting',
       'Input Validation',
@@ -73,6 +92,8 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/cart', cartRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Error Handling Middleware (Must be last)
 app.use(notFoundHandler);
