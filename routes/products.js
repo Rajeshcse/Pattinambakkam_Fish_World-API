@@ -20,36 +20,36 @@ router.get('/:id', asyncHandler(getProductById));
 
 // Admin-only routes (protected)
 router.post(
-  '/', 
-  authenticateToken, 
-  authorizeRoles('admin'), 
-  adminLimiter, 
-  validateCreateProduct, 
+  '/',
+  authenticateToken,
+  authorizeRoles('admin'),
+  adminLimiter,
+  validateCreateProduct,
   asyncHandler(createProduct)
 );
 
 router.put(
-  '/:id', 
-  authenticateToken, 
-  authorizeRoles('admin'), 
-  adminLimiter, 
-  validateUpdateProduct, 
+  '/:id',
+  authenticateToken,
+  authorizeRoles('admin'),
+  adminLimiter,
+  validateUpdateProduct,
   asyncHandler(updateProduct)
 );
 
 router.delete(
-  '/:id', 
-  authenticateToken, 
-  authorizeRoles('admin'), 
-  adminLimiter, 
+  '/:id',
+  authenticateToken,
+  authorizeRoles('admin'),
+  adminLimiter,
   asyncHandler(deleteProduct)
 );
 
 router.patch(
-  '/:id/availability', 
-  authenticateToken, 
-  authorizeRoles('admin'), 
-  adminLimiter, 
+  '/:id/availability',
+  authenticateToken,
+  authorizeRoles('admin'),
+  adminLimiter,
   asyncHandler(toggleProductAvailability)
 );
 

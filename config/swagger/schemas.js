@@ -108,7 +108,10 @@ export const schemas = {
       category: { type: 'string', enum: ['Fish', 'Prawn', 'Crab', 'Squid'], example: 'Fish' },
       price: { type: 'number', example: 450 },
       stock: { type: 'number', example: 25 },
-      description: { type: 'string', example: 'High quality fresh Vanjaram fish sourced from local fishermen' },
+      description: {
+        type: 'string',
+        example: 'High quality fresh Vanjaram fish sourced from local fishermen'
+      },
       images: {
         type: 'array',
         items: { type: 'string' },
@@ -257,7 +260,7 @@ export const schemas = {
         type: 'array',
         items: { $ref: '#/components/schemas/OrderItem' }
       },
-      totalAmount: { type: 'number', example: 1800.00 },
+      totalAmount: { type: 'number', example: 1800.0 },
       deliveryDetails: { $ref: '#/components/schemas/DeliveryDetails' },
       orderNotes: { type: 'string', example: 'Please clean and cut into medium pieces' },
       paymentMethod: { type: 'string', example: 'Google Pay' },

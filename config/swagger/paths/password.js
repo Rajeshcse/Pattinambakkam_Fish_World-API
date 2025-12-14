@@ -31,7 +31,8 @@ export const passwordPaths = {
                   success: { type: 'boolean', example: true },
                   message: {
                     type: 'string',
-                    example: 'If an account exists with this email, a password reset OTP has been sent'
+                    example:
+                      'If an account exists with this email, a password reset OTP has been sent'
                   },
                   expiresIn: { type: 'string', example: '10 minutes' }
                 }
@@ -75,7 +76,10 @@ export const passwordPaths = {
                 type: 'object',
                 properties: {
                   success: { type: 'boolean', example: true },
-                  message: { type: 'string', example: 'Password reset successful. Please login with your new password.' }
+                  message: {
+                    type: 'string',
+                    example: 'Password reset successful. Please login with your new password.'
+                  }
                 }
               }
             }
@@ -135,7 +139,10 @@ export const passwordPaths = {
                 type: 'object',
                 properties: {
                   success: { type: 'boolean', example: true },
-                  message: { type: 'string', example: 'Password changed successfully. Other sessions have been logged out.' }
+                  message: {
+                    type: 'string',
+                    example: 'Password changed successfully. Other sessions have been logged out.'
+                  }
                 }
               }
             }
@@ -152,7 +159,10 @@ export const passwordPaths = {
                     type: 'object',
                     properties: {
                       success: { type: 'boolean', example: false },
-                      message: { type: 'string', example: 'New password must be different from current password' }
+                      message: {
+                        type: 'string',
+                        example: 'New password must be different from current password'
+                      }
                     }
                   }
                 ]
@@ -171,7 +181,8 @@ export const passwordPaths = {
                   message: {
                     type: 'string',
                     example: 'Current password is incorrect',
-                    description: 'Can be "Access denied. No token provided", "Invalid token", "Token expired", or "Current password is incorrect"'
+                    description:
+                      'Can be "Access denied. No token provided", "Invalid token", "Token expired", or "Current password is incorrect"'
                   }
                 }
               }

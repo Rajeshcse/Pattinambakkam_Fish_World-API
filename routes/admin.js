@@ -26,10 +26,7 @@ import {
   validateAdminUpdateOrderStatus
 } from '../middleware/validation.js';
 
-import {
-  adminLimiter,
-  adminBulkLimiter
-} from '../middleware/rateLimiter.js';
+import { adminLimiter, adminBulkLimiter } from '../middleware/rateLimiter.js';
 
 import { asyncHandler } from '../middleware/errorHandler.js';
 
@@ -58,12 +55,21 @@ router.put('/users/:id/role', validateAdminChangeRole, asyncHandler(changeUserRo
 router.put('/users/:id/verification', asyncHandler(toggleUserVerification));
 
 // Bulk operations (with additional rate limiting)
-router.post('/users/bulk-action', adminBulkLimiter, validateAdminBulkAction, asyncHandler(bulkUserAction));
+router.post(
+  '/users/bulk-action',
+  adminBulkLimiter,
+  validateAdminBulkAction,
+  asyncHandler(bulkUserAction)
+);
 
 // Order management routes
 router.get('/orders', asyncHandler(adminGetAllOrders));
 router.get('/orders/stats', asyncHandler(adminGetOrderStats));
-router.put('/orders/:orderId/status', validateAdminUpdateOrderStatus, asyncHandler(adminUpdateOrderStatus));
+router.put(
+  '/orders/:orderId/status',
+  validateAdminUpdateOrderStatus,
+  asyncHandler(adminUpdateOrderStatus)
+);
 router.put('/orders/:orderId/confirm-payment', asyncHandler(confirmPayment));
 
 export default router;

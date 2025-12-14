@@ -40,12 +40,7 @@ export const placeOrder = async (req, res) => {
 
     const order = await createOrder(userId, orderData);
 
-    return sendSuccess(
-      res,
-      order,
-      'Order placed successfully',
-      HTTP_STATUS.CREATED
-    );
+    return sendSuccess(res, order, 'Order placed successfully', HTTP_STATUS.CREATED);
   } catch (error) {
     console.error('Place order error:', error);
 

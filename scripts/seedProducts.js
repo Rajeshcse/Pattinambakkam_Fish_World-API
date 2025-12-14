@@ -10,7 +10,8 @@ const sampleProducts = [
     category: 'Fish',
     price: 650,
     stock: 25,
-    description: 'Premium king fish, வஞ்சரம் - Rich in omega-3, perfect for fry or curry. Fresh catch from Pattinambakkam.',
+    description:
+      'Premium king fish, வஞ்சரம் - Rich in omega-3, perfect for fry or curry. Fresh catch from Pattinambakkam.',
     images: ['https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500'],
     createdBy: 'admin@example.com',
     isAvailable: true
@@ -20,7 +21,8 @@ const sampleProducts = [
     category: 'Fish',
     price: 800,
     stock: 15,
-    description: 'வெள்ளை வாவல் - Soft, delicate white meat. Best for frying. Highly sought after premium fish.',
+    description:
+      'வெள்ளை வாவல் - Soft, delicate white meat. Best for frying. Highly sought after premium fish.',
     images: ['https://images.unsplash.com/photo-1559717201-fbb671ff56b7?w=500'],
     createdBy: 'admin@example.com',
     isAvailable: true
@@ -30,7 +32,8 @@ const sampleProducts = [
     category: 'Prawn',
     price: 550,
     stock: 30,
-    description: 'இறால் - Jumbo size tiger prawns. Perfect for biryani, fry, or curry. Fresh and meaty.',
+    description:
+      'இறால் - Jumbo size tiger prawns. Perfect for biryani, fry, or curry. Fresh and meaty.',
     images: ['https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?w=500'],
     createdBy: 'admin@example.com',
     isAvailable: true
@@ -80,7 +83,8 @@ const sampleProducts = [
     category: 'Fish',
     price: 200,
     stock: 50,
-    description: 'மத்தி - Small, delicious fish. Perfect for frying. Very affordable and nutritious.',
+    description:
+      'மத்தி - Small, delicious fish. Perfect for frying. Very affordable and nutritious.',
     images: ['https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=500'],
     createdBy: 'admin@example.com',
     isAvailable: true

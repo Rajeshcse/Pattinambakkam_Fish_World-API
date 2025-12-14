@@ -5,7 +5,8 @@ export const adminPaths = {
     get: {
       tags: ['Admin Management'],
       summary: 'Get admin dashboard statistics',
-      description: 'Retrieve comprehensive dashboard statistics including user counts, recent registrations, role distribution, and recent users',
+      description:
+        'Retrieve comprehensive dashboard statistics including user counts, recent registrations, role distribution, and recent users',
       security: [{ bearerAuth: [] }],
       responses: {
         200: {
@@ -69,7 +70,8 @@ export const adminPaths = {
     get: {
       tags: ['Admin - User Management'],
       summary: 'Get all users with pagination and filters',
-      description: 'Retrieve paginated list of users with optional filtering by role, verification status, and search',
+      description:
+        'Retrieve paginated list of users with optional filtering by role, verification status, and search',
       security: [{ bearerAuth: [] }],
       parameters: [
         {
@@ -206,7 +208,11 @@ export const adminPaths = {
                 name: { type: 'string', example: 'John Updated' },
                 email: { type: 'string', format: 'email', example: 'john.updated@example.com' },
                 phone: { type: 'string', pattern: '^[6-9]\\d{9}$', example: '9876543211' },
-                avatar: { type: 'string', format: 'uri', example: 'https://example.com/avatar.jpg' },
+                avatar: {
+                  type: 'string',
+                  format: 'uri',
+                  example: 'https://example.com/avatar.jpg'
+                },
                 isVerified: { type: 'boolean', example: true }
               }
             }
@@ -457,7 +463,8 @@ export const adminPaths = {
     post: {
       tags: ['Admin - Bulk Operations'],
       summary: 'Perform bulk operations on users',
-      description: 'Perform bulk delete, verify, or unverify operations on multiple users (max 100)',
+      description:
+        'Perform bulk delete, verify, or unverify operations on multiple users (max 100)',
       security: [{ bearerAuth: [] }],
       requestBody: {
         required: true,
@@ -467,10 +474,10 @@ export const adminPaths = {
               type: 'object',
               required: ['action', 'userIds'],
               properties: {
-                action: { 
-                  type: 'string', 
-                  enum: ['delete', 'verify', 'unverify'], 
-                  example: 'verify' 
+                action: {
+                  type: 'string',
+                  enum: ['delete', 'verify', 'unverify'],
+                  example: 'verify'
                 },
                 userIds: {
                   type: 'array',
@@ -511,8 +518,11 @@ export const adminPaths = {
                     type: 'object',
                     properties: {
                       success: { type: 'boolean', example: false },
-                      message: { type: 'string', example: 'Cannot perform bulk actions on your own account' },
-                      invalidIds: { 
+                      message: {
+                        type: 'string',
+                        example: 'Cannot perform bulk actions on your own account'
+                      },
+                      invalidIds: {
                         type: 'array',
                         items: { type: 'string' }
                       }
@@ -533,7 +543,10 @@ export const adminPaths = {
                 type: 'object',
                 properties: {
                   success: { type: 'boolean', example: false },
-                  message: { type: 'string', example: 'Too many bulk operations, please try again after 15 minutes' }
+                  message: {
+                    type: 'string',
+                    example: 'Too many bulk operations, please try again after 15 minutes'
+                  }
                 }
               }
             }

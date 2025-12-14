@@ -33,11 +33,13 @@ const fishProductSchema = new mongoose.Schema({
     maxlength: [500, 'Description cannot exceed 500 characters'],
     default: ''
   },
-  images: [{
-    type: String,
-    trim: true,
-    default: ''
-  }],
+  images: [
+    {
+      type: String,
+      trim: true,
+      default: ''
+    }
+  ],
   createdBy: {
     type: String,
     required: [true, 'Admin email is required'],
@@ -59,13 +61,13 @@ const fishProductSchema = new mongoose.Schema({
 });
 
 // Update the updatedAt field before saving
-fishProductSchema.pre('save', function(next) {
+fishProductSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
 // Ensure isAvailable is set to false when stock is 0
-fishProductSchema.pre('save', function(next) {
+fishProductSchema.pre('save', function (next) {
   if (this.stock === 0) {
     this.isAvailable = false;
   } else if (this.stock > 0 && !this.isModified('isAvailable')) {

@@ -54,7 +54,10 @@ export const verificationPaths = {
                 type: 'object',
                 properties: {
                   success: { type: 'boolean', example: false },
-                  message: { type: 'string', example: 'Failed to send verification email. Please try again.' }
+                  message: {
+                    type: 'string',
+                    example: 'Failed to send verification email. Please try again.'
+                  }
                 }
               }
             }
@@ -110,7 +113,8 @@ export const verificationPaths = {
                   message: {
                     type: 'string',
                     example: 'Invalid or expired OTP',
-                    description: 'Can be "Invalid or expired OTP", "Email is already verified", or validation errors'
+                    description:
+                      'Can be "Invalid or expired OTP", "Email is already verified", or validation errors'
                   }
                 }
               }
@@ -184,7 +188,10 @@ export const verificationPaths = {
                 type: 'object',
                 properties: {
                   success: { type: 'boolean', example: false },
-                  message: { type: 'string', example: 'Please wait at least 1 minute before requesting a new OTP' }
+                  message: {
+                    type: 'string',
+                    example: 'Please wait at least 1 minute before requesting a new OTP'
+                  }
                 }
               }
             }
@@ -198,7 +205,10 @@ export const verificationPaths = {
                 type: 'object',
                 properties: {
                   success: { type: 'boolean', example: false },
-                  message: { type: 'string', example: 'Failed to send verification email. Please try again.' }
+                  message: {
+                    type: 'string',
+                    example: 'Failed to send verification email. Please try again.'
+                  }
                 }
               }
             }

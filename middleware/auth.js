@@ -7,9 +7,7 @@ export const authenticateToken = async (req, res, next) => {
     const authHeader = req.headers.authorization;
     console.log('Auth header:', authHeader ? 'Present' : 'Missing');
 
-    const token = authHeader && authHeader.startsWith('Bearer ')
-      ? authHeader.substring(7)
-      : null;
+    const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.substring(7) : null;
 
     if (!token) {
       console.log('No token found in header');

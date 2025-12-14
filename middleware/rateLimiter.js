@@ -9,7 +9,7 @@ export const apiLimiter = rateLimit({
     message: 'Too many requests from this IP, please try again after 15 minutes'
   },
   standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers
 });
 
 // Strict rate limiter for authentication endpoints
@@ -22,7 +22,7 @@ export const authLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  skipSuccessfulRequests: false, // Count all requests
+  skipSuccessfulRequests: false // Count all requests
 });
 
 // Rate limiter for login attempts
@@ -35,7 +35,7 @@ export const loginLimiter = rateLimit({
   },
   standardHeaders: true,
   legacyHeaders: false,
-  skipSuccessfulRequests: true, // Don't count successful login attempts
+  skipSuccessfulRequests: true // Don't count successful login attempts
 });
 
 // Rate limiter for registration
@@ -47,7 +47,7 @@ export const registerLimiter = rateLimit({
     message: 'Too many accounts created from this IP, please try again after an hour'
   },
   standardHeaders: true,
-  legacyHeaders: false,
+  legacyHeaders: false
 });
 
 // Rate limiter for password reset requests
@@ -59,7 +59,7 @@ export const passwordResetLimiter = rateLimit({
     message: 'Too many password reset attempts, please try again after 15 minutes'
   },
   standardHeaders: true,
-  legacyHeaders: false,
+  legacyHeaders: false
 });
 
 // Rate limiter for OTP/verification requests
@@ -71,7 +71,7 @@ export const otpLimiter = rateLimit({
     message: 'Too many OTP requests, please try again after 15 minutes'
   },
   standardHeaders: true,
-  legacyHeaders: false,
+  legacyHeaders: false
 });
 
 // Rate limiter for profile updates
@@ -83,7 +83,7 @@ export const profileUpdateLimiter = rateLimit({
     message: 'Too many profile update requests, please try again later'
   },
   standardHeaders: true,
-  legacyHeaders: false,
+  legacyHeaders: false
 });
 
 // Admin rate limiters
@@ -97,7 +97,7 @@ export const adminLimiter = rateLimit({
     message: 'Too many admin requests, please try again after 15 minutes'
   },
   standardHeaders: true,
-  legacyHeaders: false,
+  legacyHeaders: false
 });
 
 // Strict rate limiter for admin bulk operations
@@ -109,7 +109,7 @@ export const adminBulkLimiter = rateLimit({
     message: 'Too many bulk operations, please try again after 15 minutes'
   },
   standardHeaders: true,
-  legacyHeaders: false,
+  legacyHeaders: false
 });
 
 // Rate limiter for user deletion operations
@@ -121,5 +121,5 @@ export const adminDeleteLimiter = rateLimit({
     message: 'Too many delete operations, please try again after an hour'
   },
   standardHeaders: true,
-  legacyHeaders: false,
+  legacyHeaders: false
 });

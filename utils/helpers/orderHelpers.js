@@ -60,11 +60,14 @@ export const validateDeliveryTime = (deliveryDate, deliveryTime) => {
   if (selectedDeliveryTime < minimumDeliveryTime) {
     return {
       valid: false,
-      message: `Delivery time must be at least 4 hours from now. Minimum delivery time: ${minimumDeliveryTime.toLocaleString('en-IN', {
-        timeZone: 'Asia/Kolkata',
-        dateStyle: 'medium',
-        timeStyle: 'short'
-      })}`,
+      message: `Delivery time must be at least 4 hours from now. Minimum delivery time: ${minimumDeliveryTime.toLocaleString(
+        'en-IN',
+        {
+          timeZone: 'Asia/Kolkata',
+          dateStyle: 'medium',
+          timeStyle: 'short'
+        }
+      )}`,
       minimumTime: minimumDeliveryTime
     };
   }
@@ -122,9 +125,7 @@ export const getAvailableTimeSlots = (date) => {
     slotDateTime.setHours(start, 0, 0, 0);
 
     const available = slotDateTime >= minimumTime;
-    const reason = available
-      ? 'Available'
-      : 'Requires at least 4 hours advance notice';
+    const reason = available ? 'Available' : 'Requires at least 4 hours advance notice';
 
     return { slot, available, reason };
   });

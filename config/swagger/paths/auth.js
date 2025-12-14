@@ -32,9 +32,18 @@ export const authPaths = {
                 type: 'object',
                 properties: {
                   success: { type: 'boolean', example: true },
-                  message: { type: 'string', example: 'User registered successfully. Please verify your email.' },
-                  accessToken: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
-                  refreshToken: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
+                  message: {
+                    type: 'string',
+                    example: 'User registered successfully. Please verify your email.'
+                  },
+                  accessToken: {
+                    type: 'string',
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+                  },
+                  refreshToken: {
+                    type: 'string',
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+                  },
                   user: { $ref: '#/components/schemas/User' }
                 }
               }
@@ -104,8 +113,14 @@ export const authPaths = {
                 properties: {
                   success: { type: 'boolean', example: true },
                   message: { type: 'string', example: 'Login successful' },
-                  accessToken: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
-                  refreshToken: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
+                  accessToken: {
+                    type: 'string',
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+                  },
+                  refreshToken: {
+                    type: 'string',
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+                  },
                   user: { $ref: '#/components/schemas/User' }
                 }
               }
@@ -164,7 +179,10 @@ export const authPaths = {
                 type: 'object',
                 properties: {
                   success: { type: 'boolean', example: true },
-                  accessToken: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' }
+                  accessToken: {
+                    type: 'string',
+                    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+                  }
                 }
               }
             }
@@ -181,7 +199,8 @@ export const authPaths = {
                   message: {
                     type: 'string',
                     example: 'Invalid or expired refresh token',
-                    description: 'Can be "Refresh token is required", "Invalid or expired refresh token", "User not found", or "Invalid refresh token"'
+                    description:
+                      'Can be "Refresh token is required", "Invalid or expired refresh token", "User not found", or "Invalid refresh token"'
                   }
                 }
               }

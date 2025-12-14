@@ -12,11 +12,7 @@ import {
   clearCart,
   getCartItemCount
 } from '../services/cartService.js';
-import {
-  sendSuccess,
-  sendError,
-  sendValidationError
-} from '../utils/helpers/responseHelper.js';
+import { sendSuccess, sendError, sendValidationError } from '../utils/helpers/responseHelper.js';
 import { isValidObjectId } from '../utils/helpers/validationHelper.js';
 import { HTTP_STATUS, SUCCESS_MESSAGES } from '../constants/index.js';
 
@@ -41,12 +37,7 @@ export const addItemToCart = async (req, res) => {
 
     const cart = await addToCart(userId, productId, parseInt(quantity));
 
-    return sendSuccess(
-      res,
-      cart,
-      'Item added to cart successfully',
-      HTTP_STATUS.OK
-    );
+    return sendSuccess(res, cart, 'Item added to cart successfully', HTTP_STATUS.OK);
   } catch (error) {
     console.error('Add to cart error:', error);
 

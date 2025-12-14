@@ -36,13 +36,13 @@ const tokenSchema = new mongoose.Schema({
 tokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 // Generate OTP
-tokenSchema.methods.generateOTP = function() {
+tokenSchema.methods.generateOTP = function () {
   this.otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
   return this.otp;
 };
 
 // Generate token hash
-tokenSchema.statics.createToken = function(userId, type) {
+tokenSchema.statics.createToken = function (userId, type) {
   const token = crypto.randomBytes(32).toString('hex');
   const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
 

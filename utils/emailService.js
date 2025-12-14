@@ -34,7 +34,7 @@ const createTransporter = () => {
 export const sendVerificationEmail = async (email, otp, name) => {
   try {
     console.log('sendVerificationEmail called with:', { email, otp, name });
-    
+
     // In development, just log to console instead of sending real email
     if (process.env.NODE_ENV !== 'production') {
       console.log('\n========================================');

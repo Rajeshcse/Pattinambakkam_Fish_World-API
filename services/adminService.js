@@ -12,13 +12,7 @@ import { SUCCESS_MESSAGES } from '../constants/index.js';
  * Get all users with pagination and filters
  */
 export const getAllUsersService = async (queryParams) => {
-  const {
-    page = 1,
-    limit = 10,
-    role,
-    isVerified,
-    search
-  } = queryParams;
+  const { page = 1, limit = 10, role, isVerified, search } = queryParams;
 
   const skip = (page - 1) * limit;
 
@@ -35,10 +29,7 @@ export const getAllUsersService = async (queryParams) => {
 
   if (search) {
     const searchRegex = new RegExp(search, 'i');
-    filter.$or = [
-      { name: searchRegex },
-      { email: searchRegex }
-    ];
+    filter.$or = [{ name: searchRegex }, { email: searchRegex }];
   }
 
   // Get users with pagination
@@ -63,11 +54,7 @@ export const getAllUsersService = async (queryParams) => {
         adminUsers: { $sum: { $cond: [{ $eq: ['$role', 'admin'] }, 1, 0] } },
         recentUsers: {
           $sum: {
-            $cond: [
-              { $gte: ['$createdAt', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)] },
-              1,
-              0
-            ]
+            $cond: [{ $gte: ['$createdAt', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)] }, 1, 0]
           }
         }
       }
@@ -148,11 +135,12 @@ export const updateUserService = async (userId, updateData, adminEmail) => {
   if (avatar !== undefined) updateFields.avatar = avatar;
   if (isEmailVerified !== undefined) updateFields.isEmailVerified = isEmailVerified;
 
-  const updatedUser = await User.findByIdAndUpdate(
-    userId,
-    updateFields,
-    { new: true, runValidators: true }
-  ).select('-password -refreshTokens').lean();
+  const updatedUser = await User.findByIdAndUpdate(userId, updateFields, {
+    new: true,
+    runValidators: true
+  })
+    .select('-password -refreshTokens')
+    .lean();
 
   // Log admin action
   console.log(`Admin ${adminEmail} updated user ${updatedUser.email}:`, updateFields);
@@ -222,7 +210,9 @@ export const changeUserRoleService = async (userId, newRole, adminId, adminEmail
   await user.save();
 
   // Log admin action
-  console.log(`Admin ${adminEmail} changed user ${user.email} role from ${previousRole} to ${newRole}`);
+  console.log(
+    `Admin ${adminEmail} changed user ${user.email} role from ${previousRole} to ${newRole}`
+  );
 
   return {
     user: {
@@ -255,7 +245,9 @@ export const toggleUserVerificationService = async (userId, adminEmail) => {
   await user.save();
 
   // Log admin action
-  console.log(`Admin ${adminEmail} ${user.isEmailVerified ? 'verified' : 'unverified'} user ${user.email}`);
+  console.log(
+    `Admin ${adminEmail} ${user.isEmailVerified ? 'verified' : 'unverified'} user ${user.email}`
+  );
 
   return {
     user: {
@@ -334,7 +326,7 @@ export const bulkUserActionService = async (action, userIds, adminId, adminEmail
   }
 
   // Validate all user IDs
-  const invalidIds = userIds.filter(id => !isValidObjectId(id));
+  const invalidIds = userIds.filter((id) => !isValidObjectId(id));
   if (invalidIds.length > 0) {
     throw new Error(`Invalid user IDs found: ${invalidIds.join(', ')}`);
   }

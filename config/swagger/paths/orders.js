@@ -3,7 +3,8 @@ export const orderPaths = {
     post: {
       tags: ['Orders'],
       summary: 'Create order from cart',
-      description: 'Place an order from cart items with delivery details. Validates 4-hour minimum delivery time.',
+      description:
+        'Place an order from cart items with delivery details. Validates 4-hour minimum delivery time.',
       security: [{ bearerAuth: [] }],
       requestBody: {
         required: true,
@@ -75,7 +76,7 @@ export const orderPaths = {
     get: {
       tags: ['Orders'],
       summary: 'Get user orders',
-      description: 'Retrieve authenticated user\'s order history',
+      description: "Retrieve authenticated user's order history",
       security: [{ bearerAuth: [] }],
       parameters: [
         {
@@ -83,7 +84,14 @@ export const orderPaths = {
           in: 'query',
           schema: {
             type: 'string',
-            enum: ['pending', 'confirmed', 'preparing', 'out-for-delivery', 'delivered', 'cancelled']
+            enum: [
+              'pending',
+              'confirmed',
+              'preparing',
+              'out-for-delivery',
+              'delivered',
+              'cancelled'
+            ]
           },
           description: 'Filter by order status'
         },
@@ -126,7 +134,7 @@ export const orderPaths = {
     get: {
       tags: ['Orders'],
       summary: 'Get user order statistics',
-      description: 'Get statistics about user\'s orders',
+      description: "Get statistics about user's orders",
       security: [{ bearerAuth: [] }],
       responses: {
         200: {
@@ -144,7 +152,7 @@ export const orderPaths = {
                       pendingOrders: { type: 'number', example: 2 },
                       deliveredOrders: { type: 'number', example: 7 },
                       cancelledOrders: { type: 'number', example: 1 },
-                      totalSpent: { type: 'number', example: 5500.00 }
+                      totalSpent: { type: 'number', example: 5500.0 }
                     }
                   }
                 }
@@ -229,7 +237,14 @@ export const orderPaths = {
           in: 'query',
           schema: {
             type: 'string',
-            enum: ['pending', 'confirmed', 'preparing', 'out-for-delivery', 'delivered', 'cancelled']
+            enum: [
+              'pending',
+              'confirmed',
+              'preparing',
+              'out-for-delivery',
+              'delivered',
+              'cancelled'
+            ]
           }
         },
         {
@@ -350,7 +365,14 @@ export const orderPaths = {
               properties: {
                 status: {
                   type: 'string',
-                  enum: ['pending', 'confirmed', 'preparing', 'out-for-delivery', 'delivered', 'cancelled'],
+                  enum: [
+                    'pending',
+                    'confirmed',
+                    'preparing',
+                    'out-for-delivery',
+                    'delivered',
+                    'cancelled'
+                  ],
                   example: 'confirmed'
                 }
               }

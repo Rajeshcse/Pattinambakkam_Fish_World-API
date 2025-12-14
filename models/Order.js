@@ -62,7 +62,7 @@ const orderSchema = new mongoose.Schema({
       required: [true, 'Phone number is required'],
       trim: true,
       validate: {
-        validator: function(v) {
+        validator: function (v) {
           return /^[6-9]\d{9}$/.test(v);
         },
         message: 'Phone number must be a valid 10-digit number starting with 6-9'
@@ -125,10 +125,10 @@ const orderSchema = new mongoose.Schema({
     // Razorpay transaction tracking
     razorpayTransactionId: {
       type: String,
-      sparse: true  // Only exists for razorpay-link payments
+      sparse: true // Only exists for razorpay-link payments
     },
     paymentNote: {
-      type: String,  // Admin can add notes about payment verification
+      type: String, // Admin can add notes about payment verification
       trim: true
     }
   },
@@ -154,7 +154,7 @@ const orderSchema = new mongoose.Schema({
 });
 
 // Update the updatedAt field before saving
-orderSchema.pre('save', function(next) {
+orderSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });

@@ -78,7 +78,8 @@ export const profilePaths = {
                       message: {
                         type: 'string',
                         example: 'Email already in use',
-                        description: 'Can be "Email already in use" or "Phone number already in use"'
+                        description:
+                          'Can be "Email already in use" or "Phone number already in use"'
                       }
                     }
                   }

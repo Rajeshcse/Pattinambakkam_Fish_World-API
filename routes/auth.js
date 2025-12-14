@@ -36,7 +36,6 @@ import {
   validateLogout
 } from '../middleware/validation.js';
 
-
 const router = express.Router();
 
 router.post('/register', validateRegister, register);

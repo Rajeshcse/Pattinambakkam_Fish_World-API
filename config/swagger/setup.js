@@ -18,7 +18,8 @@ const options = {
     info: {
       title: 'Pattinambakkam_Fish_World API Documentation',
       version: '1.0.0',
-      description: 'Complete authentication and user management API for Pattinambakkam_Fish_World application - AI picture books for Kids to publish in KDP. Includes role-based admin access control with comprehensive user management capabilities.',
+      description:
+        'Complete authentication and user management API for Pattinambakkam_Fish_World application - AI picture books for Kids to publish in KDP. Includes role-based admin access control with comprehensive user management capabilities.',
       contact: {
         name: 'Pattinambakkam_Fish_World API Support',
         email: 'support@Pattinambakkam_Fish_World.com'
@@ -64,19 +65,23 @@ const swaggerSpec = swaggerJsdoc(options);
 
 // Setup Swagger UI middleware
 export const setupSwagger = (app) => {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-    customCss: '.swagger-ui .topbar { display: none }',
-    customSiteTitle: 'Pattinambakkam_Fish_World API Documentation',
-    customfavIcon: '/favicon.ico',
-    swaggerOptions: {
-      persistAuthorization: true,
-      displayRequestDuration: true,
-      docExpansion: 'none', // Keep sections collapsed by default
-      filter: true, // Enable filtering
-      showExtensions: true,
-      showCommonExtensions: true
-    }
-  }));
+  app.use(
+    '/api-docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, {
+      customCss: '.swagger-ui .topbar { display: none }',
+      customSiteTitle: 'Pattinambakkam_Fish_World API Documentation',
+      customfavIcon: '/favicon.ico',
+      swaggerOptions: {
+        persistAuthorization: true,
+        displayRequestDuration: true,
+        docExpansion: 'none', // Keep sections collapsed by default
+        filter: true, // Enable filtering
+        showExtensions: true,
+        showCommonExtensions: true
+      }
+    })
+  );
 
   console.log('✅ Swagger documentation initialized at /api-docs');
 };

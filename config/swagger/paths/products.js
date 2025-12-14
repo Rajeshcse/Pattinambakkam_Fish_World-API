@@ -5,7 +5,8 @@ export const productPaths = {
     get: {
       tags: ['Admin - Product Management'],
       summary: 'Get all fish products with pagination and filters',
-      description: 'Retrieve paginated list of fish products with optional filtering by category, availability, price range, and search. Public endpoint - no authentication required.',
+      description:
+        'Retrieve paginated list of fish products with optional filtering by category, availability, price range, and search. Public endpoint - no authentication required.',
       parameters: [
         {
           in: 'query',
@@ -79,7 +80,7 @@ export const productPaths = {
                       totalProducts: { type: 'number', example: 45 },
                       availableProducts: { type: 'number', example: 42 },
                       totalStock: { type: 'number', example: 500 },
-                      averagePrice: { type: 'number', example: 450.50 }
+                      averagePrice: { type: 'number', example: 450.5 }
                     }
                   }
                 }
@@ -94,7 +95,8 @@ export const productPaths = {
     post: {
       tags: ['Admin - Product Management'],
       summary: 'Create a new fish product',
-      description: 'Create a new fish product listing with name, category, price, stock, and optional description and images. Admin only operation.',
+      description:
+        'Create a new fish product listing with name, category, price, stock, and optional description and images. Admin only operation.',
       security: [{ bearerAuth: [] }],
       requestBody: {
         required: true,
@@ -106,7 +108,8 @@ export const productPaths = {
               category: 'Fish',
               price: 450,
               stock: 25,
-              description: 'High quality fresh Vanjaram fish sourced from local fishermen in Pattinambakkam',
+              description:
+                'High quality fresh Vanjaram fish sourced from local fishermen in Pattinambakkam',
               images: ['https://example.com/vanjaram1.jpg', 'https://example.com/vanjaram2.jpg']
             }
           }
@@ -146,7 +149,8 @@ export const productPaths = {
     get: {
       tags: ['Admin - Product Management'],
       summary: 'Get single fish product by ID',
-      description: 'Retrieve detailed information about a specific fish product. Public endpoint - no authentication required.',
+      description:
+        'Retrieve detailed information about a specific fish product. Public endpoint - no authentication required.',
       parameters: [
         {
           in: 'path',
@@ -205,7 +209,8 @@ export const productPaths = {
     put: {
       tags: ['Admin - Product Management'],
       summary: 'Update a fish product',
-      description: 'Update an existing fish product. All fields are optional - only provided fields will be updated. Admin only operation.',
+      description:
+        'Update an existing fish product. All fields are optional - only provided fields will be updated. Admin only operation.',
       security: [{ bearerAuth: [] }],
       parameters: [
         {
@@ -276,7 +281,8 @@ export const productPaths = {
     delete: {
       tags: ['Admin - Product Management'],
       summary: 'Delete a fish product',
-      description: 'Permanently delete a fish product from the database. This action cannot be undone. Admin only operation.',
+      description:
+        'Permanently delete a fish product from the database. This action cannot be undone. Admin only operation.',
       security: [{ bearerAuth: [] }],
       parameters: [
         {
@@ -340,7 +346,8 @@ export const productPaths = {
     patch: {
       tags: ['Admin - Product Management'],
       summary: 'Toggle product availability (hide/show)',
-      description: 'Update the availability status of a product without deleting it. Use this to temporarily hide products from customers. Admin only operation.',
+      description:
+        'Update the availability status of a product without deleting it. Use this to temporarily hide products from customers. Admin only operation.',
       security: [{ bearerAuth: [] }],
       parameters: [
         {

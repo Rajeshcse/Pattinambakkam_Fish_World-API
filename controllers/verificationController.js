@@ -46,7 +46,7 @@ export const sendEmailVerificationOTP = async (req, res) => {
       otp: tokenData.otp,
       name: user.name
     });
-    
+
     const emailResult = await sendVerificationEmail(user.email, tokenData.otp, user.name);
     console.log('Email result:', emailResult);
 
@@ -57,7 +57,7 @@ export const sendEmailVerificationOTP = async (req, res) => {
         message: 'Failed to send verification email. Please try again.'
       });
     }
-    
+
     console.log('Email sent successfully, messageId:', emailResult.messageId);
 
     // 🟢 DEVELOPMENT MODE: Display OTP in console

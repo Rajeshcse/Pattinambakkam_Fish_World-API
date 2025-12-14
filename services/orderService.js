@@ -1,7 +1,11 @@
 import Order from '../models/Order.js';
 import Cart from '../models/Cart.js';
 import FishProduct from '../models/FishProduct.js';
-import { generateOrderId, validateDeliveryTime, calculateOrderTotal } from '../utils/helpers/orderHelpers.js';
+import {
+  generateOrderId,
+  validateDeliveryTime,
+  calculateOrderTotal
+} from '../utils/helpers/orderHelpers.js';
 import { validateCart, clearCart } from './cartService.js';
 
 /**
@@ -253,7 +257,14 @@ export const getAllOrders = async (filters = {}) => {
  * @returns {Promise<Object>} Updated order
  */
 export const updateOrderStatus = async (orderId, status) => {
-  const validStatuses = ['pending', 'confirmed', 'preparing', 'out-for-delivery', 'delivered', 'cancelled'];
+  const validStatuses = [
+    'pending',
+    'confirmed',
+    'preparing',
+    'out-for-delivery',
+    'delivered',
+    'cancelled'
+  ];
 
   if (!validStatuses.includes(status)) {
     throw new Error('Invalid status');

@@ -3,7 +3,7 @@ export const cartPaths = {
     post: {
       tags: ['Cart'],
       summary: 'Add item to cart',
-      description: 'Add a product to the user\'s shopping cart with specified quantity',
+      description: "Add a product to the user's shopping cart with specified quantity",
       security: [{ bearerAuth: [] }],
       requestBody: {
         required: true,
@@ -48,7 +48,7 @@ export const cartPaths = {
     get: {
       tags: ['Cart'],
       summary: 'Get user cart',
-      description: 'Retrieve the authenticated user\'s shopping cart with populated product details',
+      description: "Retrieve the authenticated user's shopping cart with populated product details",
       security: [{ bearerAuth: [] }],
       responses: {
         200: {

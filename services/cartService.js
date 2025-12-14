@@ -47,9 +47,7 @@ export const addToCart = async (userId, productId, quantity) => {
   }
 
   // Check if product already exists in cart
-  const existingItemIndex = cart.items.findIndex(
-    item => item.product.toString() === productId
-  );
+  const existingItemIndex = cart.items.findIndex((item) => item.product.toString() === productId);
 
   if (existingItemIndex >= 0) {
     // Update quantity
@@ -91,7 +89,7 @@ export const getCart = async (userId) => {
   }
 
   // Filter out items where product no longer exists or is unavailable
-  cart.items = cart.items.filter(item => {
+  cart.items = cart.items.filter((item) => {
     return item.product && item.product.isAvailable;
   });
 
@@ -229,7 +227,9 @@ export const validateCart = async (userId) => {
     }
 
     if (item.quantity > item.product.stock) {
-      errors.push(`${item.product.name}: Only ${item.product.stock} available, you have ${item.quantity} in cart`);
+      errors.push(
+        `${item.product.name}: Only ${item.product.stock} available, you have ${item.quantity} in cart`
+      );
     }
   }
 

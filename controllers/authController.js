@@ -35,8 +35,8 @@ export const register = async (req, res) => {
     const { name, email, phone, password } = req.body;
 
     // Check if user already exists with email or phone
-    const existingUser = await User.findOne({ 
-      $or: [{ email }, { phone }] 
+    const existingUser = await User.findOne({
+      $or: [{ email }, { phone }]
     });
     if (existingUser) {
       const field = existingUser.email === email ? 'email' : 'phone number';
@@ -113,10 +113,10 @@ export const login = async (req, res) => {
     }
 
     // Check if user exists with email or phone and include password for comparison
-    const user = await User.findOne({ 
-      $or: [{ email: loginField }, { phone: loginField }] 
+    const user = await User.findOne({
+      $or: [{ email: loginField }, { phone: loginField }]
     }).select('+password');
-    
+
     // For security, both missing user and invalid password return similar error.
     // If you want more specific errors for debugging, you can change the messages below.
     if (!user) {
@@ -179,7 +179,7 @@ export const login = async (req, res) => {
 export const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    
+
     res.status(200).json({
       success: true,
       user: {
@@ -217,7 +217,7 @@ export const updateProfile = async (req, res) => {
     }
 
     const { name, email, phone, avatar } = req.body;
-    
+
     // Check if email is being changed and already exists
     if (email && email !== req.user.email) {
       const existingUser = await User.findOne({ email });
@@ -305,7 +305,7 @@ export const refreshAccessToken = async (req, res) => {
     }
 
     // Check if refresh token exists in user's tokens
-    const tokenExists = user.refreshTokens.some(t => t.token === refreshToken);
+    const tokenExists = user.refreshTokens.some((t) => t.token === refreshToken);
 
     if (!tokenExists) {
       return res.status(401).json({
@@ -354,7 +354,7 @@ export const logout = async (req, res) => {
     }
 
     // Remove the specific refresh token
-    user.refreshTokens = user.refreshTokens.filter(t => t.token !== refreshToken);
+    user.refreshTokens = user.refreshTokens.filter((t) => t.token !== refreshToken);
     await user.save();
 
     res.status(200).json({
