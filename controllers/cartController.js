@@ -1,8 +1,3 @@
-/**
- * Cart Controller
- * Handles HTTP requests and responses for shopping cart operations
- */
-
 import { validationResult } from 'express-validator';
 import {
   addToCart,
@@ -16,12 +11,8 @@ import { sendSuccess, sendError, sendValidationError } from '../utils/helpers/re
 import { isValidObjectId } from '../utils/helpers/validationHelper.js';
 import { HTTP_STATUS, SUCCESS_MESSAGES } from '../constants/index.js';
 
-// @desc    Add item to cart
-// @route   POST /api/cart/add
-// @access  Private
 export const addItemToCart = async (req, res) => {
   try {
-    // Check validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return sendValidationError(res, errors.array());
@@ -30,7 +21,6 @@ export const addItemToCart = async (req, res) => {
     const { productId, quantity } = req.body;
     const userId = req.user.id;
 
-    // Validate product ID
     if (!isValidObjectId(productId)) {
       return sendError(res, 'Invalid product ID format', HTTP_STATUS.BAD_REQUEST);
     }
@@ -53,9 +43,6 @@ export const addItemToCart = async (req, res) => {
   }
 };
 
-// @desc    Get user's cart
-// @route   GET /api/cart
-// @access  Private
 export const getUserCart = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -68,12 +55,8 @@ export const getUserCart = async (req, res) => {
   }
 };
 
-// @desc    Update cart item quantity
-// @route   PUT /api/cart/update/:itemId
-// @access  Private
 export const updateCartItem = async (req, res) => {
   try {
-    // Check validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return sendValidationError(res, errors.array());
@@ -101,9 +84,6 @@ export const updateCartItem = async (req, res) => {
   }
 };
 
-// @desc    Remove item from cart
-// @route   DELETE /api/cart/remove/:itemId
-// @access  Private
 export const removeItemFromCart = async (req, res) => {
   try {
     const { itemId } = req.params;
@@ -123,9 +103,6 @@ export const removeItemFromCart = async (req, res) => {
   }
 };
 
-// @desc    Clear cart
-// @route   DELETE /api/cart/clear
-// @access  Private
 export const clearUserCart = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -138,9 +115,6 @@ export const clearUserCart = async (req, res) => {
   }
 };
 
-// @desc    Get cart item count
-// @route   GET /api/cart/count
-// @access  Private
 export const getCartCount = async (req, res) => {
   try {
     const userId = req.user.id;

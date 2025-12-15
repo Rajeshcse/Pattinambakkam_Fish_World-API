@@ -1,23 +1,7 @@
-/**
- * Date Helper Utilities
- * Common date manipulation and formatting functions
- */
-
-/**
- * Get current timestamp
- * @returns {Date} Current date object
- */
 export const getCurrentDate = () => {
   return new Date();
 };
 
-/**
- * Format date to readable string
- * @param {Date} date - Date object
- * @param {string} locale - Locale string
- * @param {Object} options - Intl.DateTimeFormat options
- * @returns {string} Formatted date string
- */
 export const formatDate = (date, locale = 'en-IN', options = {}) => {
   if (!date) return '';
 
@@ -31,34 +15,18 @@ export const formatDate = (date, locale = 'en-IN', options = {}) => {
   return new Intl.DateTimeFormat(locale, defaultOptions).format(new Date(date));
 };
 
-/**
- * Format date to ISO string
- * @param {Date} date - Date object
- * @returns {string} ISO date string
- */
 export const formatToISO = (date) => {
   return new Date(date).toISOString();
 };
 
-/**
- * Get date difference in days
- * @param {Date} date1 - First date
- * @param {Date} date2 - Second date
- * @returns {number} Difference in days
- */
 export const getDaysDifference = (date1, date2) => {
-  const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+  const oneDay = 24 * 60 * 60 * 1000;
   const firstDate = new Date(date1);
   const secondDate = new Date(date2);
 
   return Math.round(Math.abs((firstDate - secondDate) / oneDay));
 };
 
-/**
- * Check if date is today
- * @param {Date} date - Date to check
- * @returns {boolean} True if date is today
- */
 export const isToday = (date) => {
   const today = new Date();
   const checkDate = new Date(date);
@@ -66,12 +34,6 @@ export const isToday = (date) => {
   return today.toDateString() === checkDate.toDateString();
 };
 
-/**
- * Check if date is within last N days
- * @param {Date} date - Date to check
- * @param {number} days - Number of days to check
- * @returns {boolean} True if date is within last N days
- */
 export const isWithinLastDays = (date, days) => {
   const now = new Date();
   const checkDate = new Date(date);
@@ -80,45 +42,24 @@ export const isWithinLastDays = (date, days) => {
   return checkDate >= daysAgo && checkDate <= now;
 };
 
-/**
- * Add days to date
- * @param {Date} date - Base date
- * @param {number} days - Days to add
- * @returns {Date} New date with added days
- */
 export const addDays = (date, days) => {
   const result = new Date(date);
   result.setDate(result.getDate() + days);
   return result;
 };
 
-/**
- * Get start of day
- * @param {Date} date - Input date
- * @returns {Date} Start of day
- */
 export const getStartOfDay = (date) => {
   const result = new Date(date);
   result.setHours(0, 0, 0, 0);
   return result;
 };
 
-/**
- * Get end of day
- * @param {Date} date - Input date
- * @returns {Date} End of day
- */
 export const getEndOfDay = (date) => {
   const result = new Date(date);
   result.setHours(23, 59, 59, 999);
   return result;
 };
 
-/**
- * Get time ago string
- * @param {Date} date - Date to compare
- * @returns {string} Human readable time ago
- */
 export const getTimeAgo = (date) => {
   const now = new Date();
   const diffInSeconds = Math.floor((now - new Date(date)) / 1000);
@@ -132,11 +73,6 @@ export const getTimeAgo = (date) => {
   return `${Math.floor(diffInSeconds / 31536000)} years ago`;
 };
 
-/**
- * Get date range for filtering
- * @param {string} period - Period ('today', 'week', 'month', 'year')
- * @returns {Object} Object with start and end dates
- */
 export const getDateRange = (period) => {
   const now = new Date();
   let start, end;

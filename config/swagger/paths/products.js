@@ -1,5 +1,3 @@
-// Product Management Endpoints Swagger Documentation
-
 export const productPaths = {
   '/api/products': {
     get: {

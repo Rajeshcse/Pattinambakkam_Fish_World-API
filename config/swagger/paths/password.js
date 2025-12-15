@@ -1,5 +1,3 @@
-// Password Management Endpoints Swagger Documentation
-
 export const passwordPaths = {
   '/api/auth/forgot-password': {
     post: {

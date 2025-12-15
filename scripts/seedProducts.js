@@ -133,15 +133,12 @@ const sampleProducts = [
 
 const seedProducts = async () => {
   try {
-    // Connect to MongoDB
     await mongoose.connect(process.env.MONGODB_URI);
     console.log('✅ MongoDB Connected');
 
-    // Clear existing products
     await FishProduct.deleteMany({});
     console.log('🗑️  Cleared existing products');
 
-    // Insert sample products
     const products = await FishProduct.insertMany(sampleProducts);
     console.log(`✅ Successfully seeded ${products.length} products!`);
 

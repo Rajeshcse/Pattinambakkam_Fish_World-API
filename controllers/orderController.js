@@ -1,8 +1,3 @@
-/**
- * Order Controller
- * Handles HTTP requests and responses for order operations
- */
-
 import { validationResult } from 'express-validator';
 import {
   createOrder,
@@ -24,12 +19,8 @@ import {
 } from '../utils/helpers/responseHelper.js';
 import { HTTP_STATUS, SUCCESS_MESSAGES } from '../constants/index.js';
 
-// @desc    Create order from cart
-// @route   POST /api/orders/create
-// @access  Private
 export const placeOrder = async (req, res) => {
   try {
-    // Check validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return sendValidationError(res, errors.array());
@@ -60,9 +51,6 @@ export const placeOrder = async (req, res) => {
   }
 };
 
-// @desc    Get user's orders
-// @route   GET /api/orders
-// @access  Private
 export const getMyOrders = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -77,9 +65,6 @@ export const getMyOrders = async (req, res) => {
   }
 };
 
-// @desc    Get single order details
-// @route   GET /api/orders/:orderId
-// @access  Private
 export const getOrderDetails = async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -99,9 +84,6 @@ export const getOrderDetails = async (req, res) => {
   }
 };
 
-// @desc    Cancel order
-// @route   PUT /api/orders/:orderId/cancel
-// @access  Private
 export const cancelUserOrder = async (req, res) => {
   try {
     const { orderId } = req.params;
@@ -125,9 +107,6 @@ export const cancelUserOrder = async (req, res) => {
   }
 };
 
-// @desc    Get user order statistics
-// @route   GET /api/orders/stats
-// @access  Private
 export const getMyOrderStats = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -140,11 +119,6 @@ export const getMyOrderStats = async (req, res) => {
   }
 };
 
-// ========== ADMIN ROUTES ==========
-
-// @desc    Get all orders (Admin)
-// @route   GET /api/admin/orders
-// @access  Private/Admin
 export const adminGetAllOrders = async (req, res) => {
   try {
     const filters = req.query;
@@ -168,12 +142,8 @@ export const adminGetAllOrders = async (req, res) => {
   }
 };
 
-// @desc    Update order status (Admin)
-// @route   PUT /api/admin/orders/:orderId/status
-// @access  Private/Admin
 export const adminUpdateOrderStatus = async (req, res) => {
   try {
-    // Check validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return sendValidationError(res, errors.array());
@@ -200,9 +170,6 @@ export const adminUpdateOrderStatus = async (req, res) => {
   }
 };
 
-// @desc    Get order statistics (Admin)
-// @route   GET /api/admin/orders/stats
-// @access  Private/Admin
 export const adminGetOrderStats = async (req, res) => {
   try {
     const stats = await getOrderStats();

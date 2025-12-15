@@ -1,26 +1,10 @@
-/**
- * Validation Helper Utilities
- * Custom validation functions and sanitization
- */
-
 import mongoose from 'mongoose';
 import { isValidEmail, isValidPhone } from './stringHelper.js';
 
-/**
- * Validate MongoDB ObjectId
- * @param {string} id - ID to validate
- * @returns {boolean} True if valid ObjectId
- */
 export const isValidObjectId = (id) => {
   return mongoose.Types.ObjectId.isValid(id);
 };
 
-/**
- * Validate required fields
- * @param {Object} data - Data object to validate
- * @param {Array} requiredFields - Array of required field names
- * @returns {Object} Validation result with isValid and missing fields
- */
 export const validateRequiredFields = (data, requiredFields) => {
   const missingFields = [];
 
@@ -36,11 +20,6 @@ export const validateRequiredFields = (data, requiredFields) => {
   };
 };
 
-/**
- * Validate price value
- * @param {*} price - Price to validate
- * @returns {Object} Validation result
- */
 export const validatePrice = (price) => {
   const numPrice = parseFloat(price);
 
@@ -59,11 +38,6 @@ export const validatePrice = (price) => {
   return { isValid: true, value: numPrice };
 };
 
-/**
- * Validate stock value
- * @param {*} stock - Stock to validate
- * @returns {Object} Validation result
- */
 export const validateStock = (stock) => {
   const numStock = parseInt(stock);
 
@@ -82,11 +56,6 @@ export const validateStock = (stock) => {
   return { isValid: true, value: numStock };
 };
 
-/**
- * Validate fish category
- * @param {string} category - Category to validate
- * @returns {Object} Validation result
- */
 export const validateFishCategory = (category) => {
   const validCategories = ['Fish', 'Prawn', 'Crab', 'Squid'];
 
@@ -104,11 +73,6 @@ export const validateFishCategory = (category) => {
   return { isValid: true, value: category };
 };
 
-/**
- * Validate and sanitize product name
- * @param {string} name - Product name to validate
- * @returns {Object} Validation result
- */
 export const validateProductName = (name) => {
   if (!name || typeof name !== 'string') {
     return { isValid: false, message: 'Product name is required' };
@@ -124,7 +88,6 @@ export const validateProductName = (name) => {
     return { isValid: false, message: 'Product name cannot exceed 100 characters' };
   }
 
-  // Check for invalid characters
   if (!/^[a-zA-Z0-9\s\-\.]+$/.test(trimmedName)) {
     return { isValid: false, message: 'Product name contains invalid characters' };
   }
@@ -132,11 +95,6 @@ export const validateProductName = (name) => {
   return { isValid: true, value: trimmedName };
 };
 
-/**
- * Validate image URLs array
- * @param {Array} images - Array of image URLs
- * @returns {Object} Validation result
- */
 export const validateImages = (images) => {
   if (!images) {
     return { isValid: true, value: [] };
@@ -174,18 +132,12 @@ export const validateImages = (images) => {
   return { isValid: true, value: validImages };
 };
 
-/**
- * Validate pagination parameters
- * @param {*} page - Page number
- * @param {*} limit - Items per page
- * @returns {Object} Validation result with sanitized values
- */
 export const validatePagination = (page, limit) => {
   const pageNum = parseInt(page) || 1;
   const limitNum = parseInt(limit) || 10;
 
   const sanitizedPage = Math.max(1, pageNum);
-  const sanitizedLimit = Math.min(Math.max(1, limitNum), 100); // Max 100 items per page
+  const sanitizedLimit = Math.min(Math.max(1, limitNum), 100);
 
   return {
     page: sanitizedPage,
@@ -194,11 +146,6 @@ export const validatePagination = (page, limit) => {
   };
 };
 
-/**
- * Validate user role
- * @param {string} role - Role to validate
- * @returns {Object} Validation result
- */
 export const validateUserRole = (role) => {
   const validRoles = ['user', 'admin'];
 
@@ -216,11 +163,6 @@ export const validateUserRole = (role) => {
   return { isValid: true, value: role };
 };
 
-/**
- * Sanitize user input
- * @param {Object} data - Data object to sanitize
- * @returns {Object} Sanitized data
- */
 export const sanitizeUserInput = (data) => {
   const sanitized = {};
 
@@ -228,10 +170,8 @@ export const sanitizeUserInput = (data) => {
     const value = data[key];
 
     if (typeof value === 'string') {
-      // Remove HTML tags and trim whitespace
       sanitized[key] = value.replace(/<[^>]*>/g, '').trim();
     } else if (Array.isArray(value)) {
-      // Sanitize array of strings
       sanitized[key] = value.map((item) =>
         typeof item === 'string' ? item.replace(/<[^>]*>/g, '').trim() : item
       );

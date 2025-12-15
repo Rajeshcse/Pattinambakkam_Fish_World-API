@@ -23,35 +23,32 @@ const tokenSchema = new mongoose.Schema({
   expiresAt: {
     type: Date,
     required: true,
-    default: () => new Date(Date.now() + 10 * 60 * 1000) // 10 minutes from now
+    default: () => new Date(Date.now() + 10 * 60 * 1000)
   },
   createdAt: {
     type: Date,
     default: Date.now,
-    expires: 600 // Document will be automatically deleted 10 minutes after createdAt
+    expires: 600
   }
 });
 
-// Create index for automatic cleanup
 tokenSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-// Generate OTP
 tokenSchema.methods.generateOTP = function () {
-  this.otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+  this.otp = Math.floor(100000 + Math.random() * 900000).toString();
   return this.otp;
 };
 
-// Generate token hash
 tokenSchema.statics.createToken = function (userId, type) {
   const token = crypto.randomBytes(32).toString('hex');
-  const otp = Math.floor(100000 + Math.random() * 900000).toString(); // 6-digit OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
   return {
     token,
     otp,
     userId,
     type,
-    expiresAt: new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
+    expiresAt: new Date(Date.now() + 10 * 60 * 1000)
   };
 };
 

@@ -1,9 +1,5 @@
 import Order from '../../models/Order.js';
 
-/**
- * Generate a unique order ID in format: ORD-YYYYMMDD-XXX
- * @returns {Promise<string>} Unique order ID
- */
 export const generateOrderId = async () => {
   const today = new Date();
   const year = today.getFullYear();
@@ -11,7 +7,6 @@ export const generateOrderId = async () => {
   const day = String(today.getDate()).padStart(2, '0');
   const dateStr = `${year}${month}${day}`;
 
-  // Find the count of orders created today
   const startOfDay = new Date(today.setHours(0, 0, 0, 0));
   const endOfDay = new Date(today.setHours(23, 59, 59, 999));
 
@@ -19,26 +14,17 @@ export const generateOrderId = async () => {
     createdAt: { $gte: startOfDay, $lte: endOfDay }
   });
 
-  // Increment and pad to 3 digits
   const sequence = String(todayOrderCount + 1).padStart(3, '0');
 
   return `ORD-${dateStr}-${sequence}`;
 };
 
-/**
- * Validate if the selected delivery date and time is at least 4 hours from now
- * @param {Date|string} deliveryDate - Selected delivery date
- * @param {string} deliveryTime - Time slot (08:00-12:00, 12:00-16:00, 16:00-20:00)
- * @returns {{valid: boolean, message: string, minimumTime: Date}}
- */
 export const validateDeliveryTime = (deliveryDate, deliveryTime) => {
   const now = new Date();
-  const minimumDeliveryTime = new Date(now.getTime() + 4 * 60 * 60 * 1000); // 4 hours from now
+  const minimumDeliveryTime = new Date(now.getTime() + 4 * 60 * 60 * 1000);
 
-  // Parse the delivery date
   const selectedDate = new Date(deliveryDate);
 
-  // Validate time slot format
   const validTimeSlots = ['08:00-12:00', '12:00-16:00', '16:00-20:00'];
   if (!validTimeSlots.includes(deliveryTime)) {
     return {
@@ -48,15 +34,12 @@ export const validateDeliveryTime = (deliveryDate, deliveryTime) => {
     };
   }
 
-  // Extract start time from the slot
   const [startTime] = deliveryTime.split('-');
   const [hours, minutes] = startTime.split(':').map(Number);
 
-  // Set the delivery time to the start of the selected slot
   const selectedDeliveryTime = new Date(selectedDate);
   selectedDeliveryTime.setHours(hours, minutes, 0, 0);
 
-  // Check if the selected delivery time is at least 4 hours from now
   if (selectedDeliveryTime < minimumDeliveryTime) {
     return {
       valid: false,
@@ -72,7 +55,6 @@ export const validateDeliveryTime = (deliveryDate, deliveryTime) => {
     };
   }
 
-  // Check if date is in the past
   if (selectedDate < new Date(now.setHours(0, 0, 0, 0))) {
     return {
       valid: false,
@@ -88,11 +70,6 @@ export const validateDeliveryTime = (deliveryDate, deliveryTime) => {
   };
 };
 
-/**
- * Calculate the total amount for order items
- * @param {Array} items - Array of order items with price and quantity
- * @returns {number} Total amount
- */
 export const calculateOrderTotal = (items) => {
   if (!items || items.length === 0) {
     return 0;
@@ -104,11 +81,6 @@ export const calculateOrderTotal = (items) => {
   }, 0);
 };
 
-/**
- * Get available time slots for a given date
- * @param {Date|string} date - Selected date
- * @returns {Array<{slot: string, available: boolean, reason: string}>}
- */
 export const getAvailableTimeSlots = (date) => {
   const now = new Date();
   const minimumTime = new Date(now.getTime() + 4 * 60 * 60 * 1000);
@@ -131,20 +103,10 @@ export const getAvailableTimeSlots = (date) => {
   });
 };
 
-/**
- * Format order ID for display
- * @param {string} orderId - Order ID
- * @returns {string} Formatted order ID
- */
 export const formatOrderId = (orderId) => {
   return orderId || 'N/A';
 };
 
-/**
- * Get status badge color for UI
- * @param {string} status - Order status
- * @returns {string} Color class or code
- */
 export const getStatusColor = (status) => {
   const statusColors = {
     pending: 'orange',

@@ -14,11 +14,9 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 
 const router = express.Router();
 
-// Public routes (no authentication required)
 router.get('/', asyncHandler(getAllProducts));
 router.get('/:id', asyncHandler(getProductById));
 
-// Admin-only routes (protected)
 router.post(
   '/',
   authenticateToken,

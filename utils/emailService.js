@@ -1,23 +1,17 @@
 import nodemailer from 'nodemailer';
 
-// Create reusable transporter
 const createTransporter = () => {
-  // For development, you can use ethereal.email or mailtrap.io
-  // For production, use actual SMTP credentials (Gmail, SendGrid, AWS SES, etc.)
-
   if (process.env.NODE_ENV === 'production') {
-    // Production email configuration
     return nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT || 587,
-      secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
+      secure: process.env.SMTP_SECURE === 'true',
       auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASSWORD
       }
     });
   } else {
-    // Development - Log to console instead of sending real emails
     return nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.ethereal.email',
       port: process.env.SMTP_PORT || 587,
@@ -30,12 +24,10 @@ const createTransporter = () => {
   }
 };
 
-// Send email verification OTP
 export const sendVerificationEmail = async (email, otp, name) => {
   try {
     console.log('sendVerificationEmail called with:', { email, otp, name });
 
-    // In development, just log to console instead of sending real email
     if (process.env.NODE_ENV !== 'production') {
       console.log('\n========================================');
       console.log('📧 EMAIL VERIFICATION OTP (DEV MODE)');
@@ -49,7 +41,6 @@ export const sendVerificationEmail = async (email, otp, name) => {
       return { success: true, messageId: 'dev-mode-' + Date.now() };
     }
 
-    // Production: Send actual email
     const transporter = createTransporter();
 
     const mailOptions = {
@@ -80,10 +71,8 @@ export const sendVerificationEmail = async (email, otp, name) => {
   }
 };
 
-// Send password reset OTP
 export const sendPasswordResetEmail = async (email, otp, name) => {
   try {
-    // In development, just log to console instead of sending real email
     if (process.env.NODE_ENV !== 'production') {
       console.log('\n========================================');
       console.log('🔐 PASSWORD RESET OTP (DEV MODE)');
@@ -97,7 +86,6 @@ export const sendPasswordResetEmail = async (email, otp, name) => {
       return { success: true, messageId: 'dev-mode-' + Date.now() };
     }
 
-    // Production: Send actual email
     const transporter = createTransporter();
 
     const mailOptions = {
@@ -127,10 +115,8 @@ export const sendPasswordResetEmail = async (email, otp, name) => {
   }
 };
 
-// Send welcome email after successful verification
 export const sendWelcomeEmail = async (email, name) => {
   try {
-    // In development, just log to console instead of sending real email
     if (process.env.NODE_ENV !== 'production') {
       console.log('\n========================================');
       console.log('🎉 WELCOME EMAIL (DEV MODE)');
@@ -143,7 +129,6 @@ export const sendWelcomeEmail = async (email, name) => {
       return { success: true, messageId: 'dev-mode-' + Date.now() };
     }
 
-    // Production: Send actual email
     const transporter = createTransporter();
 
     const mailOptions = {

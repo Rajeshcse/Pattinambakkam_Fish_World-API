@@ -60,13 +60,11 @@ const fishProductSchema = new mongoose.Schema({
   }
 });
 
-// Update the updatedAt field before saving
 fishProductSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Ensure isAvailable is set to false when stock is 0
 fishProductSchema.pre('save', function (next) {
   if (this.stock === 0) {
     this.isAvailable = false;

@@ -1,16 +1,9 @@
-/**
- * HTTP Status Code Constants
- * Centralized HTTP status codes for consistent usage across the application
- */
-
-// Success codes
 export const HTTP_STATUS = {
   OK: 200,
   CREATED: 201,
   ACCEPTED: 202,
   NO_CONTENT: 204,
 
-  // Client Error codes
   BAD_REQUEST: 400,
   UNAUTHORIZED: 401,
   FORBIDDEN: 403,
@@ -20,7 +13,6 @@ export const HTTP_STATUS = {
   UNPROCESSABLE_ENTITY: 422,
   TOO_MANY_REQUESTS: 429,
 
-  // Server Error codes
   INTERNAL_SERVER_ERROR: 500,
   NOT_IMPLEMENTED: 501,
   BAD_GATEWAY: 502,

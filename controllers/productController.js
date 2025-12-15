@@ -1,8 +1,3 @@
-/**
- * Product Controller
- * Handles HTTP requests and responses for product operations
- */
-
 import { validationResult } from 'express-validator';
 import {
   getAllProductsService,
@@ -22,9 +17,6 @@ import {
 import { isValidObjectId } from '../utils/helpers/validationHelper.js';
 import { HTTP_STATUS, SUCCESS_MESSAGES } from '../constants/index.js';
 
-// @desc    Get all fish products with pagination and filters
-// @route   GET /api/products
-// @access  Public
 export const getAllProducts = async (req, res) => {
   try {
     const result = await getAllProductsService(req.query);
@@ -42,14 +34,10 @@ export const getAllProducts = async (req, res) => {
   }
 };
 
-// @desc    Get single fish product by ID
-// @route   GET /api/products/:id
-// @access  Public
 export const getProductById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Validate ObjectId format
     if (!isValidObjectId(id)) {
       return sendError(res, 'Invalid product ID format', HTTP_STATUS.BAD_REQUEST);
     }
@@ -68,12 +56,8 @@ export const getProductById = async (req, res) => {
   }
 };
 
-// @desc    Create a new fish product
-// @route   POST /api/products
-// @access  Private/Admin
 export const createProduct = async (req, res) => {
   try {
-    // Check validation errors from middleware
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return sendValidationError(res, errors.array());
@@ -93,12 +77,8 @@ export const createProduct = async (req, res) => {
   }
 };
 
-// @desc    Update a fish product
-// @route   PUT /api/products/:id
-// @access  Private/Admin
 export const updateProduct = async (req, res) => {
   try {
-    // Check validation errors from middleware
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return sendValidationError(res, errors.array());
@@ -106,7 +86,6 @@ export const updateProduct = async (req, res) => {
 
     const { id } = req.params;
 
-    // Validate ObjectId format
     if (!isValidObjectId(id)) {
       return sendError(res, 'Invalid product ID format', HTTP_STATUS.BAD_REQUEST);
     }
@@ -129,14 +108,10 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-// @desc    Delete a fish product
-// @route   DELETE /api/products/:id
-// @access  Private/Admin
 export const deleteProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Validate ObjectId format
     if (!isValidObjectId(id)) {
       return sendError(res, 'Invalid product ID format', HTTP_STATUS.BAD_REQUEST);
     }
@@ -155,14 +130,10 @@ export const deleteProduct = async (req, res) => {
   }
 };
 
-// @desc    Toggle product availability (hide/show)
-// @route   PATCH /api/products/:id/availability
-// @access  Private/Admin
 export const toggleProductAvailability = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Validate ObjectId format
     if (!isValidObjectId(id)) {
       return sendError(res, 'Invalid product ID format', HTTP_STATUS.BAD_REQUEST);
     }

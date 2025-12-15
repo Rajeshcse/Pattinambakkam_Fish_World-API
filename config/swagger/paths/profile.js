@@ -1,5 +1,3 @@
-// User Profile Endpoints Swagger Documentation
-
 export const profilePaths = {
   '/api/auth/profile': {
     get: {

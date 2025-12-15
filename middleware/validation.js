@@ -50,7 +50,6 @@ export const validateLogin = [
 
   body('password').notEmpty().withMessage('Password is required'),
 
-  // Custom validation to ensure either email or phone is provided
   body('email').custom((value, { req }) => {
     if (!req.body.email && !req.body.phone) {
       throw new Error('Please provide either email or phone number');
@@ -164,8 +163,6 @@ export const validateLogout = [
   body('refreshToken').notEmpty().withMessage('Refresh token is required')
 ];
 
-// Admin validation rules
-
 export const validateAdminUpdateUser = [
   body('name')
     .optional()
@@ -219,8 +216,6 @@ export const validateAdminBulkAction = [
       return true;
     })
 ];
-
-// Product validation rules
 
 export const validateCreateProduct = [
   body('name')
@@ -311,8 +306,6 @@ export const validateUpdateProduct = [
   body('isAvailable').optional().isBoolean().withMessage('isAvailable must be a boolean value')
 ];
 
-// Cart validation rules
-
 export const validateAddToCart = [
   body('productId')
     .notEmpty()
@@ -337,8 +330,6 @@ export const validateUpdateCartItem = [
     .isInt({ min: 1 })
     .withMessage('Quantity must be a positive integer')
 ];
-
-// Order validation rules
 
 export const validateCreateOrder = [
   body('deliveryDetails')
@@ -390,8 +381,6 @@ export const validateCreateOrder = [
     .isLength({ max: 50 })
     .withMessage('Payment method cannot exceed 50 characters')
 ];
-
-// Admin order validation rules
 
 export const validateAdminUpdateOrderStatus = [
   body('status')

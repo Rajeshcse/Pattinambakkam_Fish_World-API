@@ -3,15 +3,12 @@ import mongoose from 'mongoose';
 import User from '../models/User.js';
 import connectDB from '../config/database.js';
 
-// Load environment variables
 dotenv.config();
 
-// Connect to database
 await connectDB();
 
 const promoteUserToAdmin = async () => {
   try {
-    // Get email from command line argument
     const email = process.argv[2];
 
     if (!email) {
@@ -22,7 +19,6 @@ const promoteUserToAdmin = async () => {
 
     console.log(`Looking for user with email: ${email}`);
 
-    // Find user by email
     const user = await User.findOne({ email: email.toLowerCase() });
 
     if (!user) {
@@ -35,9 +31,8 @@ const promoteUserToAdmin = async () => {
       process.exit(0);
     }
 
-    // Update user role to admin
     user.role = 'admin';
-    user.isVerified = true; // Verify admin users
+    user.isVerified = true;
     await user.save();
 
     console.log('✅ User promoted to admin successfully!');
@@ -51,5 +46,4 @@ const promoteUserToAdmin = async () => {
   }
 };
 
-// Run the script
 promoteUserToAdmin();

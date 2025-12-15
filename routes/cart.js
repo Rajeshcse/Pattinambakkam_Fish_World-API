@@ -12,10 +12,8 @@ import { validateAddToCart, validateUpdateCartItem } from '../middleware/validat
 
 const router = express.Router();
 
-// All cart routes require authentication
 router.use(authenticateToken);
 
-// Cart routes
 router.post('/add', validateAddToCart, addItemToCart);
 router.get('/', getUserCart);
 router.get('/count', getCartCount);

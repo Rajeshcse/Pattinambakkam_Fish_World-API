@@ -3,9 +3,6 @@ import User from '../models/User.js';
 import Token from '../models/Token.js';
 import { sendVerificationEmail, sendWelcomeEmail } from '../utils/emailService.js';
 
-// @desc    Send email verification OTP
-// @route   POST /api/auth/send-verification-email
-// @access  Private
 export const sendEmailVerificationOTP = async (req, res) => {
   try {
     console.log('Send verification email request received for user:', req.user?.id);
@@ -29,18 +26,15 @@ export const sendEmailVerificationOTP = async (req, res) => {
       });
     }
 
-    // Delete any existing verification tokens for this user
     await Token.deleteMany({
       userId: user._id,
       type: 'email_verification'
     });
 
-    // Create new verification token
     const tokenData = Token.createToken(user._id, 'email_verification');
     console.log('Token created with OTP:', tokenData.otp);
     await Token.create(tokenData);
 
-    // Send verification email
     console.log('Calling sendVerificationEmail with:', {
       email: user.email,
       otp: tokenData.otp,
@@ -60,7 +54,6 @@ export const sendEmailVerificationOTP = async (req, res) => {
 
     console.log('Email sent successfully, messageId:', emailResult.messageId);
 
-    // 🟢 DEVELOPMENT MODE: Display OTP in console
     console.log('\n' + '='.repeat(50));
     console.log('📧 EMAIL VERIFICATION OTP SENT');
     console.log('='.repeat(50));
@@ -75,7 +68,6 @@ export const sendEmailVerificationOTP = async (req, res) => {
       expiresIn: '10 minutes'
     };
 
-    // 🟢 DEVELOPMENT MODE: Include OTP in response
     if (process.env.NODE_ENV === 'development') {
       response.otp = tokenData.otp;
       response.note = '⚠️  OTP shown only in DEVELOPMENT mode';
@@ -91,9 +83,6 @@ export const sendEmailVerificationOTP = async (req, res) => {
   }
 };
 
-// @desc    Verify email with OTP
-// @route   POST /api/auth/verify-email
-// @access  Private
 export const verifyEmail = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -122,7 +111,6 @@ export const verifyEmail = async (req, res) => {
       });
     }
 
-    // Find valid token
     const token = await Token.findOne({
       userId: user._id,
       type: 'email_verification',
@@ -131,7 +119,6 @@ export const verifyEmail = async (req, res) => {
     });
 
     if (!token) {
-      // 🔴 DEVELOPMENT MODE: Log failed OTP attempt
       console.log(`\n❌ INVALID OTP ATTEMPT - User: ${user.email}, OTP: ${otp}`);
       return res.status(400).json({
         success: false,
@@ -139,17 +126,13 @@ export const verifyEmail = async (req, res) => {
       });
     }
 
-    // Update user verification status
     user.isVerified = true;
     await user.save();
 
-    // Delete the used token
     await Token.deleteOne({ _id: token._id });
 
-    // Send welcome email
     await sendWelcomeEmail(user.email, user.name);
 
-    // 🟢 DEVELOPMENT MODE: Success log
     console.log('\n' + '='.repeat(50));
     console.log('✅ EMAIL VERIFICATION SUCCESS');
     console.log('='.repeat(50));
@@ -170,9 +153,6 @@ export const verifyEmail = async (req, res) => {
   }
 };
 
-// @desc    Resend email verification OTP
-// @route   POST /api/auth/resend-verification-email
-// @access  Private
 export const resendEmailVerificationOTP = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -191,11 +171,10 @@ export const resendEmailVerificationOTP = async (req, res) => {
       });
     }
 
-    // Check if there's a recent token (to prevent spam)
     const recentToken = await Token.findOne({
       userId: user._id,
       type: 'email_verification',
-      createdAt: { $gt: new Date(Date.now() - 60 * 1000) } // Within last 1 minute
+      createdAt: { $gt: new Date(Date.now() - 60 * 1000) }
     });
 
     if (recentToken) {
@@ -205,17 +184,14 @@ export const resendEmailVerificationOTP = async (req, res) => {
       });
     }
 
-    // Delete any existing verification tokens
     await Token.deleteMany({
       userId: user._id,
       type: 'email_verification'
     });
 
-    // Create new token
     const tokenData = Token.createToken(user._id, 'email_verification');
     await Token.create(tokenData);
 
-    // Send verification email
     const emailResult = await sendVerificationEmail(user.email, tokenData.otp, user.name);
 
     if (!emailResult.success) {
@@ -225,7 +201,6 @@ export const resendEmailVerificationOTP = async (req, res) => {
       });
     }
 
-    // 🟢 DEVELOPMENT MODE: Display new OTP in console
     console.log('\n' + '='.repeat(50));
     console.log('📧 NEW EMAIL VERIFICATION OTP SENT (RESEND)');
     console.log('='.repeat(50));
@@ -240,7 +215,6 @@ export const resendEmailVerificationOTP = async (req, res) => {
       expiresIn: '10 minutes'
     };
 
-    // 🟢 DEVELOPMENT MODE: Include OTP in response
     if (process.env.NODE_ENV === 'development') {
       response.otp = tokenData.otp;
       response.note = '⚠️  OTP shown only in DEVELOPMENT mode';

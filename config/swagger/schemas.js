@@ -1,5 +1,3 @@
-// Reusable Swagger Schemas
-
 export const schemas = {
   User: {
     type: 'object',
@@ -9,7 +7,7 @@ export const schemas = {
       email: { type: 'string', format: 'email', example: 'john@example.com' },
       phone: { type: 'string', example: '9876543210' },
       role: { type: 'string', enum: ['user', 'admin'], example: 'user' },
-      isEmailVerified: { type: 'boolean', example: false },
+      isVerified: { type: 'boolean', example: false },
       avatar: { type: 'string', example: '' },
       createdAt: { type: 'string', format: 'date-time', example: '2024-01-01T00:00:00.000Z' }
     }
@@ -22,7 +20,7 @@ export const schemas = {
       name: { type: 'string', example: 'John Doe' },
       email: { type: 'string', format: 'email', example: 'john@example.com' },
       role: { type: 'string', enum: ['user', 'admin'], example: 'user' },
-      isEmailVerified: { type: 'boolean', example: true },
+      isVerified: { type: 'boolean', example: true },
       createdAt: { type: 'string', format: 'date-time', example: '2024-01-01T00:00:00.000Z' }
     }
   },
@@ -48,7 +46,6 @@ export const schemas = {
     }
   },
 
-  // Standardized Response Schemas
   StandardResponse: {
     type: 'object',
     properties: {
@@ -171,7 +168,6 @@ export const schemas = {
     }
   },
 
-  // Cart Schemas
   CartItem: {
     type: 'object',
     properties: {
@@ -204,7 +200,6 @@ export const schemas = {
     }
   },
 
-  // Order Schemas
   OrderItem: {
     type: 'object',
     properties: {

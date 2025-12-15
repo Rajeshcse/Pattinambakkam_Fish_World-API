@@ -1,9 +1,3 @@
-/**
- * Error Message Constants
- * Centralized error messages for consistency across the application
- */
-
-// Authentication & Authorization Errors
 export const AUTH_ERRORS = {
   TOKEN_MISSING: 'Access denied. No token provided',
   TOKEN_INVALID: 'Access denied. Invalid token',
@@ -16,7 +10,6 @@ export const AUTH_ERRORS = {
   SESSION_EXPIRED: 'Session has expired. Please login again'
 };
 
-// Validation Errors
 export const VALIDATION_ERRORS = {
   REQUIRED_FIELD: 'This field is required',
   INVALID_EMAIL: 'Please provide a valid email address',
@@ -31,7 +24,6 @@ export const VALIDATION_ERRORS = {
   STOCK_INVALID: 'Stock must be a non-negative number'
 };
 
-// Resource Errors
 export const RESOURCE_ERRORS = {
   USER_NOT_FOUND: 'User not found',
   PRODUCT_NOT_FOUND: 'Product not found',
@@ -42,7 +34,6 @@ export const RESOURCE_ERRORS = {
   DUPLICATE_ENTRY: 'Duplicate entry detected'
 };
 
-// Server Errors
 export const SERVER_ERRORS = {
   INTERNAL_ERROR: 'Internal server error occurred',
   DATABASE_ERROR: 'Database operation failed',
@@ -51,7 +42,6 @@ export const SERVER_ERRORS = {
   RATE_LIMIT_EXCEEDED: 'Too many requests. Please try again later'
 };
 
-// Operation Errors
 export const OPERATION_ERRORS = {
   CREATE_FAILED: 'Failed to create resource',
   UPDATE_FAILED: 'Failed to update resource',
@@ -63,7 +53,6 @@ export const OPERATION_ERRORS = {
   OTP_EXPIRED: 'OTP has expired. Please request a new one'
 };
 
-// Success Messages
 export const SUCCESS_MESSAGES = {
   LOGIN_SUCCESS: 'Login successful',
   LOGOUT_SUCCESS: 'Logout successful',
@@ -83,7 +72,6 @@ export const SUCCESS_MESSAGES = {
   DATA_RETRIEVED: 'Data retrieved successfully'
 };
 
-// Combined Error Messages for easy access
 export const ERROR_MESSAGES = {
   ...AUTH_ERRORS,
   ...VALIDATION_ERRORS,
