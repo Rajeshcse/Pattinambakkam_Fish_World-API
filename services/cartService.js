@@ -1,11 +1,6 @@
 import Cart from '../models/Cart.js';
 import FishProduct from '../models/FishProduct.js';
 
-/**
- * Get or create user's cart
- * @param {string} userId - User ID
- * @returns {Promise<Object>} Cart object
- */
 export const getOrCreateCart = async (userId) => {
   let cart = await Cart.findOne({ user: userId }).populate('items.product');
 
@@ -16,15 +11,7 @@ export const getOrCreateCart = async (userId) => {
   return cart;
 };
 
-/**
- * Add item to cart or update quantity if already exists
- * @param {string} userId - User ID
- * @param {string} productId - Product ID
- * @param {number} quantity - Quantity to add
- * @returns {Promise<Object>} Updated cart
- */
 export const addToCart = async (userId, productId, quantity) => {
-  // Validate product exists and is available
   const product = await FishProduct.findById(productId);
 
   if (!product) {
@@ -39,18 +26,15 @@ export const addToCart = async (userId, productId, quantity) => {
     throw new Error(`Only ${product.stock} items available in stock`);
   }
 
-  // Get or create cart
   let cart = await Cart.findOne({ user: userId });
 
   if (!cart) {
     cart = new Cart({ user: userId, items: [] });
   }
 
-  // Check if product already exists in cart
   const existingItemIndex = cart.items.findIndex((item) => item.product.toString() === productId);
 
   if (existingItemIndex >= 0) {
-    // Update quantity
     const newQuantity = cart.items[existingItemIndex].quantity + quantity;
 
     if (newQuantity > product.stock) {
@@ -60,7 +44,6 @@ export const addToCart = async (userId, productId, quantity) => {
     cart.items[existingItemIndex].quantity = newQuantity;
     cart.items[existingItemIndex].addedAt = new Date();
   } else {
-    // Add new item
     cart.items.push({
       product: productId,
       quantity,
@@ -70,17 +53,11 @@ export const addToCart = async (userId, productId, quantity) => {
 
   await cart.save();
 
-  // Populate product details before returning
   await cart.populate('items.product');
 
   return cart;
 };
 
-/**
- * Get user's cart with populated product details
- * @param {string} userId - User ID
- * @returns {Promise<Object>} Cart object with populated products
- */
 export const getCart = async (userId) => {
   const cart = await Cart.findOne({ user: userId }).populate('items.product');
 
@@ -88,7 +65,6 @@ export const getCart = async (userId) => {
     return { user: userId, items: [], updatedAt: new Date() };
   }
 
-  // Filter out items where product no longer exists or is unavailable
   cart.items = cart.items.filter((item) => {
     return item.product && item.product.isAvailable;
   });
@@ -100,13 +76,6 @@ export const getCart = async (userId) => {
   return cart;
 };
 
-/**
- * Update item quantity in cart
- * @param {string} userId - User ID
- * @param {string} itemId - Cart item ID
- * @param {number} quantity - New quantity
- * @returns {Promise<Object>} Updated cart
- */
 export const updateCartItemQuantity = async (userId, itemId, quantity) => {
   const cart = await Cart.findOne({ user: userId });
 
@@ -120,7 +89,6 @@ export const updateCartItemQuantity = async (userId, itemId, quantity) => {
     throw new Error('Item not found in cart');
   }
 
-  // Validate stock
   const product = await FishProduct.findById(item.product);
 
   if (!product) {
@@ -143,12 +111,6 @@ export const updateCartItemQuantity = async (userId, itemId, quantity) => {
   return cart;
 };
 
-/**
- * Remove item from cart
- * @param {string} userId - User ID
- * @param {string} itemId - Cart item ID
- * @returns {Promise<Object>} Updated cart
- */
 export const removeCartItem = async (userId, itemId) => {
   const cart = await Cart.findOne({ user: userId });
 
@@ -170,11 +132,6 @@ export const removeCartItem = async (userId, itemId) => {
   return cart;
 };
 
-/**
- * Clear all items from cart
- * @param {string} userId - User ID
- * @returns {Promise<Object>} Empty cart
- */
 export const clearCart = async (userId) => {
   const cart = await Cart.findOne({ user: userId });
 
@@ -188,11 +145,6 @@ export const clearCart = async (userId) => {
   return cart;
 };
 
-/**
- * Get cart item count
- * @param {string} userId - User ID
- * @returns {Promise<number>} Total items in cart
- */
 export const getCartItemCount = async (userId) => {
   const cart = await Cart.findOne({ user: userId });
 
@@ -203,11 +155,6 @@ export const getCartItemCount = async (userId) => {
   return cart.items.reduce((total, item) => total + item.quantity, 0);
 };
 
-/**
- * Validate cart before checkout
- * @param {string} userId - User ID
- * @returns {Promise<{valid: boolean, errors: Array}>}
- */
 export const validateCart = async (userId) => {
   const cart = await Cart.findOne({ user: userId }).populate('items.product');
   const errors = [];

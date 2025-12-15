@@ -1,5 +1,3 @@
-// Admin Management Endpoints Swagger Documentation
-
 export const adminPaths = {
   '/api/admin/dashboard': {
     get: {

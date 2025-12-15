@@ -1,5 +1,3 @@
-// Email Verification Endpoints Swagger Documentation
-
 export const verificationPaths = {
   '/api/auth/send-verification-email': {
     post: {

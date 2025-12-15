@@ -33,13 +33,11 @@ const cartSchema = new mongoose.Schema({
   }
 });
 
-// Update the updatedAt field before saving
 cartSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Index for faster product lookups within cart
 cartSchema.index({ 'items.product': 1 });
 
 export default mongoose.model('Cart', cartSchema);

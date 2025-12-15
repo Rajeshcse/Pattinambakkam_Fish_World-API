@@ -6,8 +6,6 @@ const orderSchema = new mongoose.Schema({
     required: [true, 'Order ID is required'],
     unique: true,
     index: true
-    // Format: "ORD-YYYYMMDD-XXX"
-    // Example: "ORD-20251206-001"
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -122,17 +120,17 @@ const orderSchema = new mongoose.Schema({
       type: Number,
       min: [0, 'Payment amount cannot be negative']
     },
-    // Razorpay transaction tracking
+
     razorpayTransactionId: {
       type: String,
-      sparse: true // Only exists for razorpay-link payments
+      sparse: true
     },
     paymentNote: {
-      type: String, // Admin can add notes about payment verification
+      type: String,
       trim: true
     }
   },
-  // Legacy fields for backward compatibility (deprecated)
+
   paymentStatus: {
     type: String,
     enum: ['pending', 'paid'],
@@ -153,14 +151,12 @@ const orderSchema = new mongoose.Schema({
   }
 });
 
-// Update the updatedAt field before saving
 orderSchema.pre('save', function (next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Compound indexes for efficient queries
-orderSchema.index({ user: 1, createdAt: -1 }); // User orders sorted by date
-orderSchema.index({ status: 1, createdAt: -1 }); // Admin order filtering
+orderSchema.index({ user: 1, createdAt: -1 });
+orderSchema.index({ status: 1, createdAt: -1 });
 
 export default mongoose.model('Order', orderSchema);

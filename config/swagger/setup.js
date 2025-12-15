@@ -11,7 +11,6 @@ import { productPaths } from './paths/products.js';
 import { cartPaths } from './paths/cart.js';
 import { orderPaths } from './paths/orders.js';
 
-// Swagger configuration options
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -46,7 +45,6 @@ const options = {
     },
     tags,
     paths: {
-      // Combine all path definitions
       ...authPaths,
       ...verificationPaths,
       ...passwordPaths,
@@ -57,13 +55,11 @@ const options = {
       ...orderPaths
     }
   },
-  apis: [] // No annotations needed since we're defining everything inline
+  apis: []
 };
 
-// Generate Swagger specification
 const swaggerSpec = swaggerJsdoc(options);
 
-// Setup Swagger UI middleware
 export const setupSwagger = (app) => {
   app.use(
     '/api-docs',
@@ -75,8 +71,8 @@ export const setupSwagger = (app) => {
       swaggerOptions: {
         persistAuthorization: true,
         displayRequestDuration: true,
-        docExpansion: 'none', // Keep sections collapsed by default
-        filter: true, // Enable filtering
+        docExpansion: 'none',
+        filter: true,
         showExtensions: true,
         showCommonExtensions: true
       }

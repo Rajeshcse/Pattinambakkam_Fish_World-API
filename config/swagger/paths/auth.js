@@ -1,5 +1,3 @@
-// Authentication Endpoints Swagger Documentation
-
 export const authPaths = {
   '/api/auth/register': {
     post: {

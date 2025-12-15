@@ -3,26 +3,20 @@ import crypto from 'crypto';
 import { validationResult } from 'express-validator';
 import User from '../models/User.js';
 
-// Generate Access Token
 const generateAccessToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE || '15m'
   });
 };
 
-// Generate Refresh Token
 const generateRefreshToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_REFRESH_EXPIRE || '30d'
   });
 };
 
-// @desc    Register user
-// @route   POST /api/auth/register
-// @access  Public
 export const register = async (req, res) => {
   try {
-    // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -34,7 +28,6 @@ export const register = async (req, res) => {
 
     const { name, email, phone, password } = req.body;
 
-    // Check if user already exists with email or phone
     const existingUser = await User.findOne({
       $or: [{ email }, { phone }]
     });
@@ -46,7 +39,6 @@ export const register = async (req, res) => {
       });
     }
 
-    // Create user
     const user = await User.create({
       name,
       email,
@@ -54,11 +46,9 @@ export const register = async (req, res) => {
       password
     });
 
-    // Generate tokens
     const accessToken = generateAccessToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
 
-    // Save refresh token to database
     user.refreshTokens.push({ token: refreshToken });
     await user.save();
 
@@ -86,12 +76,8 @@ export const register = async (req, res) => {
   }
 };
 
-// @desc    Login user
-// @route   POST /api/auth/login
-// @access  Public
 export const login = async (req, res) => {
   try {
-    // Check for validation errors
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -103,7 +89,6 @@ export const login = async (req, res) => {
 
     const { email, phone, password } = req.body;
 
-    // Allow login with either email or phone
     const loginField = email || phone;
     if (!loginField) {
       return res.status(400).json({
@@ -112,13 +97,10 @@ export const login = async (req, res) => {
       });
     }
 
-    // Check if user exists with email or phone and include password for comparison
     const user = await User.findOne({
       $or: [{ email: loginField }, { phone: loginField }]
     }).select('+password');
 
-    // For security, both missing user and invalid password return similar error.
-    // If you want more specific errors for debugging, you can change the messages below.
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -126,7 +108,6 @@ export const login = async (req, res) => {
       });
     }
 
-    // Check password
     const isPasswordValid = await user.comparePassword(password);
     if (!isPasswordValid) {
       return res.status(401).json({
@@ -135,14 +116,11 @@ export const login = async (req, res) => {
       });
     }
 
-    // Generate tokens
     const accessToken = generateAccessToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
 
-    // Save refresh token to database
     user.refreshTokens.push({ token: refreshToken });
 
-    // Limit refresh tokens to 5 per user (for multiple devices)
     if (user.refreshTokens.length > 5) {
       user.refreshTokens = user.refreshTokens.slice(-5);
     }
@@ -173,9 +151,6 @@ export const login = async (req, res) => {
   }
 };
 
-// @desc    Get user profile
-// @route   GET /api/auth/profile
-// @access  Private
 export const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -202,9 +177,6 @@ export const getProfile = async (req, res) => {
   }
 };
 
-// @desc    Update user profile
-// @route   PUT /api/auth/profile
-// @access  Private
 export const updateProfile = async (req, res) => {
   try {
     const errors = validationResult(req);
@@ -218,7 +190,6 @@ export const updateProfile = async (req, res) => {
 
     const { name, email, phone, avatar } = req.body;
 
-    // Check if email is being changed and already exists
     if (email && email !== req.user.email) {
       const existingUser = await User.findOne({ email });
       if (existingUser) {
@@ -229,7 +200,6 @@ export const updateProfile = async (req, res) => {
       }
     }
 
-    // Check if phone is being changed and already exists
     if (phone && phone !== req.user.phone) {
       const existingUser = await User.findOne({ phone });
       if (existingUser) {
@@ -269,9 +239,6 @@ export const updateProfile = async (req, res) => {
   }
 };
 
-// @desc    Refresh access token
-// @route   POST /api/auth/refresh-token
-// @access  Public
 export const refreshAccessToken = async (req, res) => {
   try {
     const { refreshToken } = req.body;
@@ -283,7 +250,6 @@ export const refreshAccessToken = async (req, res) => {
       });
     }
 
-    // Verify refresh token
     let decoded;
     try {
       decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET);
@@ -294,7 +260,6 @@ export const refreshAccessToken = async (req, res) => {
       });
     }
 
-    // Find user and check if refresh token exists
     const user = await User.findById(decoded.id);
 
     if (!user) {
@@ -304,7 +269,6 @@ export const refreshAccessToken = async (req, res) => {
       });
     }
 
-    // Check if refresh token exists in user's tokens
     const tokenExists = user.refreshTokens.some((t) => t.token === refreshToken);
 
     if (!tokenExists) {
@@ -314,7 +278,6 @@ export const refreshAccessToken = async (req, res) => {
       });
     }
 
-    // Generate new access token
     const newAccessToken = generateAccessToken(user._id);
 
     res.status(200).json({
@@ -330,9 +293,6 @@ export const refreshAccessToken = async (req, res) => {
   }
 };
 
-// @desc    Logout user
-// @route   POST /api/auth/logout
-// @access  Private
 export const logout = async (req, res) => {
   try {
     const { refreshToken } = req.body;
@@ -353,7 +313,6 @@ export const logout = async (req, res) => {
       });
     }
 
-    // Remove the specific refresh token
     user.refreshTokens = user.refreshTokens.filter((t) => t.token !== refreshToken);
     await user.save();
 
@@ -370,9 +329,6 @@ export const logout = async (req, res) => {
   }
 };
 
-// @desc    Logout from all devices
-// @route   POST /api/auth/logout-all
-// @access  Private
 export const logoutAll = async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
@@ -384,7 +340,6 @@ export const logoutAll = async (req, res) => {
       });
     }
 
-    // Clear all refresh tokens
     user.refreshTokens = [];
     await user.save();
 

@@ -32,29 +32,22 @@ import { asyncHandler } from '../middleware/errorHandler.js';
 
 const router = express.Router();
 
-// Apply authentication and admin authorization to all routes
 router.use(authenticateToken);
 router.use(authorizeRoles('admin'));
 
-// Apply general admin rate limiting
 router.use(adminLimiter);
 
-// Dashboard routes
 router.get('/dashboard', asyncHandler(getDashboardStats));
 
-// User management routes
 router.get('/users', asyncHandler(getAllUsers));
 router.get('/users/:id', asyncHandler(getUserById));
 router.put('/users/:id', validateAdminUpdateUser, asyncHandler(updateUser));
 router.delete('/users/:id', asyncHandler(deleteUser));
 
-// Role management
 router.put('/users/:id/role', validateAdminChangeRole, asyncHandler(changeUserRole));
 
-// Verification management
 router.put('/users/:id/verification', asyncHandler(toggleUserVerification));
 
-// Bulk operations (with additional rate limiting)
 router.post(
   '/users/bulk-action',
   adminBulkLimiter,
@@ -62,7 +55,6 @@ router.post(
   asyncHandler(bulkUserAction)
 );
 
-// Order management routes
 router.get('/orders', asyncHandler(adminGetAllOrders));
 router.get('/orders/stats', asyncHandler(adminGetOrderStats));
 router.put(

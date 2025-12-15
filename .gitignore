@@ -8,6 +8,7 @@ build/
 .idea/
 coverage/
 .nyc_output/
+uploads/
 
 # Test files
 test-*.js

@@ -3,17 +3,14 @@ import mongoose from 'mongoose';
 import User from '../models/User.js';
 import connectDB from '../config/database.js';
 
-// Load environment variables
 dotenv.config();
 
-// Connect to database
 await connectDB();
 
 const showAdminCredentials = async () => {
   try {
     console.log('🔍 Looking for admin users...\n');
 
-    // Find all admin users
     const admins = await User.find({ role: 'admin' }).select(
       'name email phone role isVerified createdAt'
     );
@@ -51,5 +48,4 @@ const showAdminCredentials = async () => {
   }
 };
 
-// Run the script
 showAdminCredentials();

@@ -1,8 +1,3 @@
-/**
- * Admin Controller
- * Handles HTTP requests and responses for admin operations
- */
-
 import { validationResult } from 'express-validator';
 import {
   getAllUsersService,
@@ -23,9 +18,6 @@ import {
 } from '../utils/helpers/responseHelper.js';
 import { HTTP_STATUS, SUCCESS_MESSAGES } from '../constants/index.js';
 
-// @desc    Get all users with pagination and filters
-// @route   GET /api/admin/users
-// @access  Private/Admin
 export const getAllUsers = async (req, res) => {
   try {
     const result = await getAllUsersService(req.query);
@@ -43,9 +35,6 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-// @desc    Get user by ID
-// @route   GET /api/admin/users/:id
-// @access  Private/Admin
 export const getUserById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -67,12 +56,8 @@ export const getUserById = async (req, res) => {
   }
 };
 
-// @desc    Update user profile by admin
-// @route   PUT /api/admin/users/:id
-// @access  Private/Admin
 export const updateUser = async (req, res) => {
   try {
-    // Check validation errors from middleware
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return sendValidationError(res, errors.array());
@@ -101,9 +86,6 @@ export const updateUser = async (req, res) => {
   }
 };
 
-// @desc    Delete user
-// @route   DELETE /api/admin/users/:id
-// @access  Private/Admin
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
@@ -129,12 +111,8 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-// @desc    Change user role (promote/demote)
-// @route   PUT /api/admin/users/:id/role
-// @access  Private/Admin
 export const changeUserRole = async (req, res) => {
   try {
-    // Check validation errors from middleware
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return sendValidationError(res, errors.array());
@@ -164,9 +142,6 @@ export const changeUserRole = async (req, res) => {
   }
 };
 
-// @desc    Toggle user verification status
-// @route   PUT /api/admin/users/:id/verification
-// @access  Private/Admin
 export const toggleUserVerification = async (req, res) => {
   try {
     const { id } = req.params;
@@ -188,9 +163,6 @@ export const toggleUserVerification = async (req, res) => {
   }
 };
 
-// @desc    Get dashboard statistics
-// @route   GET /api/admin/dashboard
-// @access  Private/Admin
 export const getDashboardStats = async (req, res) => {
   try {
     const result = await getDashboardStatsService();
@@ -202,12 +174,8 @@ export const getDashboardStats = async (req, res) => {
   }
 };
 
-// @desc    Bulk operations on users
-// @route   POST /api/admin/users/bulk-action
-// @access  Private/Admin
 export const bulkUserAction = async (req, res) => {
   try {
-    // Check validation errors from middleware
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return sendValidationError(res, errors.array());
@@ -236,33 +204,26 @@ export const bulkUserAction = async (req, res) => {
   }
 };
 
-// @desc    Confirm payment for razorpay-link orders
-// @route   PUT /api/admin/orders/:orderId/confirm-payment
-// @access  Private/Admin
 export const confirmPayment = async (req, res) => {
   try {
     const Order = (await import('../models/Order.js')).default;
     const { orderId } = req.params;
     const { transactionId, note } = req.body;
 
-    // Find order
     const order = await Order.findOne({ orderId });
 
     if (!order) {
       return sendNotFound(res, 'Order');
     }
 
-    // Check if order payment is pending
     if (order.payment.status === 'completed') {
       return sendError(res, 'Payment already confirmed', HTTP_STATUS.BAD_REQUEST);
     }
 
-    // Check if order is razorpay-link payment
     if (order.payment.method !== 'razorpay-link') {
       return sendError(res, 'This order is not an online payment order', HTTP_STATUS.BAD_REQUEST);
     }
 
-    // Update payment status
     order.payment.status = 'completed';
     order.payment.paidAt = new Date();
     order.payment.amount = order.totalAmount;
@@ -275,7 +236,6 @@ export const confirmPayment = async (req, res) => {
       order.payment.paymentNote = note;
     }
 
-    // Update order status to confirmed
     order.status = 'confirmed';
 
     await order.save();

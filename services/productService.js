@@ -1,8 +1,3 @@
-/**
- * Product Service Layer
- * Business logic for product operations
- */
-
 import FishProduct from '../models/FishProduct.js';
 import {
   validatePagination,
@@ -19,30 +14,20 @@ import {
   RESOURCE_ERRORS
 } from '../constants/index.js';
 
-/**
- * Get all products with pagination and filtering
- * @param {Object} filters - Query filters
- * @returns {Object} Products data with pagination and stats
- */
 export const getAllProductsService = async (filters = {}) => {
   try {
-    // Validate and sanitize pagination
     const { page, limit, skip } = validatePagination(filters.page, filters.limit);
 
-    // Build filter object
     const queryFilter = {};
 
-    // Category filter
     if (filters.category && Object.values(FISH_CATEGORIES).includes(filters.category)) {
       queryFilter.category = filters.category;
     }
 
-    // Availability filter
     if (filters.isAvailable !== undefined) {
       queryFilter.isAvailable = filters.isAvailable === 'true';
     }
 
-    // Price range filter
     if (filters.minPrice || filters.maxPrice) {
       queryFilter.price = {};
       if (filters.minPrice) {
@@ -59,24 +44,20 @@ export const getAllProductsService = async (filters = {}) => {
       }
     }
 
-    // Search filter
     if (filters.search) {
       const searchRegex = new RegExp(filters.search.trim(), 'i');
       queryFilter.$or = [{ name: searchRegex }, { description: searchRegex }];
     }
 
-    // Get products with pagination
     const products = await FishProduct.find(queryFilter)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .lean();
 
-    // Get total count for pagination
     const totalProducts = await FishProduct.countDocuments(queryFilter);
     const totalPages = Math.ceil(totalProducts / limit);
 
-    // Calculate pagination info
     const pagination = {
       currentPage: page,
       totalPages,
@@ -86,7 +67,6 @@ export const getAllProductsService = async (filters = {}) => {
       limit
     };
 
-    // Get product statistics
     const stats = await FishProduct.aggregate([
       { $match: queryFilter },
       {
@@ -113,7 +93,7 @@ export const getAllProductsService = async (filters = {}) => {
       pagination,
       stats: {
         ...productStats,
-        averagePrice: Math.round(productStats.averagePrice * 100) / 100 // Round to 2 decimal places
+        averagePrice: Math.round(productStats.averagePrice * 100) / 100
       }
     };
   } catch (error) {
@@ -122,11 +102,6 @@ export const getAllProductsService = async (filters = {}) => {
   }
 };
 
-/**
- * Get product by ID
- * @param {string} productId - Product ID
- * @returns {Object} Product data
- */
 export const getProductByIdService = async (productId) => {
   try {
     const product = await FishProduct.findById(productId).lean();
@@ -145,45 +120,33 @@ export const getProductByIdService = async (productId) => {
   }
 };
 
-/**
- * Create new product
- * @param {Object} productData - Product data
- * @param {string} adminEmail - Admin email who created the product
- * @returns {Object} Created product data
- */
 export const createProductService = async (productData, adminEmail) => {
   try {
-    // Validate product name
     const nameValidation = validateProductName(productData.name);
     if (!nameValidation.isValid) {
       throw new Error(nameValidation.message);
     }
 
-    // Validate category
     const categoryValidation = validateFishCategory(productData.category);
     if (!categoryValidation.isValid) {
       throw new Error(categoryValidation.message);
     }
 
-    // Validate price
     const priceValidation = validatePrice(productData.price);
     if (!priceValidation.isValid) {
       throw new Error(priceValidation.message);
     }
 
-    // Validate stock
     const stockValidation = validateStock(productData.stock);
     if (!stockValidation.isValid) {
       throw new Error(stockValidation.message);
     }
 
-    // Validate images
     const imagesValidation = validateImages(productData.images);
     if (!imagesValidation.isValid) {
       throw new Error(imagesValidation.message);
     }
 
-    // Check for duplicate product (same name and category)
     const existingProduct = await FishProduct.findOne({
       name: { $regex: `^${nameValidation.value}$`, $options: 'i' },
       category: categoryValidation.value
@@ -195,7 +158,6 @@ export const createProductService = async (productData, adminEmail) => {
       );
     }
 
-    // Create new product
     const newProduct = new FishProduct({
       name: nameValidation.value,
       category: categoryValidation.value,
@@ -208,7 +170,6 @@ export const createProductService = async (productData, adminEmail) => {
 
     await newProduct.save();
 
-    // Log the creation
     console.log(`Admin ${adminEmail} created product: ${newProduct.name} (ID: ${newProduct._id})`);
 
     return {
@@ -234,13 +195,6 @@ export const createProductService = async (productData, adminEmail) => {
   }
 };
 
-/**
- * Update product
- * @param {string} productId - Product ID
- * @param {Object} updateData - Data to update
- * @param {string} adminEmail - Admin email who updated the product
- * @returns {Object} Updated product data
- */
 export const updateProductService = async (productId, updateData, adminEmail) => {
   try {
     const product = await FishProduct.findById(productId);
@@ -249,7 +203,6 @@ export const updateProductService = async (productId, updateData, adminEmail) =>
       throw new Error(RESOURCE_ERRORS.PRODUCT_NOT_FOUND);
     }
 
-    // Validate updated fields
     const updatedFields = {};
 
     if (updateData.name !== undefined) {
@@ -300,7 +253,6 @@ export const updateProductService = async (productId, updateData, adminEmail) =>
       updatedFields.isAvailable = Boolean(updateData.isAvailable);
     }
 
-    // Check for duplicate if name or category is being changed
     if (updatedFields.name || updatedFields.category) {
       const nameToCheck = updatedFields.name || product.name;
       const categoryToCheck = updatedFields.category || product.category;
@@ -318,13 +270,11 @@ export const updateProductService = async (productId, updateData, adminEmail) =>
       }
     }
 
-    // Update the product
     const updatedProduct = await FishProduct.findByIdAndUpdate(productId, updatedFields, {
       new: true,
       runValidators: true
     }).lean();
 
-    // Log the update
     console.log(
       `Admin ${adminEmail} updated product ${updatedProduct.name} (ID: ${productId}):`,
       Object.keys(updatedFields)
@@ -341,12 +291,6 @@ export const updateProductService = async (productId, updateData, adminEmail) =>
   }
 };
 
-/**
- * Delete product
- * @param {string} productId - Product ID
- * @param {string} adminEmail - Admin email who deleted the product
- * @returns {Object} Deletion confirmation
- */
 export const deleteProductService = async (productId, adminEmail) => {
   try {
     const product = await FishProduct.findById(productId);
@@ -357,7 +301,6 @@ export const deleteProductService = async (productId, adminEmail) => {
 
     await FishProduct.findByIdAndDelete(productId);
 
-    // Log the deletion
     console.log(`Admin ${adminEmail} deleted product ${product.name} (ID: ${productId})`);
 
     return {
@@ -370,12 +313,6 @@ export const deleteProductService = async (productId, adminEmail) => {
   }
 };
 
-/**
- * Toggle product availability
- * @param {string} productId - Product ID
- * @param {string} adminEmail - Admin email
- * @returns {Object} Updated product data
- */
 export const toggleProductAvailabilityService = async (productId, adminEmail) => {
   try {
     const product = await FishProduct.findById(productId);
@@ -387,7 +324,6 @@ export const toggleProductAvailabilityService = async (productId, adminEmail) =>
     product.isAvailable = !product.isAvailable;
     await product.save();
 
-    // Log the action
     console.log(
       `Admin ${adminEmail} ${product.isAvailable ? 'enabled' : 'disabled'} product ${product.name} (ID: ${productId})`
     );

@@ -1,5 +1,3 @@
-// Reusable Swagger Components (Security Schemes, Responses, etc.)
-
 export const securitySchemes = {
   bearerAuth: {
     type: 'http',

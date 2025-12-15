@@ -8,29 +8,20 @@ import {
 } from '../utils/helpers/orderHelpers.js';
 import { validateCart, clearCart } from './cartService.js';
 
-/**
- * Create order from user's cart
- * @param {string} userId - User ID
- * @param {Object} orderData - Order details (deliveryDetails, orderNotes, paymentMethod)
- * @returns {Promise<Object>} Created order
- */
 export const createOrder = async (userId, orderData) => {
   const { deliveryDetails, orderNotes, paymentMethod } = orderData;
 
-  // Validate cart
   const cartValidation = await validateCart(userId);
   if (!cartValidation.valid) {
     throw new Error(`Cart validation failed: ${cartValidation.errors.join(', ')}`);
   }
 
-  // Get cart with products
   const cart = await Cart.findOne({ user: userId }).populate('items.product');
 
   if (!cart || cart.items.length === 0) {
     throw new Error('Cart is empty');
   }
 
-  // Validate delivery time (4-hour minimum)
   const deliveryValidation = validateDeliveryTime(
     deliveryDetails.deliveryDate,
     deliveryDetails.deliveryTime
@@ -40,14 +31,12 @@ export const createOrder = async (userId, orderData) => {
     throw new Error(deliveryValidation.message);
   }
 
-  // Build order items with product snapshots
   const orderItems = [];
   let totalAmount = 0;
 
   for (const cartItem of cart.items) {
     const product = cartItem.product;
 
-    // Final stock check
     if (cartItem.quantity > product.stock) {
       throw new Error(`${product.name}: Insufficient stock. Only ${product.stock} available`);
     }
@@ -63,15 +52,12 @@ export const createOrder = async (userId, orderData) => {
       subtotal
     });
 
-    // Reduce stock
     product.stock -= cartItem.quantity;
     await product.save();
   }
 
-  // Generate unique order ID
   const orderId = await generateOrderId();
 
-  // Create order
   const order = await Order.create({
     orderId,
     user: userId,
@@ -89,21 +75,13 @@ export const createOrder = async (userId, orderData) => {
     paymentStatus: 'pending'
   });
 
-  // Clear cart after successful order
   await clearCart(userId);
 
-  // Populate product details
   await order.populate('items.product');
 
   return order;
 };
 
-/**
- * Get user's orders
- * @param {string} userId - User ID
- * @param {Object} filters - Query filters (status, limit, skip)
- * @returns {Promise<Array>} Array of orders
- */
 export const getUserOrders = async (userId, filters = {}) => {
   const { status, limit = 20, skip = 0, sort = '-createdAt' } = filters;
 
@@ -122,12 +100,6 @@ export const getUserOrders = async (userId, filters = {}) => {
   return orders;
 };
 
-/**
- * Get single order by order ID
- * @param {string} userId - User ID
- * @param {string} orderId - Order ID (ORD-YYYYMMDD-XXX format)
- * @returns {Promise<Object>} Order object
- */
 export const getOrderById = async (userId, orderId) => {
   const order = await Order.findOne({ orderId, user: userId })
     .populate('items.product')
@@ -140,12 +112,6 @@ export const getOrderById = async (userId, orderId) => {
   return order;
 };
 
-/**
- * Get single order by MongoDB _id
- * @param {string} userId - User ID
- * @param {string} id - MongoDB ObjectId
- * @returns {Promise<Object>} Order object
- */
 export const getOrderByMongoId = async (userId, id) => {
   const order = await Order.findOne({ _id: id, user: userId })
     .populate('items.product')
@@ -158,12 +124,6 @@ export const getOrderByMongoId = async (userId, id) => {
   return order;
 };
 
-/**
- * Cancel order (only if status is pending)
- * @param {string} userId - User ID
- * @param {string} orderId - Order ID
- * @returns {Promise<Object>} Updated order
- */
 export const cancelOrder = async (userId, orderId) => {
   const order = await Order.findOne({ orderId, user: userId });
 
@@ -175,7 +135,6 @@ export const cancelOrder = async (userId, orderId) => {
     throw new Error(`Cannot cancel order with status: ${order.status}`);
   }
 
-  // Return stock to products
   for (const item of order.items) {
     const product = await FishProduct.findById(item.product);
     if (product) {
@@ -192,11 +151,6 @@ export const cancelOrder = async (userId, orderId) => {
   return order;
 };
 
-/**
- * Get order statistics for user
- * @param {string} userId - User ID
- * @returns {Promise<Object>} Statistics object
- */
 export const getUserOrderStats = async (userId) => {
   const totalOrders = await Order.countDocuments({ user: userId });
   const pendingOrders = await Order.countDocuments({ user: userId, status: 'pending' });
@@ -215,11 +169,6 @@ export const getUserOrderStats = async (userId) => {
   };
 };
 
-/**
- * Admin: Get all orders with filters
- * @param {Object} filters - Query filters
- * @returns {Promise<Object>} Orders and pagination info
- */
 export const getAllOrders = async (filters = {}) => {
   const { status, limit = 20, skip = 0, sort = '-createdAt', search } = filters;
 
@@ -250,12 +199,6 @@ export const getAllOrders = async (filters = {}) => {
   };
 };
 
-/**
- * Admin: Update order status
- * @param {string} orderId - Order ID
- * @param {string} status - New status
- * @returns {Promise<Object>} Updated order
- */
 export const updateOrderStatus = async (orderId, status) => {
   const validStatuses = [
     'pending',
@@ -276,7 +219,6 @@ export const updateOrderStatus = async (orderId, status) => {
     throw new Error('Order not found');
   }
 
-  // If cancelling, return stock
   if (status === 'cancelled' && order.status !== 'cancelled') {
     for (const item of order.items) {
       const product = await FishProduct.findById(item.product);
@@ -296,10 +238,6 @@ export const updateOrderStatus = async (orderId, status) => {
   return order;
 };
 
-/**
- * Admin: Get order statistics
- * @returns {Promise<Object>} Dashboard statistics
- */
 export const getOrderStats = async () => {
   const totalOrders = await Order.countDocuments();
   const pendingOrders = await Order.countDocuments({ status: 'pending' });

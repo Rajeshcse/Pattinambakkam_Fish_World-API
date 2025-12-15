@@ -3,24 +3,20 @@ import mongoose from 'mongoose';
 import User from '../models/User.js';
 import connectDB from '../config/database.js';
 
-// Load environment variables
 dotenv.config();
 
-// Connect to database
 await connectDB();
 
 const createAdmin = async () => {
   try {
     console.log('Creating admin user...');
 
-    // Check if admin already exists
     const existingAdmin = await User.findOne({ role: 'admin' });
     if (existingAdmin) {
       console.log('Admin user already exists:', existingAdmin.email);
       process.exit(0);
     }
 
-    // Admin user details - CHANGE THESE VALUES
     const adminData = {
       name: 'Admin User',
       email: 'admin@pfw.com',
@@ -30,7 +26,6 @@ const createAdmin = async () => {
       isVerified: true
     };
 
-    // Create admin user
     const admin = new User(adminData);
     await admin.save();
 
@@ -45,5 +40,4 @@ const createAdmin = async () => {
   }
 };
 
-// Run the script
 createAdmin();
