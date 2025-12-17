@@ -152,7 +152,7 @@ export const getCartItemCount = async (userId) => {
     return 0;
   }
 
-  return cart.items.reduce((total, item) => total + item.quantity, 0);
+  return cart.items.length;
 };
 
 export const validateCart = async (userId) => {
