@@ -1,0 +1,132 @@
+Title: 2Factor API Documentation
+
+URL Source: https://documenter.getpostman.com/view/301893/TWDamFGh
+
+Markdown Content:
+2Factor provides a robust and scalable HTTP API platform for sending SMS OTPs, transactional messages, and promotional bulk SMS efficiently.
+
+In addition to SMS services, we also provide advanced WhatsApp solutions: [WhatsApp Chatbot Provider](https://2factor.in/v3/lp/Chatbots/Whatsapp-Chatbot-Provider.php), [WhatsApp Business API Guide 2025](https://2factor.in/v3/lp/blogs/What-is-WhatsApp-Business-API-The-Complete-Guide-2025), and [WhatsApp API Service Provider in India](https://2factor.in/v3/lp/whatsapp-api-service-provider-in-india.php).
+
+* * *
+
+**Authentication**
+------------------
+
+2Factor employs API key-based authentication to ensure secure access. Each client is assigned a unique `APIKey` that identifies their account.
+
+**Additional Security Features:**
+
+*   **IP-Based Restrictions**: To enhance security, clients can restrict API access to a specific set of IP addresses.
+
+* * *
+
+API Throughput and Scalability
+------------------------------
+
+The **2Factor Cloud API** is designed for enterprise-grade performance and reliability, trusted by leading organizations.
+
+#### Default Performance
+
+*   **Throughput**: Supports up to **200 requests per second** under default configurations.
+
+*   **Response Times**: Average response times range from **100 ms to 500 ms**.
+
+#### High Availability (HA) Cluster for Enhanced Scalability
+
+For clients with high scalability needs, we offer a **High Availability (HA) Cluster** infrastructure:
+
+*   **Throughput**: Supports up to **2000 transactions per second (TPS)**.
+
+*   **Response Times**: Average response times range from **50ms to 150 ms**.
+
+#### Scalability Requests
+
+To scale up or discuss your specific requirements, contact [**support@2factor.in**](https://null/).
+
+* * *
+
+Data Privacy & Security Measures
+--------------------------------
+
+At **2Factor**, safeguarding customer data is a top priority. The following measures ensure that all data is securely processed, stored, and accessed in compliance with industry standards:
+
+* * *
+
+### Security Measures
+
+#### **API Hosting and Encryption**
+
+*   **Cloudflare Serverless Environment**: All **2Factor API endpoints** are hosted on Cloudflare's serverless environment for scalability.
+
+*   **End-to-End Encryption**: Cloudflare employs **SSL/TLS encryption** to ensure secure transmission of data between the client, Cloudflare, and 2Factor's backend systems.
+
+#### **Threat Intelligence and Protection**
+
+*   **Web Application Firewall (WAF)**: Cloudflare???s WAF protects publicly accessible API endpoints from vulnerabilities and unauthorized access attempts.
+
+    *   **Rule Set**: Protects against thousands of commonly known web exploits and intrusion attempts.
+
+    *   **IP-Based Restrictions**: Backend systems enforce strict IP-based access controls to block unintended audiences.
+
+#### **Brute Force and Local Firewall Protection**
+
+*   Each Linux virtual machine (VM) hosting code and data stores is secured with:
+
+    *   A **local firewall**.
+
+    *   **Brute-force monitoring software** to detect and prevent unauthorized login attempts.
+
+#### **Logging and Monitoring**
+
+*   Random checks are conducted to monitor access attempts to data stores or VMs from unauthorized IPs, ensuring continuous oversight of system security.
+
+* * *
+
+### Additional Security Features for Clients
+
+#### **IP-Based Access Control**
+
+*   **Client-Specific IP Restrictions**: Clients can enforce IP-based restrictions on their API accounts to prevent unauthorized use.
+
+* * *
+
+### Data Retention and Disposal Policies
+
+#### **Data Retention**
+
+*   **Banking Clients**: Data is retained for **7 years**, as required by industry regulations.
+
+*   **Other Clients**: Data is typically retained for **1 year**, after which it is archived in flat files.
+
+#### **Data Archival and Disposal**
+
+*   After the retention period, data is dumped into **SQL flat files** and stored in **S3/S3-compatible cold storage**.
+
+*   While no formal archival/disposal agreements exist, the above process ensures long-term data security and compliance.
+
+* * *
+
+### Access to SMS Logs
+
+#### **Multi-Factor Authentication**
+
+*   To access SMS logs, users must complete **2-factor authentication**:
+
+    *   **Step 1**: Log in with a username and password.
+
+    *   **Step 2**: Verify the login attempt using an SMS OTP sent to the registered phone number.
+
+#### **Access Control**
+
+*   **Account Owners**: Full access to SMS logs.
+
+*   **2Factor Technical Support Team**: Limited access on a **need-to-know basis** to resolve support tickets.
+
+*   **Third Parties**: No access is provided to external entities or unauthorized users.
+
+* * *
+
+### Contact
+
+For more information about 2Factor???s security measures, data retention policies, or access controls, reach out to our support team at [**support@2factor.in**](https://null/).
+

@@ -2,6 +2,17 @@ import { validationResult } from 'express-validator';
 import User from '../models/User.js';
 import Token from '../models/Token.js';
 import { sendPasswordResetEmail } from '../utils/emailService.js';
+import { sendVerificationSMS } from '../utils/smsService.js';
+
+const isEmail = (identifier) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(identifier);
+};
+
+const isPhone = (identifier) => {
+  const phoneRegex = /^[6-9]\d{9}$/;
+  return phoneRegex.test(identifier);
+};
 
 export const forgotPassword = async (req, res) => {
   try {
@@ -14,14 +25,33 @@ export const forgotPassword = async (req, res) => {
       });
     }
 
-    const { email } = req.body;
+    const { identifier } = req.body;
 
-    const user = await User.findOne({ email });
+    if (!identifier) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide email or phone number'
+      });
+    }
+
+    let user;
+
+    if (isEmail(identifier)) {
+      user = await User.findOne({ email: identifier });
+    } else if (isPhone(identifier)) {
+      user = await User.findOne({ phone: identifier });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid email or phone number'
+      });
+    }
 
     if (!user) {
       return res.status(200).json({
         success: true,
-        message: 'If an account exists with this email, a password reset OTP has been sent'
+        message: 'If an account exists, a password reset OTP has been sent to your registered phone number',
+        method: 'phone'
       });
     }
 
@@ -33,17 +63,36 @@ export const forgotPassword = async (req, res) => {
     const tokenData = Token.createToken(user._id, 'password_reset');
     await Token.create(tokenData);
 
-    const emailResult = await sendPasswordResetEmail(user.email, tokenData.otp, user.name);
+    console.log('\n' + '='.repeat(50));
+    console.log('🔐 PASSWORD RESET OTP REQUESTED');
+    console.log('='.repeat(50));
+    console.log(`👤 User: ${user.name}`);
+    console.log(`📧 Email: ${user.email}`);
+    console.log(`📱 Phone: ${user.phone}`);
+    console.log(`🔐 OTP: ${tokenData.otp}`);
+    console.log(`📤 Sending via: PHONE (SMS)`);
+    console.log(`⏱️  Expires in: 10 minutes`);
+    console.log('='.repeat(50) + '\n');
 
-    if (!emailResult.success) {
-      console.error('Failed to send password reset email:', emailResult.error);
+    // Always send OTP to phone for password reset
+    const sendResult = await sendVerificationSMS(user.phone, tokenData.otp, user.name);
+    if (!sendResult.success) {
+      console.error('Failed to send password reset SMS:', sendResult.error);
     }
 
-    res.status(200).json({
+    const response = {
       success: true,
-      message: 'If an account exists with this email, a password reset OTP has been sent',
-      expiresIn: '10 minutes'
-    });
+      message: 'If an account exists, a password reset OTP has been sent to your registered phone number via SMS',
+      expiresIn: '10 minutes',
+      method: 'phone'
+    };
+
+    if (process.env.NODE_ENV === 'development') {
+      response.otp = tokenData.otp;
+      response.note = '⚠️  OTP shown only in DEVELOPMENT mode';
+    }
+
+    res.status(200).json(response);
   } catch (error) {
     console.error('Forgot password error:', error);
     res.status(500).json({
@@ -64,9 +113,27 @@ export const resetPassword = async (req, res) => {
       });
     }
 
-    const { email, otp, newPassword } = req.body;
+    const { identifier, otp, newPassword } = req.body;
 
-    const user = await User.findOne({ email });
+    if (!identifier) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide email or phone number'
+      });
+    }
+
+    let user;
+
+    if (isEmail(identifier)) {
+      user = await User.findOne({ email: identifier });
+    } else if (isPhone(identifier)) {
+      user = await User.findOne({ phone: identifier });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide a valid email or phone number'
+      });
+    }
 
     if (!user) {
       return res.status(400).json({
@@ -83,6 +150,7 @@ export const resetPassword = async (req, res) => {
     });
 
     if (!token) {
+      console.log(`\n❌ INVALID PASSWORD RESET OTP ATTEMPT - User: ${user.email}, OTP: ${otp}`);
       return res.status(400).json({
         success: false,
         message: 'Invalid or expired OTP'
@@ -96,6 +164,15 @@ export const resetPassword = async (req, res) => {
 
     user.refreshTokens = [];
     await user.save();
+
+    console.log('\n' + '='.repeat(50));
+    console.log('✅ PASSWORD RESET SUCCESS');
+    console.log('='.repeat(50));
+    console.log(`👤 User: ${user.name}`);
+    console.log(`📧 Email: ${user.email}`);
+    console.log(`📱 Phone: ${user.phone}`);
+    console.log(`🔐 OTP: ${otp}`);
+    console.log('='.repeat(50) + '\n');
 
     res.status(200).json({
       success: true,
