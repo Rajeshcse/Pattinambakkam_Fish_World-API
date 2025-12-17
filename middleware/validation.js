@@ -91,23 +91,35 @@ export const validateVerifyEmail = [
 ];
 
 export const validateForgotPassword = [
-  body('email')
+  body('identifier')
     .notEmpty()
-    .withMessage('Email is required')
+    .withMessage('Email or phone number is required')
     .bail()
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('Please provide a valid email')
+    .custom((value) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const phoneRegex = /^[6-9]\d{9}$/;
+
+      if (emailRegex.test(value) || phoneRegex.test(value)) {
+        return true;
+      }
+      throw new Error('Please provide a valid email or 10-digit phone number');
+    })
 ];
 
 export const validateResetPassword = [
-  body('email')
+  body('identifier')
     .notEmpty()
-    .withMessage('Email is required')
+    .withMessage('Email or phone number is required')
     .bail()
-    .isEmail()
-    .normalizeEmail()
-    .withMessage('Please provide a valid email'),
+    .custom((value) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const phoneRegex = /^[6-9]\d{9}$/;
+
+      if (emailRegex.test(value) || phoneRegex.test(value)) {
+        return true;
+      }
+      throw new Error('Please provide a valid email or 10-digit phone number');
+    }),
 
   body('otp')
     .notEmpty()

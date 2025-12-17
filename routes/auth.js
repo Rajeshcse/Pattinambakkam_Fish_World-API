@@ -17,6 +17,12 @@ import {
 } from '../controllers/verificationController.js';
 
 import {
+  sendPhoneVerificationOTP,
+  verifyPhone,
+  resendPhoneVerificationOTP
+} from '../controllers/phoneVerificationController.js';
+
+import {
   forgotPassword,
   resetPassword,
   changePassword
@@ -46,6 +52,11 @@ router.post('/logout-all', authenticateToken, logoutAll);
 router.post('/send-verification-email', authenticateToken, sendEmailVerificationOTP);
 router.post('/verify-email', authenticateToken, validateVerifyEmail, verifyEmail);
 router.post('/resend-verification-email', authenticateToken, resendEmailVerificationOTP);
+
+router.post('/send-verification-sms', authenticateToken, sendPhoneVerificationOTP);
+router.post('/verify-phone', authenticateToken, validateVerifyEmail, verifyPhone);
+router.post('/resend-verification-sms', authenticateToken, resendPhoneVerificationOTP);
+
 router.post('/forgot-password', validateForgotPassword, forgotPassword);
 router.post('/reset-password', validateResetPassword, resetPassword);
 router.post('/change-password', authenticateToken, validateChangePassword, changePassword);
