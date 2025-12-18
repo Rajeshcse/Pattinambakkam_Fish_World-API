@@ -553,5 +553,84 @@ export const adminPaths = {
         500: { $ref: '#/components/responses/ServerError' }
       }
     }
+  },
+
+  '/api/admin/orders/{orderId}/confirm-payment': {
+    put: {
+      tags: ['Admin - Orders'],
+      summary: 'Confirm offline payment (Admin)',
+      description: 'Manually confirm an order payment (e.g., for Razorpay Links/UPI)',
+      security: [{ bearerAuth: [] }],
+      parameters: [
+        {
+          name: 'orderId',
+          in: 'path',
+          required: true,
+          schema: { type: 'string' },
+          example: 'ORD-20251206-001'
+        }
+      ],
+      requestBody: {
+        required: false,
+        content: {
+          'application/json': {
+            schema: {
+              type: 'object',
+              properties: {
+                transactionId: {
+                  type: 'string',
+                  example: 'pay_N9y4Xxxxxxxx',
+                  description: 'Razorpay transaction ID'
+                },
+                note: {
+                  type: 'string',
+                  example: 'Payment verified via screenshot',
+                  description: 'Note for the payment confirmation'
+                }
+              }
+            }
+          }
+        }
+      },
+      responses: {
+        200: {
+          description: 'Payment confirmed successfully',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  success: { type: 'boolean', example: true },
+                  message: { type: 'string', example: 'Payment confirmed successfully' },
+                  data: { $ref: '#/components/schemas/Order' }
+                }
+              }
+            }
+          }
+        },
+        400: {
+          description: 'Bad Request',
+          content: {
+            'application/json': {
+              schema: {
+                type: 'object',
+                properties: {
+                  success: { type: 'boolean', example: false },
+                  message: {
+                    type: 'string',
+                    example: 'Payment already confirmed',
+                    description:
+                      'Can be "Payment already confirmed" or "This order is not an online payment order"'
+                  }
+                }
+              }
+            }
+          }
+        },
+        401: { $ref: '#/components/responses/Unauthorized' },
+        403: { $ref: '#/components/responses/Forbidden' },
+        404: { description: 'Order not found' }
+      }
+    }
   }
 };
