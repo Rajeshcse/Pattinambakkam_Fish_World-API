@@ -160,5 +160,13 @@ export const tags = [
   {
     name: 'Admin - Orders',
     description: 'Order management and status updates (admin only)'
+  },
+  {
+    name: 'Phone Verification',
+    description: 'Phone number verification with OTP'
+  },
+  {
+    name: 'File Upload',
+    description: 'File upload operations (product images)'
   }
 ];
