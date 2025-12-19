@@ -3,8 +3,10 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { clerkMiddleware } from '@clerk/express';
 import connectDB from './config/database.js';
 import authRoutes from './routes/auth.js';
+import clerkRoutes from './routes/clerk.js';
 import adminRoutes from './routes/admin.js';
 import productRoutes from './routes/products.js';
 import cartRoutes from './routes/cart.js';
@@ -24,9 +26,20 @@ connectDB();
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(cors());
+// CORS configuration
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || '*',
+    credentials: true
+  })
+);
+
+// Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// Clerk middleware - must be placed early
+app.use(clerkMiddleware());
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
@@ -36,15 +49,18 @@ app.get('/', (req, res) => {
   const apiInfo = {
     name: 'Pattinambakkam Fish World API',
     version: '2.0.0',
-    description: 'Fish marketplace API with product management and authentication',
+    description: 'Fish marketplace API with Clerk authentication (Email & Google OAuth)',
     documentation: `http://localhost:${port}/api-docs`,
     status: 'active',
+    authentication: 'Clerk (Email & Google OAuth)',
     endpoints: {
       authentication: {
-        register: 'POST /api/auth/register',
-        login: 'POST /api/auth/login',
+        register: 'POST /api/auth/register (Local Auth)',
+        login: 'POST /api/auth/login (Local Auth)',
         profile: 'GET /api/auth/profile (Protected)',
-        updateProfile: 'PUT /api/auth/profile (Protected)'
+        updateProfile: 'PUT /api/auth/profile (Protected)',
+        clerkProfile: 'GET /api/auth/clerk/profile (Clerk Auth)',
+        clerkWebhook: 'POST /api/auth/clerk/webhook (Clerk Webhook)'
       },
       admin: {
         dashboard: 'GET /api/admin/dashboard (Admin Only)',
@@ -73,7 +89,8 @@ app.get('/', (req, res) => {
       }
     },
     features: [
-      'JWT Authentication',
+      'Clerk Email & Google OAuth Authentication',
+      'Local JWT Authentication',
       'Role-based Authorization',
       'Product Management',
       'Shopping Cart',
@@ -92,6 +109,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/auth', clerkRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
@@ -104,6 +122,7 @@ app.use(globalErrorHandler);
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}/`);
   console.log(`API Documentation available at http://localhost:${port}/api-docs`);
+  console.log(`Clerk authentication enabled`);
 });
 
 export default app;
