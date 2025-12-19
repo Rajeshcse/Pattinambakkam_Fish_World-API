@@ -64,6 +64,8 @@ export const register = async (req, res) => {
         phone: user.phone,
         role: user.role,
         isVerified: user.isVerified,
+        avatar: user.avatar,
+        address: user.address,
         createdAt: user.createdAt
       }
     });
@@ -139,7 +141,8 @@ export const login = async (req, res) => {
         phone: user.phone,
         role: user.role,
         isVerified: user.isVerified,
-        avatar: user.avatar
+        avatar: user.avatar,
+        address: user.address
       }
     });
   } catch (error) {
@@ -165,6 +168,7 @@ export const getProfile = async (req, res) => {
         role: user.role,
         isVerified: user.isVerified,
         avatar: user.avatar,
+        address: user.address,
         createdAt: user.createdAt
       }
     });
@@ -188,7 +192,7 @@ export const updateProfile = async (req, res) => {
       });
     }
 
-    const { name, email, phone, avatar } = req.body;
+    const { name, email, phone, avatar, address } = req.body;
 
     if (email && email !== req.user.email) {
       const existingUser = await User.findOne({ email });
@@ -210,9 +214,15 @@ export const updateProfile = async (req, res) => {
       }
     }
 
+    const updateData = { name, email, phone, avatar };
+
+    if (address) {
+      updateData.address = address;
+    }
+
     const user = await User.findByIdAndUpdate(
       req.user.id,
-      { name, email, phone, avatar },
+      updateData,
       { new: true, runValidators: true }
     );
 
@@ -227,6 +237,7 @@ export const updateProfile = async (req, res) => {
         role: user.role,
         isVerified: user.isVerified,
         avatar: user.avatar,
+        address: user.address,
         createdAt: user.createdAt
       }
     });

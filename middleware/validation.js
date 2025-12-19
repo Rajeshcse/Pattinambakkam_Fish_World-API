@@ -75,7 +75,39 @@ export const validateProfileUpdate = [
     .matches(/^[6-9]\d{9}$/)
     .withMessage('Please provide a valid 10-digit Indian phone number starting with 6, 7, 8, or 9'),
 
-  body('avatar').optional().isURL().withMessage('Avatar must be a valid URL')
+  body('avatar').optional().isURL().withMessage('Avatar must be a valid URL'),
+
+  body('address').optional().isObject().withMessage('Address must be an object'),
+
+  body('address.street')
+    .optional()
+    .trim()
+    .isLength({ min: 10, max: 300 })
+    .withMessage('Street address must be between 10 and 300 characters'),
+
+  body('address.city')
+    .optional()
+    .trim()
+    .isLength({ min: 2, max: 50 })
+    .withMessage('City name must be between 2 and 50 characters'),
+
+  body('address.state')
+    .optional()
+    .trim()
+    .isLength({ max: 50 })
+    .withMessage('State name cannot exceed 50 characters'),
+
+  body('address.pincode')
+    .optional()
+    .trim()
+    .matches(/^\d{6}$/)
+    .withMessage('Pincode must be a valid 6-digit number'),
+
+  body('address.landmark')
+    .optional()
+    .trim()
+    .isLength({ max: 100 })
+    .withMessage('Landmark cannot exceed 100 characters')
 ];
 
 export const validateVerifyEmail = [

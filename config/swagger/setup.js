@@ -10,6 +10,8 @@ import { adminPaths } from './paths/admin.js';
 import { productPaths } from './paths/products.js';
 import { cartPaths } from './paths/cart.js';
 import { orderPaths } from './paths/orders.js';
+import { phoneVerificationPaths } from './paths/phoneVerification.js';
+import { uploadPaths } from './paths/upload.js';
 
 const options = {
   definition: {
@@ -52,7 +54,9 @@ const options = {
       ...adminPaths,
       ...productPaths,
       ...cartPaths,
-      ...orderPaths
+      ...orderPaths,
+      ...phoneVerificationPaths,
+      ...uploadPaths
     }
   },
   apis: []

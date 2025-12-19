@@ -49,6 +49,42 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
+  address: {
+    street: {
+      type: String,
+      trim: true,
+      minlength: [10, 'Street address must be at least 10 characters'],
+      maxlength: [300, 'Street address cannot exceed 300 characters']
+    },
+    city: {
+      type: String,
+      trim: true,
+      default: 'Chennai',
+      minlength: [2, 'City name must be at least 2 characters'],
+      maxlength: [50, 'City name cannot exceed 50 characters']
+    },
+    state: {
+      type: String,
+      trim: true,
+      default: 'Tamil Nadu',
+      maxlength: [50, 'State name cannot exceed 50 characters']
+    },
+    pincode: {
+      type: String,
+      trim: true,
+      validate: {
+        validator: function (v) {
+          return !v || /^\d{6}$/.test(v);
+        },
+        message: 'Pincode must be a valid 6-digit number'
+      }
+    },
+    landmark: {
+      type: String,
+      trim: true,
+      maxlength: [100, 'Landmark cannot exceed 100 characters']
+    }
+  },
   isVerified: {
     type: Boolean,
     default: false

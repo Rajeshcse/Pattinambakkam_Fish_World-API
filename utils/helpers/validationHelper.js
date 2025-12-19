@@ -88,7 +88,7 @@ export const validateProductName = (name) => {
     return { isValid: false, message: 'Product name cannot exceed 100 characters' };
   }
 
-  if (!/^[a-zA-Z0-9\s\-\.]+$/.test(trimmedName)) {
+  if (!/^[a-zA-Z0-9\s\-\.\(\)]+$/.test(trimmedName)) {
     return { isValid: false, message: 'Product name contains invalid characters' };
   }
 
