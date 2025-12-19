@@ -19,6 +19,14 @@ export const sendEmailVerificationOTP = async (req, res) => {
 
     console.log('User found:', user.email, 'isVerified:', user.isVerified);
 
+    // Clerk users have email verified automatically
+    if (user.authProvider === 'clerk') {
+      return res.status(400).json({
+        success: false,
+        message: 'Clerk users have email verified automatically. Email is already verified.'
+      });
+    }
+
     if (user.isVerified) {
       return res.status(400).json({
         success: false,
@@ -104,6 +112,14 @@ export const verifyEmail = async (req, res) => {
       });
     }
 
+    // Clerk users are automatically verified
+    if (user.authProvider === 'clerk') {
+      return res.status(400).json({
+        success: false,
+        message: 'Clerk users have email verified automatically'
+      });
+    }
+
     if (user.isVerified) {
       return res.status(400).json({
         success: false,
@@ -161,6 +177,14 @@ export const resendEmailVerificationOTP = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: 'User not found'
+      });
+    }
+
+    // Clerk users have email verified automatically
+    if (user.authProvider === 'clerk') {
+      return res.status(400).json({
+        success: false,
+        message: 'Clerk users have email verified automatically. Email is already verified.'
       });
     }
 

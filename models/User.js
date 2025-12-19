@@ -2,6 +2,11 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema({
+  clerkId: {
+    type: String,
+    sparse: true,
+    default: null
+  },
   name: {
     type: String,
     required: [true, 'Please provide a name'],
@@ -18,12 +23,12 @@ const userSchema = new mongoose.Schema({
   },
   phone: {
     type: String,
-    required: [true, 'Please provide a phone number'],
-    unique: true,
+    sparse: true,
     trim: true,
     match: [/^[6-9]\d{9}$/, 'Please provide a valid 10-digit phone number'],
     validate: {
       validator: function (v) {
+        if (!v) return true; // Optional for Clerk users
         return /^[6-9]\d{9}$/.test(v);
       },
       message: 'Phone number must be a valid 10-digit Phone number starting with 6, 7, 8, or 9'
@@ -31,9 +36,9 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, 'Please provide a password'],
     minlength: [6, 'Password must be at least 6 characters'],
-    select: false
+    select: false,
+    default: null
   },
   role: {
     type: String,
@@ -84,6 +89,11 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  authProvider: {
+    type: String,
+    enum: ['clerk', 'local'],
+    default: 'local'
+  },
   refreshTokens: [
     {
       token: {
@@ -104,7 +114,8 @@ const userSchema = new mongoose.Schema({
 });
 
 userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+  // Only hash password if it's modified and user is using local auth
+  if (!this.isModified('password') || !this.password) return next();
 
   const salt = await bcrypt.genSalt(12);
   this.password = await bcrypt.hash(this.password, salt);
@@ -112,6 +123,7 @@ userSchema.pre('save', async function (next) {
 });
 
 userSchema.methods.comparePassword = async function (candidatePassword) {
+  if (!this.password) return false;
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
