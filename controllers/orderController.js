@@ -3,7 +3,6 @@ import {
   createOrder,
   getUserOrders,
   getOrderById,
-  getOrderByMongoId,
   cancelOrder,
   getUserOrderStats,
   getAllOrders,
@@ -154,7 +153,17 @@ export const adminUpdateOrderStatus = async (req, res) => {
 
     const order = await updateOrderStatus(orderId, status);
 
-    return sendSuccess(res, order, 'Order status updated successfully');
+    // Generate WhatsApp message for the customer
+    const whatsappData = generateStatusWhatsAppMessage(order, status);
+
+    return sendSuccess(
+      res,
+      {
+        order,
+        whatsapp: whatsappData
+      },
+      'Order status updated successfully'
+    );
   } catch (error) {
     console.error('Admin update order status error:', error);
 
@@ -168,6 +177,52 @@ export const adminUpdateOrderStatus = async (req, res) => {
 
     return sendError(res, error.message, HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
+};
+
+// Helper function to generate WhatsApp message based on order status
+const generateStatusWhatsAppMessage = (order, newStatus) => {
+  const customerName = order.user?.name || 'Customer';
+  const customerPhone = order.deliveryDetails?.phone || order.user?.phone;
+
+  const statusMessages = {
+    confirmed: {
+      emoji: '✅',
+      title: 'Order Confirmed!',
+      message: `Order Confirmed! Your order *${
+        order.orderId
+      }* has been *confirmed*! \n\nWe're Packing your fresh seafood!\n\nTrack Order: ${
+        process.env.CLIENT_URL || 'http://localhost:5173'
+      }/orders/${order.orderId}`
+    },
+    'out-for-delivery': {
+      emoji: '🚗',
+      title: 'Out for Delivery',
+      message: `*Out for Delivery!* \n\nHi ${customerName}! 🚗💨\n\nYour order *${order.orderId}* is *out for delivery*!\n\nYour fresh seafood is on its way! 🐟📦\n\nPlease keep your phone nearby. Our delivery person will call you shortly`
+    },
+    delivered: {
+      emoji: '✅',
+      title: 'Order Delivered',
+      message: `*Delivered: Your order *${order.orderId}* has been *delivered successfully*!\n\nWe hope you enjoy your fresh seafood! 🐟🦐\n\n*Thank you for choosing Pattinambakkam Fish World!*`
+    },
+    cancelled: {
+      emoji: '❌',
+      title: 'Order Cancelled',
+      message: `Hi ${customerName},\n\nYour order *${order.orderId}* has been *cancelled*.\n\n*Refund:* ₹${order.totalAmount}\nIf you paid online, your refund will be processed within 5-7 business days.\n\nIf you have any questions, please contact us.\n\nWe hope to serve you again soon! 🐟\n\n_Pattinambakkam Fish World_`
+    }
+  };
+
+  const messageData = statusMessages[newStatus];
+
+  if (!messageData) {
+    return null; // No message for 'pending' status
+  }
+
+  return {
+    phone: customerPhone,
+    message: messageData.message,
+    emoji: messageData.emoji,
+    title: messageData.title
+  };
 };
 
 export const adminGetOrderStats = async (req, res) => {
