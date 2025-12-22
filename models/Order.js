@@ -73,8 +73,9 @@ const orderSchema = new mongoose.Schema({
     deliveryTime: {
       type: String,
       enum: {
-        values: ['08:00-12:00', '12:00-16:00', '16:00-20:00'],
-        message: 'Delivery time must be one of: 08:00-12:00, 12:00-16:00, 16:00-20:00'
+        values: ['8:00 AM - 12:00 PM', '12:00 PM - 4:00 PM', '4:00 PM - 8:00 PM'],
+        message:
+          'Delivery time must be one of: 8:00 AM - 12:00 PM, 12:00 PM - 4:00 PM, 4:00 PM - 8:00 PM'
       },
       required: [true, 'Delivery time slot is required']
     }
