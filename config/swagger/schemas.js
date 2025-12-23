@@ -232,8 +232,8 @@ export const schemas = {
       },
       deliveryTime: {
         type: 'string',
-        enum: ['08:00-12:00', '12:00-16:00', '16:00-20:00'],
-        example: '16:00-20:00'
+        enum: ['8:00 AM - 12:00 PM', '12:00 PM - 4:00 PM', '4:00 PM - 8:00 PM'],
+        example: '4:00 PM - 8:00 PM'
       }
     }
   },

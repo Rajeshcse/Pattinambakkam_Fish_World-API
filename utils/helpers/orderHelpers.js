@@ -25,21 +25,45 @@ export const validateDeliveryTime = (deliveryDate, deliveryTime) => {
 
   const selectedDate = new Date(deliveryDate);
 
-  const validTimeSlots = ['08:00-12:00', '12:00-16:00', '16:00-20:00'];
+  const validTimeSlots = ['8:00 AM - 12:00 PM', '12:00 PM - 4:00 PM', '4:00 PM - 8:00 PM'];
   if (!validTimeSlots.includes(deliveryTime)) {
     return {
       valid: false,
-      message: 'Invalid delivery time slot. Must be 08:00-12:00, 12:00-16:00, or 16:00-20:00',
+      message:
+        'Invalid delivery time slot. Must be 8:00 AM - 12:00 PM, 12:00 PM - 4:00 PM, or 4:00 PM - 8:00 PM',
       minimumTime: minimumDeliveryTime
     };
   }
 
-  const [startTime] = deliveryTime.split('-');
-  const [hours, minutes] = startTime.split(':').map(Number);
+  let hours, minutes;
+
+  if (deliveryTime.includes('8:00 AM')) {
+    hours = 8;
+    minutes = 0;
+  } else if (deliveryTime.includes('12:00 PM')) {
+    hours = 12;
+    minutes = 0;
+  } else if (deliveryTime.includes('4:00 PM')) {
+    hours = 16;
+    minutes = 0;
+  }
 
   const selectedDeliveryTime = new Date(selectedDate);
   selectedDeliveryTime.setHours(hours, minutes, 0, 0);
 
+  // Check if delivery date is in the past first
+  const startOfToday = new Date(now);
+  startOfToday.setHours(0, 0, 0, 0);
+
+  if (selectedDate < startOfToday) {
+    return {
+      valid: false,
+      message: 'Delivery date cannot be in the past',
+      minimumTime: minimumDeliveryTime
+    };
+  }
+
+  // Then check if delivery time is at least 4 hours from now
   if (selectedDeliveryTime < minimumDeliveryTime) {
     return {
       valid: false,
@@ -51,14 +75,6 @@ export const validateDeliveryTime = (deliveryDate, deliveryTime) => {
           timeStyle: 'short'
         }
       )}`,
-      minimumTime: minimumDeliveryTime
-    };
-  }
-
-  if (selectedDate < new Date(now.setHours(0, 0, 0, 0))) {
-    return {
-      valid: false,
-      message: 'Delivery date cannot be in the past',
       minimumTime: minimumDeliveryTime
     };
   }
@@ -87,9 +103,9 @@ export const getAvailableTimeSlots = (date) => {
   const selectedDate = new Date(date);
 
   const timeSlots = [
-    { slot: '08:00-12:00', start: 8 },
-    { slot: '12:00-16:00', start: 12 },
-    { slot: '16:00-20:00', start: 16 }
+    { slot: '8:00 AM - 12:00 PM', start: 8 },
+    { slot: '12:00 PM - 4:00 PM', start: 12 },
+    { slot: '4:00 PM - 8:00 PM', start: 16 }
   ];
 
   return timeSlots.map(({ slot, start }) => {

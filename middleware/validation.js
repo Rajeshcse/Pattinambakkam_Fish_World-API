@@ -410,8 +410,10 @@ export const validateCreateOrder = [
     .notEmpty()
     .withMessage('Delivery time slot is required')
     .bail()
-    .isIn(['08:00-12:00', '12:00-16:00', '16:00-20:00'])
-    .withMessage('Delivery time must be one of: 08:00-12:00, 12:00-16:00, 16:00-20:00'),
+    .isIn(['8:00 AM - 12:00 PM', '12:00 PM - 4:00 PM', '4:00 PM - 8:00 PM'])
+    .withMessage(
+      'Delivery time must be one of: 8:00 AM - 12:00 PM, 12:00 PM - 4:00 PM, 4:00 PM - 8:00 PM'
+    ),
 
   body('orderNotes')
     .optional()
