@@ -51,6 +51,19 @@ export const validateDeliveryTime = (deliveryDate, deliveryTime) => {
   const selectedDeliveryTime = new Date(selectedDate);
   selectedDeliveryTime.setHours(hours, minutes, 0, 0);
 
+  // Check if delivery date is in the past first
+  const startOfToday = new Date(now);
+  startOfToday.setHours(0, 0, 0, 0);
+
+  if (selectedDate < startOfToday) {
+    return {
+      valid: false,
+      message: 'Delivery date cannot be in the past',
+      minimumTime: minimumDeliveryTime
+    };
+  }
+
+  // Then check if delivery time is at least 4 hours from now
   if (selectedDeliveryTime < minimumDeliveryTime) {
     return {
       valid: false,
@@ -62,14 +75,6 @@ export const validateDeliveryTime = (deliveryDate, deliveryTime) => {
           timeStyle: 'short'
         }
       )}`,
-      minimumTime: minimumDeliveryTime
-    };
-  }
-
-  if (selectedDate < new Date(now.setHours(0, 0, 0, 0))) {
-    return {
-      valid: false,
-      message: 'Delivery date cannot be in the past',
       minimumTime: minimumDeliveryTime
     };
   }
