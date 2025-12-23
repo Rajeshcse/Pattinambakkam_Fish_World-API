@@ -44,5 +44,13 @@ services:
         sync: false
       - key: WHATSAPP_API_URL
         value: https://api.whatsapp.com/send
-      - key: ADMIN_WHATSAPP_NUMBER
+      - key: WHATSAPP_BUSINESS_NUMBER
+        sync: false
+      - key: SMS_PROVIDER
+        value: 2FACTOR
+      - key: TWOFACTOR_API_KEY
+        sync: false
+      - key: TWOFACTOR_TEMPLATE_NAME
+        sync: false
+      - key: TWOFACTOR_SENDER_ID
         sync: false
