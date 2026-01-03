@@ -63,16 +63,18 @@ export const forgotPassword = async (req, res) => {
     const tokenData = Token.createToken(user._id, 'password_reset');
     await Token.create(tokenData);
 
-    console.log('\n' + '='.repeat(50));
-    console.log('🔐 PASSWORD RESET OTP REQUESTED');
-    console.log('='.repeat(50));
-    console.log(`👤 User: ${user.name}`);
-    console.log(`📧 Email: ${user.email}`);
-    console.log(`📱 Phone: ${user.phone}`);
-    console.log(`🔐 OTP: ${tokenData.otp}`);
-    console.log(`📤 Sending via: PHONE (SMS)`);
-    console.log(`⏱️  Expires in: 10 minutes`);
-    console.log('='.repeat(50) + '\n');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('\n' + '='.repeat(50));
+      console.log('🔐 PASSWORD RESET OTP REQUESTED');
+      console.log('='.repeat(50));
+      console.log(`👤 User: ${user.name}`);
+      console.log(`📧 Email: ${user.email}`);
+      console.log(`📱 Phone: ${user.phone}`);
+      console.log(`🔐 OTP: ${tokenData.otp}`);
+      console.log(`📤 Sending via: PHONE (SMS)`);
+      console.log(`⏱️  Expires in: 10 minutes`);
+      console.log('='.repeat(50) + '\n');
+    }
 
     // Always send OTP to phone for password reset
     const sendResult = await sendVerificationSMS(user.phone, tokenData.otp, user.name);
@@ -150,7 +152,9 @@ export const resetPassword = async (req, res) => {
     });
 
     if (!token) {
-      console.log(`\n❌ INVALID PASSWORD RESET OTP ATTEMPT - User: ${user.email}, OTP: ${otp}`);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`\n❌ INVALID PASSWORD RESET OTP ATTEMPT - User: ${user.email}, OTP: ${otp}`);
+      }
       return res.status(400).json({
         success: false,
         message: 'Invalid or expired OTP'
@@ -165,14 +169,16 @@ export const resetPassword = async (req, res) => {
     user.refreshTokens = [];
     await user.save();
 
-    console.log('\n' + '='.repeat(50));
-    console.log('✅ PASSWORD RESET SUCCESS');
-    console.log('='.repeat(50));
-    console.log(`👤 User: ${user.name}`);
-    console.log(`📧 Email: ${user.email}`);
-    console.log(`📱 Phone: ${user.phone}`);
-    console.log(`🔐 OTP: ${otp}`);
-    console.log('='.repeat(50) + '\n');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('\n' + '='.repeat(50));
+      console.log('✅ PASSWORD RESET SUCCESS');
+      console.log('='.repeat(50));
+      console.log(`👤 User: ${user.name}`);
+      console.log(`📧 Email: ${user.email}`);
+      console.log(`📱 Phone: ${user.phone}`);
+      console.log(`🔐 OTP: ${otp}`);
+      console.log('='.repeat(50) + '\n');
+    }
 
     res.status(200).json({
       success: true,

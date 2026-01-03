@@ -5,19 +5,25 @@ import { sendVerificationSMS, sendWelcomeSMS } from '../utils/smsService.js';
 
 export const sendPhoneVerificationOTP = async (req, res) => {
   try {
-    console.log('Send phone verification OTP request received for user:', req.user?.id);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Send phone verification OTP request received for user:', req.user?.id);
+    }
 
     const user = await User.findById(req.user.id);
 
     if (!user) {
-      console.log('User not found:', req.user.id);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('User not found:', req.user.id);
+      }
       return res.status(404).json({
         success: false,
         message: 'User not found',
       });
     }
 
-    console.log('User found:', user.phone, 'isVerified:', user.isVerified);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('User found:', user.phone, 'isVerified:', user.isVerified);
+    }
 
     if (user.isVerified) {
       return res.status(400).json({
@@ -32,35 +38,44 @@ export const sendPhoneVerificationOTP = async (req, res) => {
     });
 
     const tokenData = Token.createToken(user._id, 'phone_verification');
-    console.log('Token created with OTP:', tokenData.otp);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Token created with OTP:', tokenData.otp);
+    }
     await Token.create(tokenData);
 
-    console.log('Calling sendVerificationSMS with:', {
-      phone: user.phone,
-      otp: tokenData.otp,
-      name: user.name,
-    });
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Calling sendVerificationSMS with:', {
+        phone: user.phone,
+        otp: tokenData.otp,
+        name: user.name,
+      });
+    }
 
     const smsResult = await sendVerificationSMS(user.phone, tokenData.otp, user.name);
-    console.log('SMS result:', smsResult);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('SMS result:', smsResult);
+    }
 
     if (!smsResult.success) {
-      console.log('SMS sending failed, error:', smsResult.error);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('SMS sending failed, error:', smsResult.error);
+      }
       return res.status(500).json({
         success: false,
         message: 'Failed to send verification SMS. Please try again.',
       });
     }
 
-    console.log('SMS sent successfully, messageId:', smsResult.messageId);
-
-    console.log('\n' + '='.repeat(50));
-    console.log('📱 PHONE VERIFICATION OTP SENT');
-    console.log('='.repeat(50));
-    console.log(`👤 User: ${user.phone}`);
-    console.log(`🔐 OTP: ${tokenData.otp}`);
-    console.log(`⏱️  Expires in: 10 minutes`);
-    console.log('='.repeat(50) + '\n');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('SMS sent successfully, messageId:', smsResult.messageId);
+      console.log('\n' + '='.repeat(50));
+      console.log('📱 PHONE VERIFICATION OTP SENT');
+      console.log('='.repeat(50));
+      console.log(`👤 User: ${user.phone}`);
+      console.log(`🔐 OTP: ${tokenData.otp}`);
+      console.log(`⏱️  Expires in: 10 minutes`);
+      console.log('='.repeat(50) + '\n');
+    }
 
     const response = {
       success: true,
@@ -119,7 +134,9 @@ export const verifyPhone = async (req, res) => {
     });
 
     if (!token) {
-      console.log(`\n❌ INVALID OTP ATTEMPT - User: ${user.phone}, OTP: ${otp}`);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`\n❌ INVALID OTP ATTEMPT - User: ${user.phone}, OTP: ${otp}`);
+      }
       return res.status(400).json({
         success: false,
         message: 'Invalid or expired OTP',
@@ -133,12 +150,14 @@ export const verifyPhone = async (req, res) => {
 
     await sendWelcomeSMS(user.phone, user.name);
 
-    console.log('\n' + '='.repeat(50));
-    console.log('✅ PHONE VERIFICATION SUCCESS');
-    console.log('='.repeat(50));
-    console.log(`👤 User: ${user.phone}`);
-    console.log(`🔐 OTP: ${otp}`);
-    console.log('='.repeat(50) + '\n');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('\n' + '='.repeat(50));
+      console.log('✅ PHONE VERIFICATION SUCCESS');
+      console.log('='.repeat(50));
+      console.log(`👤 User: ${user.phone}`);
+      console.log(`🔐 OTP: ${otp}`);
+      console.log('='.repeat(50) + '\n');
+    }
 
     res.status(200).json({
       success: true,
@@ -201,13 +220,15 @@ export const resendPhoneVerificationOTP = async (req, res) => {
       });
     }
 
-    console.log('\n' + '='.repeat(50));
-    console.log('📱 NEW PHONE VERIFICATION OTP SENT (RESEND)');
-    console.log('='.repeat(50));
-    console.log(`👤 User: ${user.phone}`);
-    console.log(`🔐 OTP: ${tokenData.otp}`);
-    console.log(`⏱️  Expires in: 10 minutes`);
-    console.log('='.repeat(50) + '\n');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('\n' + '='.repeat(50));
+      console.log('📱 NEW PHONE VERIFICATION OTP SENT (RESEND)');
+      console.log('='.repeat(50));
+      console.log(`👤 User: ${user.phone}`);
+      console.log(`🔐 OTP: ${tokenData.otp}`);
+      console.log(`⏱️  Expires in: 10 minutes`);
+      console.log('='.repeat(50) + '\n');
+    }
 
     const response = {
       success: true,
