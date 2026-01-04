@@ -5,19 +5,25 @@ import { sendVerificationEmail, sendWelcomeEmail } from '../utils/emailService.j
 
 export const sendEmailVerificationOTP = async (req, res) => {
   try {
-    console.log('Send verification email request received for user:', req.user?.id);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Send verification email request received for user:', req.user?.id);
+    }
 
     const user = await User.findById(req.user.id);
 
     if (!user) {
-      console.log('User not found:', req.user.id);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('User not found:', req.user.id);
+      }
       return res.status(404).json({
         success: false,
         message: 'User not found'
       });
     }
 
-    console.log('User found:', user.email, 'isVerified:', user.isVerified);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('User found:', user.email, 'isVerified:', user.isVerified);
+    }
 
     if (user.isVerified) {
       return res.status(400).json({
@@ -32,35 +38,44 @@ export const sendEmailVerificationOTP = async (req, res) => {
     });
 
     const tokenData = Token.createToken(user._id, 'email_verification');
-    console.log('Token created with OTP:', tokenData.otp);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Token created with OTP:', tokenData.otp);
+    }
     await Token.create(tokenData);
 
-    console.log('Calling sendVerificationEmail with:', {
-      email: user.email,
-      otp: tokenData.otp,
-      name: user.name
-    });
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Calling sendVerificationEmail with:', {
+        email: user.email,
+        otp: tokenData.otp,
+        name: user.name
+      });
+    }
 
     const emailResult = await sendVerificationEmail(user.email, tokenData.otp, user.name);
-    console.log('Email result:', emailResult);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Email result:', emailResult);
+    }
 
     if (!emailResult.success) {
-      console.log('Email sending failed, error:', emailResult.error);
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Email sending failed, error:', emailResult.error);
+      }
       return res.status(500).json({
         success: false,
         message: 'Failed to send verification email. Please try again.'
       });
     }
 
-    console.log('Email sent successfully, messageId:', emailResult.messageId);
-
-    console.log('\n' + '='.repeat(50));
-    console.log('📧 EMAIL VERIFICATION OTP SENT');
-    console.log('='.repeat(50));
-    console.log(`👤 User: ${user.email}`);
-    console.log(`🔐 OTP: ${tokenData.otp}`);
-    console.log(`⏱️  Expires in: 10 minutes`);
-    console.log('='.repeat(50) + '\n');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Email sent successfully, messageId:', emailResult.messageId);
+      console.log('\n' + '='.repeat(50));
+      console.log('📧 EMAIL VERIFICATION OTP SENT');
+      console.log('='.repeat(50));
+      console.log(`👤 User: ${user.email}`);
+      console.log(`🔐 OTP: ${tokenData.otp}`);
+      console.log(`⏱️  Expires in: 10 minutes`);
+      console.log('='.repeat(50) + '\n');
+    }
 
     const response = {
       success: true,
@@ -119,7 +134,9 @@ export const verifyEmail = async (req, res) => {
     });
 
     if (!token) {
-      console.log(`\n❌ INVALID OTP ATTEMPT - User: ${user.email}, OTP: ${otp}`);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`\n❌ INVALID OTP ATTEMPT - User: ${user.email}, OTP: ${otp}`);
+      }
       return res.status(400).json({
         success: false,
         message: 'Invalid or expired OTP'
@@ -133,12 +150,14 @@ export const verifyEmail = async (req, res) => {
 
     await sendWelcomeEmail(user.email, user.name);
 
-    console.log('\n' + '='.repeat(50));
-    console.log('✅ EMAIL VERIFICATION SUCCESS');
-    console.log('='.repeat(50));
-    console.log(`👤 User: ${user.email}`);
-    console.log(`🔐 OTP: ${otp}`);
-    console.log('='.repeat(50) + '\n');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('\n' + '='.repeat(50));
+      console.log('✅ EMAIL VERIFICATION SUCCESS');
+      console.log('='.repeat(50));
+      console.log(`👤 User: ${user.email}`);
+      console.log(`🔐 OTP: ${otp}`);
+      console.log('='.repeat(50) + '\n');
+    }
 
     res.status(200).json({
       success: true,
@@ -201,13 +220,15 @@ export const resendEmailVerificationOTP = async (req, res) => {
       });
     }
 
-    console.log('\n' + '='.repeat(50));
-    console.log('📧 NEW EMAIL VERIFICATION OTP SENT (RESEND)');
-    console.log('='.repeat(50));
-    console.log(`👤 User: ${user.email}`);
-    console.log(`🔐 OTP: ${tokenData.otp}`);
-    console.log(`⏱️  Expires in: 10 minutes`);
-    console.log('='.repeat(50) + '\n');
+    if (process.env.NODE_ENV === 'development') {
+      console.log('\n' + '='.repeat(50));
+      console.log('📧 NEW EMAIL VERIFICATION OTP SENT (RESEND)');
+      console.log('='.repeat(50));
+      console.log(`👤 User: ${user.email}`);
+      console.log(`🔐 OTP: ${tokenData.otp}`);
+      console.log(`⏱️  Expires in: 10 minutes`);
+      console.log('='.repeat(50) + '\n');
+    }
 
     const response = {
       success: true,
