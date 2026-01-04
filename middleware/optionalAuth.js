@@ -6,6 +6,7 @@ import User from '../models/User.js';
  * Authenticates the user if a valid token is provided
  * Allows requests without authentication (guest users)
  * Sets req.user if authenticated, otherwise leaves it undefined
+ * Uses secure session IDs for guest identification
  */
 export const optionalAuth = async (req, res, next) => {
   try {
@@ -16,7 +17,7 @@ export const optionalAuth = async (req, res, next) => {
       // No token provided - allow as guest
       req.user = null;
       req.isGuest = true;
-      req.guestId = req.sessionID || req.ip || null;
+      req.guestId = req.sessionID; // Use secure session ID from express-session
       return next();
     }
 
@@ -28,7 +29,7 @@ export const optionalAuth = async (req, res, next) => {
       // Invalid token - allow as guest
       req.user = null;
       req.isGuest = true;
-      req.guestId = req.sessionID || req.ip || null;
+      req.guestId = req.sessionID; // Use secure session ID from express-session
       return next();
     }
 
@@ -40,7 +41,7 @@ export const optionalAuth = async (req, res, next) => {
     // Token verification failed - allow as guest
     req.user = null;
     req.isGuest = true;
-    req.guestId = req.sessionID || req.ip || null;
+    req.guestId = req.sessionID; // Use secure session ID from express-session
     next();
   }
 };

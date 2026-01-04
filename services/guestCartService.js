@@ -4,16 +4,70 @@ import FishProduct from '../models/FishProduct.js';
 /**
  * Guest Cart Service
  * Handles cart operations for guest users
- * Uses in-memory storage with expiration (24 hours)
+ * Uses in-memory storage with automatic expiration cleanup (24 hours)
+ * Cleanup interval runs every 15 minutes to remove expired carts
  */
 
 const guestCarts = new Map();
 const GUEST_CART_EXPIRATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+const CLEANUP_INTERVAL = 15 * 60 * 1000; // Run cleanup every 15 minutes
+
+/**
+ * Cleanup expired guest carts
+ * Removes carts older than 24 hours from memory
+ * Called periodically to prevent memory leaks
+ * @returns {number} Number of carts cleaned up
+ */
+const cleanupExpiredGuestCarts = () => {
+  const now = Date.now();
+  let cleanedCount = 0;
+
+  for (const [guestId, cart] of guestCarts.entries()) {
+    if (cart.expiresAt < now) {
+      guestCarts.delete(guestId);
+      cleanedCount++;
+    }
+  }
+
+  if (cleanedCount > 0) {
+    console.log(
+      `[Guest Cart Cleanup] Removed ${cleanedCount} expired carts at ${new Date().toISOString()}`
+    );
+  }
+
+  return cleanedCount;
+};
+
+/**
+ * Initialize cleanup interval
+ * Automatically runs cleanup every 15 minutes
+ * Exported for testing and explicit initialization
+ * @returns {NodeJS.Timer} Cleanup interval ID
+ */
+export const initializeCleanupInterval = () => {
+  const cleanupIntervalId = setInterval(cleanupExpiredGuestCarts, CLEANUP_INTERVAL);
+
+  // Prevent the process from hanging due to this interval
+  cleanupIntervalId.unref();
+
+  console.log(
+    `[Guest Cart Service] Cleanup interval initialized: every ${
+      CLEANUP_INTERVAL / 1000 / 60
+    } minutes`
+  );
+
+  return cleanupIntervalId;
+};
+
+// Initialize cleanup interval on module load
+initializeCleanupInterval();
 
 /**
  * Get or create a guest cart
- * @param {string} guestId - Unique identifier for guest (sessionID or IP)
- * @returns {Object} Guest cart object
+ * Creates a new cart with timestamps if not exists
+ * Resets expiration time on access
+ * @param {string} guestId - Unique identifier for guest (sessionID)
+ * @returns {Object} Guest cart object with createdAt and expiresAt timestamps
  */
 export const getOrCreateGuestCart = (guestId) => {
   if (!guestCarts.has(guestId)) {
@@ -34,24 +88,48 @@ export const getOrCreateGuestCart = (guestId) => {
 
 /**
  * Add item to guest cart
+ * Uses atomic MongoDB operation to prevent overselling
+ * Stock check and reservation happen in single atomic operation
  * @param {string} guestId - Guest identifier
  * @param {string} productId - Product ID to add
  * @param {number} quantity - Quantity to add
  * @returns {Object} Updated guest cart
  */
 export const addToGuestCart = async (guestId, productId, quantity) => {
-  const product = await FishProduct.findById(productId);
+  // Atomic operation: Find product, check availability, and reserve stock in one operation
+  // Only succeeds if stock >= quantity
+  const product = await FishProduct.findOneAndUpdate(
+    {
+      _id: productId,
+      isAvailable: true,
+      stock: { $gte: quantity } // Only match if stock is sufficient
+    },
+    {
+      $inc: { stock: -quantity } // Atomically decrease stock
+    },
+    {
+      new: false, // Return document before update to get original stock value
+      runValidators: true
+    }
+  );
 
+  // If MongoDB returns null, it means either:
+  // - Product doesn't exist
+  // - Product is not available
+  // - Stock is insufficient
   if (!product) {
-    throw new Error('Product not found');
-  }
+    // Fetch product to determine exact error
+    const existingProduct = await FishProduct.findById(productId);
 
-  if (!product.isAvailable) {
-    throw new Error('Product is not available');
-  }
+    if (!existingProduct) {
+      throw new Error('Product not found');
+    }
 
-  if (product.stock < quantity) {
-    throw new Error(`Only ${product.stock} items available in stock`);
+    if (!existingProduct.isAvailable) {
+      throw new Error('Product is not available');
+    }
+
+    throw new Error(`Only ${existingProduct.stock} items available in stock`);
   }
 
   const cart = getOrCreateGuestCart(guestId);
@@ -61,20 +139,16 @@ export const addToGuestCart = async (guestId, productId, quantity) => {
   );
 
   if (existingItemIndex >= 0) {
-    const newQuantity = cart.items[existingItemIndex].quantity + quantity;
-
-    if (newQuantity > product.stock) {
-      throw new Error(`Cannot add more items. Only ${product.stock} available in stock`);
-    }
-
-    cart.items[existingItemIndex].quantity = newQuantity;
+    cart.items[existingItemIndex].quantity += quantity;
     cart.items[existingItemIndex].addedAt = Date.now();
   } else {
+    // Fetch fresh product data to get current details
+    const freshProduct = await FishProduct.findById(productId);
     cart.items.push({
       productId,
-      productName: product.name,
-      price: product.price,
-      image: product.image,
+      productName: freshProduct.name,
+      price: freshProduct.price,
+      image: freshProduct.image,
       quantity,
       addedAt: Date.now()
     });
@@ -275,24 +349,7 @@ export const getOrCreateUserCart = async (userId) => {
 };
 
 /**
- * Cleanup expired guest carts
- * Should be called periodically (e.g., every hour)
+ * Export cleanup function for manual triggering or testing
+ * @returns {number} Number of expired carts removed
  */
-export const cleanupExpiredGuestCarts = () => {
-  const now = Date.now();
-  let cleanedCount = 0;
-
-  for (const [guestId, cart] of guestCarts.entries()) {
-    if (cart.expiresAt < now) {
-      guestCarts.delete(guestId);
-      cleanedCount++;
-    }
-  }
-
-  if (cleanedCount > 0) {
-    console.log(`Cleaned up ${cleanedCount} expired guest carts`);
-  }
-};
-
-// Run cleanup every hour
-setInterval(cleanupExpiredGuestCarts, 60 * 60 * 1000);
+export const triggerCleanup = cleanupExpiredGuestCarts;
