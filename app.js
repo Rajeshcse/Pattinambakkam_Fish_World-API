@@ -12,6 +12,7 @@ import productRoutes from './routes/products.js';
 import cartRoutes from './routes/cart.js';
 import orderRoutes from './routes/orders.js';
 import uploadRoutes from './routes/upload.js';
+import ogTagsRoutes from './routes/ogTags.js';
 import setupSwagger from './config/swagger/setup.js';
 import { globalErrorHandler, notFoundHandler } from './middleware/errorHandler.js';
 import { sendSuccess } from './utils/helpers/responseHelper.js';
@@ -142,6 +143,9 @@ app.get('/', (req, res) => {
 
   return sendSuccess(res, apiInfo, 'Welcome to Pattinambakkam Fish World API');
 });
+
+// OG Tags route - must be before other routes
+app.use('/og', ogTagsRoutes);
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
